@@ -13,16 +13,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="033c4e5e-b2bf-4a48-8d2f-cdc33ff24efd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/Model.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/ui/main/FragUpcoming.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/ui/main/VMContactPage.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/ui/main/PageViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/ui/main/VMMainPage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/ui/main/PlaceholderFragment.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/ui/main/SectionsPagerAdapter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/ui/main/PagerAdapterMain.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/Model.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/Model.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/ui/main/FragUpcoming.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/ui/main/ViewUpcoming.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/ui/main/PagerAdapterMain.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/ui/main/PagerAdapterMain.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/ui/main/VMContactPage.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/hangtimeassistant/ui/main/VMMainPage.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_upcoming.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,26 +157,30 @@
       <screen x="0" y="0" width="2560" height="1080" />
     </state>
     <state x="1111" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2560.1080@0.0.2560.1080" timestamp="1593542292764" />
+    <state x="1490" y="290" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1595369437230">
+      <screen x="0" y="0" width="2560" height="1080" />
+    </state>
+    <state x="1490" y="290" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.2560.1080@0.0.2560.1080" timestamp="1595369437230" />
     <state x="1425" y="197" width="481" height="696" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog" timestamp="1593542660838">
       <screen x="0" y="0" width="2560" height="1080" />
     </state>
     <state x="1425" y="197" width="481" height="696" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog/0.0.2560.1080@0.0.2560.1080" timestamp="1593542660838" />
-    <state width="1683" height="212" key="GridCell.Tab.0.bottom" timestamp="1592434959260">
+    <state width="1928" height="285" key="GridCell.Tab.0.bottom" timestamp="1595366300878">
       <screen x="0" y="0" width="2560" height="1080" />
     </state>
-    <state width="1683" height="212" key="GridCell.Tab.0.bottom/0.0.2560.1080@0.0.2560.1080" timestamp="1592434959260" />
-    <state width="1683" height="212" key="GridCell.Tab.0.center" timestamp="1592434959260">
+    <state width="1928" height="285" key="GridCell.Tab.0.bottom/0.0.2560.1080@0.0.2560.1080" timestamp="1595366300878" />
+    <state width="1928" height="285" key="GridCell.Tab.0.center" timestamp="1595366300878">
       <screen x="0" y="0" width="2560" height="1080" />
     </state>
-    <state width="1683" height="212" key="GridCell.Tab.0.center/0.0.2560.1080@0.0.2560.1080" timestamp="1592434959260" />
-    <state width="1683" height="212" key="GridCell.Tab.0.left" timestamp="1592434959260">
+    <state width="1928" height="285" key="GridCell.Tab.0.center/0.0.2560.1080@0.0.2560.1080" timestamp="1595366300878" />
+    <state width="1928" height="285" key="GridCell.Tab.0.left" timestamp="1595366300877">
       <screen x="0" y="0" width="2560" height="1080" />
     </state>
-    <state width="1683" height="212" key="GridCell.Tab.0.left/0.0.2560.1080@0.0.2560.1080" timestamp="1592434959260" />
-    <state width="1683" height="212" key="GridCell.Tab.0.right" timestamp="1592434959260">
+    <state width="1928" height="285" key="GridCell.Tab.0.left/0.0.2560.1080@0.0.2560.1080" timestamp="1595366300877" />
+    <state width="1928" height="285" key="GridCell.Tab.0.right" timestamp="1595366300878">
       <screen x="0" y="0" width="2560" height="1080" />
     </state>
-    <state width="1683" height="212" key="GridCell.Tab.0.right/0.0.2560.1080@0.0.2560.1080" timestamp="1592434959260" />
+    <state width="1928" height="285" key="GridCell.Tab.0.right/0.0.2560.1080@0.0.2560.1080" timestamp="1595366300878" />
     <state x="1410" y="224" key="SettingsEditor" timestamp="1592522574159">
       <screen x="0" y="0" width="2560" height="1080" />
     </state>
