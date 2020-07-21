@@ -1,12 +1,20 @@
 package com.example.hangtimeassistant
 
+import java.lang.NullPointerException
 import java.util.*
 
-class Model {
-    var reminders = emptyMap<Int , Reminder>()
-    var contacts = emptyMap<Int , Contact>()
-    var events = emptyMap<Int , Event>()
-    var categories = emptyMap<Int , Category>()
+object Model {
+    var reminders = mutableMapOf<Int , Reminder>()
+    var contacts = mutableMapOf<Int , Contact>()
+    var events = mutableMapOf<Int , Event>()
+    var categories = mutableMapOf<Int , Category>()
+}
+
+object IDGen {
+    private var currentID = 0
+    fun nextID():Int {
+       return currentID++
+    }
 }
 
 data class Reminder (
