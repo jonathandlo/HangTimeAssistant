@@ -6,13 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.example.hangtimeassistant.IDGen
 import com.example.hangtimeassistant.Model
 import com.example.hangtimeassistant.R
 import com.example.hangtimeassistant.Reminder
+import kotlinx.android.synthetic.main.fragment_upcoming.*
 
 /**
  * A placeholder fragment containing a simple view.
@@ -38,10 +36,15 @@ class ViewUpcoming : Fragment() {
     }
 
     private fun listUpcoming(){
-        for (i in 1..10)
-        {
+        // prepare the data
+        for (i in 1..10){
             val id = IDGen.nextID()
             Model.reminders.put(id, Reminder(id))
+        }
+
+        // populate the view with reminders
+        for (i in Model.reminders.values){
+            upcomingLayout.addView(LayoutInflater.from(this.context).inflate(R.layout.reminder_layout, null))
         }
     }
 

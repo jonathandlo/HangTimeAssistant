@@ -24,10 +24,12 @@
         android:id="@+id/scrollViewUpcoming"
         android:layout_width="409dp"
         android:layout_height="729dp"
-        app:layout_constraintTop_toBottomOf="@+id/section_label"
-        tools:layout_editor_absoluteX="1dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/section_label">
 
         <LinearLayout
+            android:id="@+id/upcomingLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
