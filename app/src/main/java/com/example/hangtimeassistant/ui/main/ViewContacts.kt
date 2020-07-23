@@ -6,22 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.hangtimeassistant.IDGen
-import com.example.hangtimeassistant.Model
-import com.example.hangtimeassistant.R
-import com.example.hangtimeassistant.Reminder
-import kotlinx.android.synthetic.main.fragment_upcoming.*
+import com.example.hangtimeassistant.*
+import kotlinx.android.synthetic.main.fragment_contact.*
 
 /**
  * A placeholder fragment containing a simple view.
  */
-class ViewUpcoming : Fragment() {
+class ViewContacts : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val root = inflater.inflate(R.layout.fragment_upcoming, container, false)
+        val root = inflater.inflate(R.layout.fragment_contact, container, false)
 
         // top label
         val textView: TextView = root.findViewById(R.id.section_label)
@@ -32,21 +29,21 @@ class ViewUpcoming : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        listUpcoming()
+        listContacts()
     }
 
-    private fun listUpcoming(){
+    private fun listContacts(){
         // prepare the data
-        for (i in 1..3){
+        for (i in 1..20){
             val id = IDGen.nextID()
-            Model.reminders[id] = Reminder(id)
+            Model.contacts[id] = Contact(id)
         }
 
         // populate the view with reminders
-        layoutReminder.removeAllViews()
+        layoutContact.removeAllViews()
 
-        for (i in Model.reminders.values){
-            layoutReminder.addView(LayoutInflater.from(this.context).inflate(R.layout.item_reminder, null))
+        for (i in Model.contacts.values){
+            layoutContact.addView(LayoutInflater.from(this.context).inflate(R.layout.item_contact, null))
         }
     }
 
@@ -62,8 +59,8 @@ class ViewUpcoming : Fragment() {
          * number.
          */
         @JvmStatic
-        fun newInstance(): ViewUpcoming {
-            return ViewUpcoming().apply {
+        fun newInstance(): ViewContacts {
+            return ViewContacts().apply {
                 arguments = Bundle().apply {
 
                 }
