@@ -32,9 +32,14 @@ data class Contact (
     var ID: Int = 0,
     var ReminderID: Int = 0,
     var CategoryIDs: List<Int> = emptyList(),
+    var EventIDs: List<Int> = emptyList(),
 
     // attributes
-    var date: Date = Date(0)
+    var date: Date = Date(0),
+    var IGUrl: String = "",
+    var FBUrl: String = "",
+    var phoneNum: Int = 0,
+    var address: String = ""
 )
 
 data class Event (
