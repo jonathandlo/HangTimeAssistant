@@ -21,9 +21,6 @@ class ViewEvents : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_events, container, false)
 
-        // top label
-        val textView: TextView = root.findViewById(R.id.section_label)
-
         return root
     }
 
