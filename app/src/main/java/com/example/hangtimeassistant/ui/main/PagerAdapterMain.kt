@@ -25,6 +25,7 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) : 
 		return when (position){
 			1 -> ViewUpcoming.newInstance()
 			2 -> ViewContacts.newInstance()
+			3 -> ViewEvents.newInstance()
 			else -> ViewUpcoming.newInstance()
 		}
 
