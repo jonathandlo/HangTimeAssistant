@@ -40,10 +40,10 @@ class ViewContacts : Fragment() {
         }
 
         // populate the view with reminders
-        layoutContact.removeAllViews()
+        layout_contact.removeAllViews()
 
         for (i in Model.contacts.values){
-            layoutContact.addView(LayoutInflater.from(this.context).inflate(R.layout.item_contact, null))
+            layout_contact.addView(LayoutInflater.from(this.context).inflate(R.layout.item_contact, null))
         }
     }
 
