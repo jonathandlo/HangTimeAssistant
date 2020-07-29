@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.hangtimeassistant.IDGen
-import com.example.hangtimeassistant.Model
-import com.example.hangtimeassistant.R
-import com.example.hangtimeassistant.Reminder
+import com.example.hangtimeassistant.*
+import kotlinx.android.synthetic.main.fragment_events.*
 import kotlinx.android.synthetic.main.fragment_upcoming.*
 
 /**
@@ -39,14 +37,14 @@ class ViewEvents : Fragment() {
         // prepare the data
         for (i in 1..3){
             val id = IDGen.nextID()
-            Model.reminders[id] = Reminder(id)
+            Model.events[id] = Event(id)
         }
 
         // populate the view with reminders
-        layoutReminder.removeAllViews()
+        layoutEvents.removeAllViews()
 
-        for (i in Model.reminders.values){
-            layoutReminder.addView(LayoutInflater.from(this.context).inflate(R.layout.item_reminder, null))
+        for (i in Model.events.values){
+            layoutEvents.addView(LayoutInflater.from(this.context).inflate(R.layout.item_event, null))
         }
     }
 
