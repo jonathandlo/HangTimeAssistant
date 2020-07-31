@@ -35,7 +35,7 @@ data class Contact (
     var EventIDs: List<Int> = emptyList(),
 
     // attributes
-    var date: Date = Date(0),
+    var name: String = "",
     var IGUrl: String = "",
     var FBUrl: String = "",
     var phoneNum: Int = 0,
