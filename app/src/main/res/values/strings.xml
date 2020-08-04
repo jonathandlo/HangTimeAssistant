@@ -12,4 +12,19 @@
     <string name="tab_event_text_2">Location</string>
     <string name="tab_event_text_3">Guests</string>
     <string name="popup_detail_text">Details</string>
+
+    <string-array name="time_period_array">
+        <item>days</item>
+        <item>weeks</item>
+        <item>months</item>
+        <item>years</item>
+    </string-array>
+
+    <string-array name="skip_period_array">
+        <item>occurrences</item>
+        <item>days</item>
+        <item>weeks</item>
+        <item>months</item>
+        <item>years</item>
+    </string-array>
 </resources>

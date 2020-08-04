@@ -1,13 +1,16 @@
 package com.example.hangtimeassistant.ui.main
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import com.example.hangtimeassistant.*
 import kotlinx.android.synthetic.main.fragment_contact.*
+import kotlinx.android.synthetic.main.item_contact.view.*
 
 /**
  * A placeholder fragment containing a simple view.
@@ -40,7 +43,14 @@ class ViewContacts : Fragment() {
         layout_contact.removeAllViews()
 
         for (i in Model.contacts.values){
-            layout_contact.addView(LayoutInflater.from(this.context).inflate(R.layout.item_contact, null))
+            layout_contact.addView(LayoutInflater.from(this.context).inflate(R.layout.item_contact, null).apply {
+                for (i in 1 .. 10) {
+                    this.flexbox_categories.addView(ToggleButton(context).apply {
+                        this.textOn = (Math.random() * 10).toInt().toString()
+                        this.textOff = this.textOn
+                    })
+                }
+            })
         }
     }
 
