@@ -24,9 +24,15 @@ data class Reminder (
     var EventID: Int = 0,
 
     // attributes
-    var date: Date = Date(0)
+    var lastDate: Date = Date(0),
+    var nextDate: Date = Date(0),
+    var reminder: Boolean = false,
+    var reminderPeriod: Int = 1,
+    var reminderUnit: String = "d",
+    var random: Boolean = false,
+    var randomPeriod: Int = 0,
+    var randomUnit: String = "d"
 )
-
 data class Contact (
     // keys
     var ID: Int = 0,
