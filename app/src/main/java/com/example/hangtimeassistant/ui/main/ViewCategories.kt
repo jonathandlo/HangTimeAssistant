@@ -35,14 +35,6 @@ class ViewCategories : Fragment() {
     }
 
     private fun listCategories(){
-        // prepare the data
-        Model.categories.clear()
-
-        for (i in 1..9){
-            val id = IDGen.nextID()
-            Model.categories[id] = Category(id)
-        }
-
         // populate the view with reminders
         layout_cat_items.removeAllViews()
 

@@ -43,14 +43,6 @@ class ViewContacts : Fragment() {
     }
 
     private fun listContacts(){
-        // prepare the data
-        Model.contacts.clear()
-
-        for (i in 1..20){
-            val id = IDGen.nextID()
-            Model.contacts[id] = Contact(id)
-        }
-
         // populate the view with reminders
         layout_cont.removeAllViews()
 
