@@ -45,7 +45,7 @@ data class Contact (
     var name: String = "",
     var IGUrl: String = "",
     var FBUrl: String = "",
-    var phoneNum: Int = 0,
+    var phoneNum: String = "",
     var address: String = ""
 )
 

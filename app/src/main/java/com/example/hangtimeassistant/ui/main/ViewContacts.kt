@@ -48,11 +48,18 @@ class ViewContacts : Fragment() {
 
         for (i in Model.contacts.values){
             layout_cont.addView(LayoutInflater.from(this.context).inflate(R.layout.item_contact, null).apply {
+                // show details
+                this.text_phone.text = i.phoneNum.toString()
+                this.text_address.text = i.address
+                this.text_fb.text = i.FBUrl
+                this.text_ig.text = i.IGUrl
+
+                // TODO: show reminders
+
+                // show categories
                 this.flexbox_categories.removeAllViews()
                 for (j in i.CategoryIDs) {
                     this.flexbox_categories.addView(Button(context).apply {
-                        //val density = this.context.resources.displayMetrics.density
-                        this.layoutParams = FlexboxLayout.LayoutParams(FlexboxLayout.LayoutParams.WRAP_CONTENT, FlexboxLayout.LayoutParams.WRAP_CONTENT)
                         this.minimumWidth = 0
                         this.minWidth = 0
                         this.minimumHeight = 0
