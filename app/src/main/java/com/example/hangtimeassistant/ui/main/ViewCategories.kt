@@ -38,9 +38,11 @@ class ViewCategories : Fragment() {
         // populate the view with reminders
         layout_cat_items.removeAllViews()
 
-        for (i in Model.contacts.values){
+        for (i in Model.categories.values){
             layout_cat_items.addView(LayoutInflater.from(this.context).inflate(R.layout.item_category, null).apply {
-                this.text_cat_name.text = (Math.random() * 10).toInt().toString()
+                this.text_cat_name.text = i.name
+                this.button_cat_color.minimumWidth = this.button_cat_color.minimumHeight
+                this.button_cat_color.minWidth = this.button_cat_color.minHeight
 
                 var drawable = DrawableCompat.wrap(this.button_cat_color.background);
                 DrawableCompat.setTint(drawable, Color.argb(255, (Math.random() * 256).toInt(), (Math.random() * 256).toInt(), (Math.random() * 256).toInt()))
