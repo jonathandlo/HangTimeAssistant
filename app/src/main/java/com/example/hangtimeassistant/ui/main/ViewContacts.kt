@@ -1,21 +1,26 @@
 package com.example.hangtimeassistant.ui.main
 
-import android.content.res.ColorStateList
+import android.R.attr.button
+import android.R.attr.textSize
 import android.graphics.Color
-import android.graphics.ColorSpace
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
-import android.widget.ToggleButton
+import android.widget.LinearLayout
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
-import com.example.hangtimeassistant.*
+import com.example.hangtimeassistant.Contact
+import com.example.hangtimeassistant.IDGen
+import com.example.hangtimeassistant.Model
+import com.example.hangtimeassistant.R
+import com.google.android.flexbox.FlexboxLayout
 import kotlinx.android.synthetic.main.fragment_contact.*
 import kotlinx.android.synthetic.main.item_contact.view.*
-import kotlin.random.Random
+import kotlin.math.pow
+
 
 /**
  * A placeholder fragment containing a simple view.
@@ -52,9 +57,16 @@ class ViewContacts : Fragment() {
         for (i in Model.contacts.values){
             layout_cont.addView(LayoutInflater.from(this.context).inflate(R.layout.item_contact, null).apply {
                 this.flexbox_categories.removeAllViews()
-                for (i in 1 .. 10) {
+                for (j in i.CategoryIDs) {
                     this.flexbox_categories.addView(Button(context).apply {
-                        this.text = (Math.random() * 10).toInt().toString()
+                        //val density = this.context.resources.displayMetrics.density
+                        this.layoutParams = FlexboxLayout.LayoutParams(FlexboxLayout.LayoutParams.WRAP_CONTENT, FlexboxLayout.LayoutParams.WRAP_CONTENT)
+                        this.minimumWidth = 0
+                        this.minWidth = 0
+                        this.minimumHeight = 0
+                        this.minHeight = 0
+                        this.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
+                        this.text = Model.categories[j]?.name ?:""
 
                         var drawable = DrawableCompat.wrap(this.background);
                         DrawableCompat.setTint(drawable, Color.argb(255, (Math.random() * 256).toInt(), (Math.random() * 256).toInt(), (Math.random() * 256).toInt()))
