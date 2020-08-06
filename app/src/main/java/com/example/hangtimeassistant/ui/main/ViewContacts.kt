@@ -65,10 +65,10 @@ class ViewContacts : Fragment() {
                         this.minimumHeight = 0
                         this.minHeight = 0
                         this.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
-                        this.text = Model.categories[j]?.name ?:""
+                        this.text = Model.categories[j]?.name ?: ""
 
                         var drawable = DrawableCompat.wrap(this.background);
-                        DrawableCompat.setTint(drawable, Color.argb(255, (Math.random() * 256).toInt(), (Math.random() * 256).toInt(), (Math.random() * 256).toInt()))
+                        DrawableCompat.setTint(drawable, Model.categories[j]?.color ?: Color.WHITE)
                     })
                 }
             })

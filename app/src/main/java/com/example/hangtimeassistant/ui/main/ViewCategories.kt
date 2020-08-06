@@ -45,7 +45,7 @@ class ViewCategories : Fragment() {
                 this.button_cat_color.minWidth = this.button_cat_color.minHeight
 
                 var drawable = DrawableCompat.wrap(this.button_cat_color.background);
-                DrawableCompat.setTint(drawable, Color.argb(255, (Math.random() * 256).toInt(), (Math.random() * 256).toInt(), (Math.random() * 256).toInt()))
+                DrawableCompat.setTint(drawable, i.color)
             })
         }
     }
