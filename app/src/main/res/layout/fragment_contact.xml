@@ -2,13 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
+    android:id="@+id/layout_cont_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.ViewUpcoming">
+    tools:context=".ui.main.ViewContacts">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
+        android:id="@+id/text_cont_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -16,28 +16,41 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/searchbox_contact"
+            android:id="@+id/textinput_cont_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="search" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ScrollView
-        android:id="@+id/scrollview_contact"
+        android:id="@+id/scrollview_cont"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@id/text_cont_search"
         app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout
-            android:id="@+id/layout_contact"
+            android:id="@+id/layout_cont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout_cont_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"></LinearLayout>
+
+            <Button
+                android:id="@+id/button_cont_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add a Contact" />
+        </LinearLayout>
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

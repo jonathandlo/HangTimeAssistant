@@ -34,16 +34,18 @@ class ViewUpcoming : Fragment() {
 
     private fun listUpcoming(){
         // prepare the data
+        Model.reminders.clear()
+
         for (i in 1..3){
             val id = IDGen.nextID()
             Model.reminders[id] = Reminder(id)
         }
 
         // populate the view with reminders
-        layoutReminder.removeAllViews()
+        layout_remind_items.removeAllViews()
 
         for (i in Model.reminders.values){
-            layoutReminder.addView(LayoutInflater.from(this.context).inflate(R.layout.item_reminder, null))
+            layout_remind_items.addView(LayoutInflater.from(this.context).inflate(R.layout.item_reminder, null))
         }
     }
 

@@ -32,16 +32,18 @@ class ViewEvents : Fragment() {
 
     private fun listEvents(){
         // prepare the data
+        Model.events.clear()
+
         for (i in 1..3){
             val id = IDGen.nextID()
             Model.events[id] = Event(id)
         }
 
         // populate the view with reminders
-        layoutEvents.removeAllViews()
+        layout_event_items.removeAllViews()
 
         for (i in Model.events.values){
-            layoutEvents.addView(LayoutInflater.from(this.context).inflate(R.layout.item_event, null))
+            layout_event_items.addView(LayoutInflater.from(this.context).inflate(R.layout.item_event, null))
         }
     }
 

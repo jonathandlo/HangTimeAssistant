@@ -2,23 +2,55 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
+    android:id="@+id/layout_cat_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.ViewUpcoming">
+    tools:context=".ui.main.ViewEvents">
 
-    <ScrollView
-        android:layout_width="409dp"
-        android:layout_height="729dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_event_search"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/layoutEvents"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textinput_cont_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:hint="search" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ScrollView
+        android:id="@+id/scrollview_event"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_event_search"
+        app:layout_constraintVertical_bias="1.0">
+
+        <LinearLayout
+            android:id="@+id/layout_event"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout_event_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"></LinearLayout>
+
+            <Button
+                android:id="@+id/button_event_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add an Event" />
+        </LinearLayout>
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

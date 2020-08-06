@@ -39,16 +39,18 @@ class ViewContacts : Fragment() {
 
     private fun listContacts(){
         // prepare the data
+        Model.contacts.clear()
+
         for (i in 1..20){
             val id = IDGen.nextID()
             Model.contacts[id] = Contact(id)
         }
 
         // populate the view with reminders
-        layout_contact.removeAllViews()
+        layout_cont.removeAllViews()
 
         for (i in Model.contacts.values){
-            layout_contact.addView(LayoutInflater.from(this.context).inflate(R.layout.item_contact, null).apply {
+            layout_cont.addView(LayoutInflater.from(this.context).inflate(R.layout.item_contact, null).apply {
                 this.flexbox_categories.removeAllViews()
                 for (i in 1 .. 10) {
                     this.flexbox_categories.addView(Button(context).apply {
