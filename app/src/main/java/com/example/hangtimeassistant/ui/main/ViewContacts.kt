@@ -70,14 +70,15 @@ class ViewContacts : Fragment() {
                         this.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
                         this.text = Model.categories[j]?.name ?: ""
 
-                        var drawable = DrawableCompat.wrap(this.background);
+                        val drawable = DrawableCompat.wrap(this.background);
                         DrawableCompat.setTint(drawable, Model.categories[j]?.color ?: Color.WHITE)
                     })
                 }
 
                 // attach animation events
-                var collapsible = this.layout_cont_collapsable
+                val collapsible = this.layout_cont_collapsable
                 collapsible.visibility = View.GONE
+                collapsible.alpha = 0f
 
                 this.layout_cont_item_main.setOnClickListener {
                     if (collapsible.visibility == View.VISIBLE){
