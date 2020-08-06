@@ -38,8 +38,8 @@ data class Contact (
     // keys
     var ID: Int = 0,
     var ReminderID: Int = 0,
-    var CategoryIDs: List<Int> = emptyList(),
-    var EventIDs: List<Int> = emptyList(),
+    var CategoryIDs: MutableList<Int> = mutableListOf(),
+    var EventIDs: MutableList<Int> = mutableListOf(),
 
     // attributes
     var name: String = "",
@@ -53,8 +53,8 @@ data class Event (
     // keys
     var ID: Int = 0,
     var ReminderID: Int = 0,
-    var ContactIDs: List<Int> = emptyList(),
-    var CategoryIDs: List<Int> = emptyList(),
+    var ContactIDs: MutableList<Int> = mutableListOf(),
+    var CategoryIDs: MutableList<Int> = mutableListOf(),
 
     // attributes
     var date: Date = Date(0)
@@ -63,8 +63,8 @@ data class Event (
 data class Category (
     // keys
     var ID: Int = 0,
-    var ContactIDs: List<Int> = emptyList(),
-    var EventIDs: List<Int> = emptyList(),
+    var ContactIDs: MutableList<Int> = mutableListOf(),
+    var EventIDs: MutableList<Int> = mutableListOf(),
 
     // attributes
     var color: Int = Color.argb(255, 55, 55, 55),
