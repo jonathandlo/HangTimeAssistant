@@ -57,10 +57,6 @@ class MainActivity : AppCompatActivity() {
 					if (Math.random() > 0.7) this.CategoryIDs.add(j.key)
 				}
 
-		val fab: FloatingActionButton = findViewById(R.id.fab)
-		fab.setOnClickListener { view ->
-			Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-					.setAction("Action", null).show()
 				this.name = "John Doe " + i
 			}
 		}
