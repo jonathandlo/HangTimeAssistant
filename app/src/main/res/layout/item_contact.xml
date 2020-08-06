@@ -33,8 +33,8 @@
 
         <ImageView
             android:id="@+id/img_ig"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2"
             app:srcCompat="@drawable/ic_icons8_instagram" />
@@ -43,6 +43,7 @@
             android:id="@+id/text_ig"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
             android:text="instagram.com/test"
             app:layout_constraintBottom_toBottomOf="@+id/img_ig"
             app:layout_constraintStart_toEndOf="@+id/img_ig"
@@ -50,16 +51,17 @@
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageView3"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
             app:srcCompat="@drawable/ic_icons8_facebook" />
 
         <TextView
             android:id="@+id/text_fb"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
             android:text="facebook.com/test"
             app:layout_constraintBottom_toBottomOf="@+id/imageView2"
             app:layout_constraintStart_toEndOf="@+id/imageView2"
@@ -67,8 +69,8 @@
 
         <ImageView
             android:id="@+id/imageView3"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/sym_action_call" />
@@ -77,6 +79,7 @@
             android:id="@+id/text_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
             android:text="123 456 7890"
             app:layout_constraintBottom_toBottomOf="@+id/imageView3"
             app:layout_constraintStart_toEndOf="@+id/imageView3"
@@ -84,16 +87,20 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:cropToPadding="true"
+            android:paddingLeft="7dp"
+            android:paddingEnd="3dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/img_ig"
-            app:srcCompat="@android:drawable/ic_menu_mylocation" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView3"
+            app:srcCompat="@drawable/ic_google_maps_icon" />
 
         <TextView
             android:id="@+id/text_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
             android:text="123 Address St. Town, CA"
             app:layout_constraintBottom_toBottomOf="@+id/imageView"
             app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -139,6 +146,7 @@
             android:id="@+id/numberPickerWithXml"
             android:layout_width="wrap_content"
             android:layout_height="70dp"
+            android:fadingEdgeLength="20dp"
             app:defaultValue="1"
             app:layout_constraintEnd_toEndOf="@+id/numberPickerWithXml2"
             app:layout_constraintTop_toTopOf="parent"
@@ -221,11 +229,11 @@
             android:id="@+id/numberPickerWithXml3"
             android:layout_width="wrap_content"
             android:layout_height="70dp"
-            app:defaultValue="1"
+            app:defaultValue="0"
             app:layout_constraintEnd_toStartOf="@+id/spinner_skip"
             app:layout_constraintTop_toBottomOf="@+id/numberPickerWithXml2"
             app:maxValue="50"
-            app:minValue="1" />
+            app:minValue="0" />
 
         <Spinner
             android:id="@+id/spinner_skip"
