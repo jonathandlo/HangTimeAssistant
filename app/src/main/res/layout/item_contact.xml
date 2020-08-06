@@ -17,259 +17,266 @@
         android:text="John Doe"
         android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/textView12"
+    <LinearLayout
+        android:id="@+id/layout_cont_collapsable"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="Contact"
-        android:textSize="18sp" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginBottom="10dp">
-
-        <ImageView
-            android:id="@+id/img_ig"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2"
-            app:srcCompat="@drawable/ic_icons8_instagram" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text_ig"
-            android:layout_width="wrap_content"
+            android:id="@+id/textView12"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:text="instagram.com/test"
-            app:layout_constraintBottom_toBottomOf="@+id/img_ig"
-            app:layout_constraintStart_toEndOf="@+id/img_ig"
-            app:layout_constraintTop_toTopOf="@+id/img_ig" />
+            android:layout_marginStart="20dp"
+            android:text="Contact"
+            android:textSize="18sp" />
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView"
-            app:srcCompat="@drawable/ic_icons8_facebook" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/img_ig"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView2"
+                app:srcCompat="@drawable/ic_icons8_instagram" />
+
+            <TextView
+                android:id="@+id/text_ig"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="instagram.com/test"
+                app:layout_constraintBottom_toBottomOf="@+id/img_ig"
+                app:layout_constraintStart_toEndOf="@+id/img_ig"
+                app:layout_constraintTop_toTopOf="@+id/img_ig" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView"
+                app:srcCompat="@drawable/ic_icons8_facebook" />
+
+            <TextView
+                android:id="@+id/text_fb"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="facebook.com/test"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="@+id/imageView2" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@android:drawable/sym_action_call" />
+
+            <TextView
+                android:id="@+id/text_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="123 456 7890"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+                app:layout_constraintStart_toEndOf="@+id/imageView3"
+                app:layout_constraintTop_toTopOf="@+id/imageView3" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:cropToPadding="true"
+                android:paddingLeft="7dp"
+                android:paddingEnd="3dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView3"
+                app:srcCompat="@drawable/ic_google_maps_icon" />
+
+            <TextView
+                android:id="@+id/text_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="123 Address St. Town, CA"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/text_fb"
-            android:layout_width="0dp"
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:text="facebook.com/test"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toTopOf="@+id/imageView2" />
+            android:layout_marginStart="20dp"
+            android:text="Reminders"
+            android:textSize="18sp" />
 
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/sym_action_call" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="10dp">
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reminder"
+                android:textColor="@android:color/tertiary_text_dark"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="every"
+                app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml"
+                app:layout_constraintEnd_toStartOf="@+id/numberPickerWithXml"
+                app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml" />
+
+            <com.example.library.ui.NumberPickerWithXml
+                android:id="@+id/numberPickerWithXml"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:fadingEdgeLength="20dp"
+                app:defaultValue="1"
+                app:layout_constraintEnd_toEndOf="@+id/numberPickerWithXml2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:maxValue="1000"
+                app:minValue="1" />
+
+            <Spinner
+                android:id="@+id/spinner_reminder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:entries="@array/time_period_array"
+                android:spinnerMode="dropdown"
+                app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/numberPickerWithXml"
+                app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml" />
+
+            <CheckBox
+                android:id="@+id/checkBox2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Randomness"
+                android:textColor="@android:color/tertiary_text_dark"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml2" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+/-"
+                app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml2"
+                app:layout_constraintEnd_toStartOf="@+id/numberPickerWithXml2"
+                app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml2" />
+
+            <com.example.library.ui.NumberPickerWithXml
+                android:id="@+id/numberPickerWithXml2"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                app:defaultValue="0"
+                app:layout_constraintEnd_toEndOf="@+id/numberPickerWithXml3"
+                app:layout_constraintTop_toBottomOf="@+id/numberPickerWithXml"
+                app:maxValue="1000"
+                app:minValue="0" />
+
+            <Spinner
+                android:id="@+id/spinner_randomness"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:entries="@array/time_period_array"
+                android:spinnerMode="dropdown"
+                app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/numberPickerWithXml2"
+                app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml2" />
+
+            <CheckBox
+                android:id="@+id/checkBox3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Skip"
+                android:textColor="@android:color/tertiary_text_dark"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml3" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="the next"
+                app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml3"
+                app:layout_constraintEnd_toStartOf="@+id/numberPickerWithXml3"
+                app:layout_constraintTop_toBottomOf="@+id/numberPickerWithXml2" />
+
+            <com.example.library.ui.NumberPickerWithXml
+                android:id="@+id/numberPickerWithXml3"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                app:defaultValue="0"
+                app:layout_constraintEnd_toStartOf="@+id/spinner_skip"
+                app:layout_constraintTop_toBottomOf="@+id/numberPickerWithXml2"
+                app:maxValue="50"
+                app:minValue="0" />
+
+            <Spinner
+                android:id="@+id/spinner_skip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/skip_period_array"
+                android:spinnerMode="dropdown"
+                app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/text_phone"
+            android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:text="123 456 7890"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
-            app:layout_constraintTop_toTopOf="@+id/imageView3" />
+            android:layout_marginStart="20dp"
+            android:text="Categories"
+            android:textSize="18sp" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:cropToPadding="true"
-            android:paddingLeft="7dp"
-            android:paddingEnd="3dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3"
-            app:srcCompat="@drawable/ic_google_maps_icon" />
-
-        <TextView
-            android:id="@+id/text_address"
-            android:layout_width="wrap_content"
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/flexbox_categories"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:text="123 Address St. Town, CA"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView" />
+            android:layout_marginLeft="40dp"
+            app:alignContent="stretch"
+            app:alignItems="stretch"
+            app:flexWrap="wrap">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/text_categories_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create a category in the 'Category' tab." />
 
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="Reminders"
-        android:textSize="18sp" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginBottom="10dp">
-
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reminder"
-            android:textColor="@android:color/tertiary_text_dark"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml" />
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="every"
-            app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml"
-            app:layout_constraintEnd_toStartOf="@+id/numberPickerWithXml"
-            app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml" />
-
-        <com.example.library.ui.NumberPickerWithXml
-            android:id="@+id/numberPickerWithXml"
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:fadingEdgeLength="20dp"
-            app:defaultValue="1"
-            app:layout_constraintEnd_toEndOf="@+id/numberPickerWithXml2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:maxValue="1000"
-            app:minValue="1" />
-
-        <Spinner
-            android:id="@+id/spinner_reminder"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:entries="@array/time_period_array"
-            android:spinnerMode="dropdown"
-            app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/numberPickerWithXml"
-            app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml" />
-
-        <CheckBox
-            android:id="@+id/checkBox2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Randomness"
-            android:textColor="@android:color/tertiary_text_dark"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml2" />
-
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+/-"
-            app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml2"
-            app:layout_constraintEnd_toStartOf="@+id/numberPickerWithXml2"
-            app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml2" />
-
-        <com.example.library.ui.NumberPickerWithXml
-            android:id="@+id/numberPickerWithXml2"
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            app:defaultValue="0"
-            app:layout_constraintEnd_toEndOf="@+id/numberPickerWithXml3"
-            app:layout_constraintTop_toBottomOf="@+id/numberPickerWithXml"
-            app:maxValue="1000"
-            app:minValue="0" />
-
-        <Spinner
-            android:id="@+id/spinner_randomness"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:entries="@array/time_period_array"
-            android:spinnerMode="dropdown"
-            app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/numberPickerWithXml2"
-            app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml2" />
-
-        <CheckBox
-            android:id="@+id/checkBox3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Skip"
-            android:textColor="@android:color/tertiary_text_dark"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml3"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml3" />
-
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="the next"
-            app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml3"
-            app:layout_constraintEnd_toStartOf="@+id/numberPickerWithXml3"
-            app:layout_constraintTop_toBottomOf="@+id/numberPickerWithXml2" />
-
-        <com.example.library.ui.NumberPickerWithXml
-            android:id="@+id/numberPickerWithXml3"
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            app:defaultValue="0"
-            app:layout_constraintEnd_toStartOf="@+id/spinner_skip"
-            app:layout_constraintTop_toBottomOf="@+id/numberPickerWithXml2"
-            app:maxValue="50"
-            app:minValue="0" />
-
-        <Spinner
-            android:id="@+id/spinner_skip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:entries="@array/skip_period_array"
-            android:spinnerMode="dropdown"
-            app:layout_constraintBottom_toBottomOf="@+id/numberPickerWithXml3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/numberPickerWithXml3" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="Categories"
-        android:textSize="18sp" />
-
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/flexbox_categories"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        app:alignContent="stretch"
-        app:alignItems="stretch"
-        app:flexWrap="wrap">
-
-        <TextView
-            android:id="@+id/text_categories_empty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create a category in the 'Category' tab." />
-
-    </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+    </LinearLayout>
 
 </LinearLayout>
