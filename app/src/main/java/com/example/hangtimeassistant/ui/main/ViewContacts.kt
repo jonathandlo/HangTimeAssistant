@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.hangtimeassistant.Contact
 import com.example.hangtimeassistant.IDGen
@@ -18,6 +20,7 @@ import com.example.hangtimeassistant.Model
 import com.example.hangtimeassistant.R
 import com.google.android.flexbox.FlexboxLayout
 import kotlinx.android.synthetic.main.fragment_contact.*
+import kotlinx.android.synthetic.main.fragment_contact.view.*
 import kotlinx.android.synthetic.main.item_contact.view.*
 import kotlin.math.pow
 
@@ -70,6 +73,28 @@ class ViewContacts : Fragment() {
                         var drawable = DrawableCompat.wrap(this.background);
                         DrawableCompat.setTint(drawable, Model.categories[j]?.color ?: Color.WHITE)
                     })
+                }
+
+                // attach animation events
+                var collapsible = this.layout_cont_collapsable
+                collapsible.visibility = View.GONE
+
+                this.layout_cont_item_main.setOnClickListener {
+                    if (collapsible.visibility == View.VISIBLE){
+                        // hide the view
+                        collapsible.animate()
+                            .alpha(0f)
+                            .withEndAction {
+                                collapsible.visibility = View.GONE
+                            }
+
+                    }
+                    else{
+                        // show the view
+                        collapsible.visibility = View.VISIBLE
+                        collapsible.animate()
+                            .alpha(1f)
+                    }
                 }
             })
         }
