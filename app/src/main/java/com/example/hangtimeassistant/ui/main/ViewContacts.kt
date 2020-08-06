@@ -1,16 +1,21 @@
 package com.example.hangtimeassistant.ui.main
 
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.ColorSpace
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.ToggleButton
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import com.example.hangtimeassistant.*
 import kotlinx.android.synthetic.main.fragment_contact.*
 import kotlinx.android.synthetic.main.item_contact.view.*
+import kotlin.random.Random
 
 /**
  * A placeholder fragment containing a simple view.
@@ -44,10 +49,13 @@ class ViewContacts : Fragment() {
 
         for (i in Model.contacts.values){
             layout_contact.addView(LayoutInflater.from(this.context).inflate(R.layout.item_contact, null).apply {
+                this.flexbox_categories.removeAllViews()
                 for (i in 1 .. 10) {
-                    this.flexbox_categories.addView(ToggleButton(context).apply {
-                        this.textOn = (Math.random() * 10).toInt().toString()
-                        this.textOff = this.textOn
+                    this.flexbox_categories.addView(Button(context).apply {
+                        this.text = (Math.random() * 10).toInt().toString()
+
+                        var drawable = DrawableCompat.wrap(this.background);
+                        DrawableCompat.setTint(drawable, Color.argb(255, (Math.random() * 256).toInt(), (Math.random() * 256).toInt(), (Math.random() * 256).toInt()))
                     })
                 }
             })
