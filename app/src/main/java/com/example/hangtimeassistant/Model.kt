@@ -1,5 +1,6 @@
 package com.example.hangtimeassistant
 
+import android.graphics.Color
 import java.lang.NullPointerException
 import java.util.*
 
@@ -66,5 +67,6 @@ data class Category (
     var EventIDs: List<Int> = emptyList(),
 
     // attributes
-    var date: Date = Date(0)
+    var color: Int = Color.argb(255, 55, 55, 55),
+    var name: String = ""
 )

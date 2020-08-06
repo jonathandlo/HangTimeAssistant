@@ -26,6 +26,7 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) : 
 			0 -> ViewUpcoming.newInstance()
 			1 -> ViewContacts.newInstance()
 			2 -> ViewEvents.newInstance()
+			3 -> ViewCategories.newInstance()
 			else -> ViewUpcoming.newInstance()
 		}
 
