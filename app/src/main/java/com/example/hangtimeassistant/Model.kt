@@ -34,6 +34,7 @@ data class Reminder (
     var randomPeriod: Int = 0,
     var randomUnit: String = "d"
 )
+
 data class Contact (
     // keys
     var ID: Int = 0,
@@ -57,7 +58,10 @@ data class Event (
     var CategoryIDs: MutableList<Int> = mutableListOf(),
 
     // attributes
-    var date: Date = Date(0)
+    var date: Date = Date(0),
+    var name: String = "",
+    var description: String = "",
+    var address: String = ""
 )
 
 data class Category (
