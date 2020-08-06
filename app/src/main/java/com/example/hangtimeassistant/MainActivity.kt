@@ -1,5 +1,6 @@
 package com.example.hangtimeassistant
 
+import android.graphics.Color
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -45,7 +46,9 @@ class MainActivity : AppCompatActivity() {
 		for (i in 1..9){
 			val id = IDGen.nextID()
 			Model.categories[id] = Category(id).apply {
-				this.name = 10.0.pow(Math.random() * 6.0).toInt().toString()
+				val alphabet: List<Char> = ('a'..'z') + (' ') + (' ')
+				this.name = List((Math.random() * 10).toInt() + 3) { alphabet.random() }.joinToString("")
+				this.color = Color.HSVToColor(floatArrayOf(Math.random().toFloat() * 360f, 1f, 1f))
 			}
 		}
 
