@@ -1,7 +1,9 @@
 package com.example.hangtimeassistant
 
 import android.graphics.Color
-import java.lang.NullPointerException
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.util.*
 
 object Model {
@@ -18,59 +20,63 @@ object IDGen {
     }
 }
 
+@Entity(tableName = "tbl_reminder")
 data class Reminder (
     // keys
-    var ID: Int = 0,
-    var ContactID: Int = 0,
-    var EventID: Int = 0,
+    @PrimaryKey var ID: Int = 0,
+    @ColumnInfo var ContactID: Int = 0,
+    @ColumnInfo var EventID: Int = 0,
 
     // attributes
-    var lastDate: Date = Date(0),
-    var nextDate: Date = Date(0),
-    var reminder: Boolean = false,
-    var reminderPeriod: Int = 1,
-    var reminderUnit: String = "d",
-    var random: Boolean = false,
-    var randomPeriod: Int = 0,
-    var randomUnit: String = "d"
+    @ColumnInfo var lastDate: Date = Date(0),
+    @ColumnInfo var nextDate: Date = Date(0),
+    @ColumnInfo var reminder: Boolean = false,
+    @ColumnInfo var reminderPeriod: Int = 1,
+    @ColumnInfo var reminderUnit: String = "d",
+    @ColumnInfo var random: Boolean = false,
+    @ColumnInfo var randomPeriod: Int = 0,
+    @ColumnInfo var randomUnit: String = "d"
 )
 
+@Entity(tableName = "tbl_contact")
 data class Contact (
     // keys
-    var ID: Int = 0,
-    var ReminderID: Int = 0,
-    var CategoryIDs: MutableList<Int> = mutableListOf(),
-    var EventIDs: MutableList<Int> = mutableListOf(),
+    @PrimaryKey var ID: Int = 0,
+    @ColumnInfo var ReminderID: Int = 0,
+    @ColumnInfo var CategoryIDs: MutableList<Int> = mutableListOf(),
+    @ColumnInfo var EventIDs: MutableList<Int> = mutableListOf(),
 
     // attributes
-    var name: String = "",
-    var IGUrl: String = "",
-    var FBUrl: String = "",
-    var phoneNum: String = "",
-    var address: String = ""
+    @ColumnInfo var name: String = "",
+    @ColumnInfo var IGUrl: String = "",
+    @ColumnInfo var FBUrl: String = "",
+    @ColumnInfo var phoneNum: String = "",
+    @ColumnInfo var address: String = ""
 )
 
+@Entity(tableName = "tbl_event")
 data class Event (
     // keys
-    var ID: Int = 0,
-    var ReminderID: Int = 0,
-    var ContactIDs: MutableList<Int> = mutableListOf(),
-    var CategoryIDs: MutableList<Int> = mutableListOf(),
+    @PrimaryKey var ID: Int = 0,
+    @ColumnInfo var ReminderID: Int = 0,
+    @ColumnInfo var ContactIDs: MutableList<Int> = mutableListOf(),
+    @ColumnInfo var CategoryIDs: MutableList<Int> = mutableListOf(),
 
     // attributes
-    var date: Date = Date(0),
-    var name: String = "",
-    var description: String = "",
-    var address: String = ""
+    @ColumnInfo var date: Date = Date(0),
+    @ColumnInfo var name: String = "",
+    @ColumnInfo var description: String = "",
+    @ColumnInfo var address: String = ""
 )
 
+@Entity(tableName = "tbl_category")
 data class Category (
     // keys
-    var ID: Int = 0,
-    var ContactIDs: MutableList<Int> = mutableListOf(),
-    var EventIDs: MutableList<Int> = mutableListOf(),
+    @PrimaryKey var ID: Int = 0,
+    @ColumnInfo var ContactIDs: MutableList<Int> = mutableListOf(),
+    @ColumnInfo var EventIDs: MutableList<Int> = mutableListOf(),
 
     // attributes
-    var color: Int = Color.argb(255, 55, 55, 55),
-    var name: String = ""
+    @ColumnInfo var color: Int = Color.argb(255, 55, 55, 55),
+    @ColumnInfo var name: String = ""
 )
