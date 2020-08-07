@@ -52,7 +52,7 @@ class ViewContacts : Fragment() {
         for (i in Model.contacts.values){
             layout_cont.addView(LayoutInflater.from(this.context).inflate(R.layout.item_contact, null).apply {
                 // show details
-                this.text_phone.text = i.phoneNum.toString()
+                this.text_phone.text = i.phoneNum
                 this.text_address.text = i.address
                 this.text_fb.text = i.FBUrl
                 this.text_ig.text = i.IGUrl
@@ -76,11 +76,11 @@ class ViewContacts : Fragment() {
                 }
 
                 // attach animation events
-                val collapsible = this.layout_cont_collapsable
+                val collapsible = this.layout_cont_collapsible
                 collapsible.visibility = View.GONE
                 collapsible.alpha = 0f
 
-                this.layout_cont_item_main.setOnClickListener {
+                this.text_cont_name.setOnClickListener {
                     if (collapsible.visibility == View.VISIBLE){
                         // hide the view
                         collapsible.animate()

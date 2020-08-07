@@ -11,17 +11,26 @@
 
     <TextView
         android:id="@+id/text_cont_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:text="John Doe"
         android:textSize="24sp" />
 
     <LinearLayout
-        android:id="@+id/layout_cont_collapsable"
+        android:id="@+id/layout_cont_collapsible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <View
+            android:id="@+id/view"
+            style="@style/Divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp" />
 
         <TextView
             android:id="@+id/textView12"
@@ -41,6 +50,7 @@
                 android:id="@+id/img_ig"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:cropToPadding="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView2"
                 app:srcCompat="@drawable/ic_icons8_instagram" />
@@ -59,6 +69,9 @@
                 android:id="@+id/imageView2"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:cropToPadding="true"
+                android:paddingTop="1dp"
+                android:paddingRight="2dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView"
                 app:srcCompat="@drawable/ic_icons8_facebook" />
@@ -77,6 +90,9 @@
                 android:id="@+id/imageView3"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:cropToPadding="true"
+                android:paddingTop="1dp"
+                android:paddingRight="3dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@android:drawable/sym_action_call" />
@@ -96,8 +112,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:cropToPadding="true"
-                android:paddingLeft="7dp"
-                android:paddingEnd="3dp"
+                android:paddingLeft="4dp"
+                android:paddingEnd="2dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView3"
                 app:srcCompat="@drawable/ic_google_maps_icon" />
@@ -277,6 +293,16 @@
                 android:text="Create a category in the 'Category' tab." />
 
         </com.google.android.flexbox.FlexboxLayout>
+
+        <View
+            android:id="@+id/view2"
+            style="@style/Divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp" />
     </LinearLayout>
 
 </LinearLayout>

@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 			Model.categories[id] = Category(id).apply {
 				val alphabet: List<Char> = ('a'..'z') + (' ') + (' ')
 				this.name = List((Math.random() * 10).toInt() + 3) { alphabet.random() }.joinToString("")
-				this.color = Color.HSVToColor(floatArrayOf(Math.random().toFloat() * 360f, 0.6f, 1f))
+				this.color = Color.HSVToColor(floatArrayOf(Math.random().toFloat() * 360f, 0.6f, 0.8f))
 			}
 		}
 
