@@ -1,9 +1,7 @@
 package com.example.hangtimeassistant
 
 import android.graphics.Color
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import java.util.*
 
 object Model {
@@ -15,9 +13,16 @@ object Model {
 
 object IDGen {
     private var currentID = 0
-    fun nextID():Int {
+    fun nextID(): Int {
        return currentID++
     }
+}
+
+@Dao
+interface ReminderDao {
+    @Insert fun insert(vararg pReminders: Reminder)
+    @Update fun update(vararg pReminders: Reminder): Int
+    @Delete fun delete(vararg pReminders: Reminder): Int
 }
 
 @Entity(tableName = "tbl_reminder")
