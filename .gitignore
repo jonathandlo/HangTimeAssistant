@@ -39,3 +39,4 @@ gradle-app.setting
 *.ser
 .idea/caches/build_file_checksums.ser
 .idea/workspace.xml
+*.iml
