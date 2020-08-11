@@ -2,21 +2,6 @@ package com.example.hangtimeassistant
 
 import android.graphics.Color
 import androidx.room.*
-import java.util.*
-
-object Model {
-    var reminders = mutableMapOf<Int , Reminder>()
-    var contacts = mutableMapOf<Int , Contact>()
-    var events = mutableMapOf<Int , Event>()
-    var categories = mutableMapOf<Int , Category>()
-}
-
-object IDGen {
-    private var currentID = 0
-    fun nextID(): Int {
-       return currentID++
-    }
-}
 
 //
 // Daos
@@ -24,46 +9,61 @@ object IDGen {
 
 @Dao
 interface ReminderDao {
-    // Edit functions
-    @Insert fun insert(vararg pItem: Reminder)
+    // Set functions
+    @Insert fun insert(pItem: Reminder): Long
     @Update fun update(vararg pItem: Reminder): Int
     @Delete fun delete(vararg pItem: Reminder): Int
+
+    // Get functions
+    @Query("SELECT * FROM tbl_reminder")
+    fun loadReminders(): List<Reminder>
 }
 
 @Dao
 interface ContactDao {
-    // Edit functions
-    @Insert fun insert(vararg pItem: Contact)
+    // Set functions
+    @Insert fun insert(pItem: Contact): Long
     @Update fun update(vararg pItem: Contact): Int
     @Delete fun delete(vararg pItem: Contact): Int
+    @Query("INSERT INTO contact2category (contactID, categoryID)" +
+            "VALUES (:pContactID, :pCategoryID)")
+    fun linkToCategory(pContactID: Long, pCategoryID: Long)
 
-    // Retrieve functions
+    // Get functions
     @Query("SELECT * FROM tbl_contact")
     fun loadContacts(): List<Contact>
-
     @Query("SELECT * FROM tbl_category " +
             "INNER JOIN contact2category ON tbl_category.ID = contact2category.categoryID " +
             "WHERE contactID = :pContactID")
-    fun loadCategories(pContactID: Int): List<Category>
-
+    fun loadCategories(pContactID: Long): List<Category>
     @Query("SELECT * FROM tbl_event " +
             "INNER JOIN contact2event ON tbl_event.ID = contact2event.eventID " +
             "WHERE contactID = :pContactID")
-    fun loadEvents(pContactID: Int): List<Event>
+    fun loadEvents(pContactID: Long): List<Event>
 }
 
 @Dao
 interface EventDao {
-    @Insert fun insert(vararg pItem: Event)
+    // Set functions
+    @Insert fun insert(pItem: Event): Long
     @Update fun update(vararg pItem: Event): Int
     @Delete fun delete(vararg pItem: Event): Int
+
+    // Get functions
+    @Query("SELECT * FROM tbl_event")
+    fun loadEvents(): List<Event>
 }
 
 @Dao
 interface CategoryDao {
-    @Insert fun insert(vararg pItem: Category)
+    // Set functions
+    @Insert fun insert(pItem: Category): Long
     @Update fun update(vararg pItem: Category): Int
     @Delete fun delete(vararg pItem: Category): Int
+
+    // Get functions
+    @Query("SELECT * FROM tbl_category")
+    fun loadCategories(): List<Category>
 }
 
 //
@@ -72,7 +72,7 @@ interface CategoryDao {
 
 @Entity(tableName = "contact2category")
 data class Contact2Category(
-    @PrimaryKey(autoGenerate = true) var ID: Int = 0,
+    @PrimaryKey(autoGenerate = true) var ID: Long= 0,
     @ColumnInfo val contactID: Int,
     @ColumnInfo val categoryID: Int
 )
@@ -98,9 +98,9 @@ data class Event2Category(
 @Entity(tableName = "tbl_reminder")
 data class Reminder (
     // keys
-    @PrimaryKey var ID: Int = 0,
-    @ColumnInfo var ContactID: Int = 0,
-    @ColumnInfo var EventID: Int = 0,
+    @PrimaryKey(autoGenerate = true) var ID: Long = 0,
+    @ColumnInfo var ContactID: Long = 0,
+    @ColumnInfo var EventID: Long = 0,
 
     // attributes
     @ColumnInfo var lastDate: Long = 0,
@@ -116,8 +116,8 @@ data class Reminder (
 @Entity(tableName = "tbl_contact")
 data class Contact (
     // keys
-    @PrimaryKey var ID: Int = 0,
-    @ColumnInfo var ReminderID: Int = 0,
+    @PrimaryKey(autoGenerate = true) var ID: Long = 0,
+    @ColumnInfo var ReminderID: Long = 0,
     //@ColumnInfo var CategoryIDs: MutableList<Int> = mutableListOf(),
     //@ColumnInfo var EventIDs: MutableList<Int> = mutableListOf(),
 
@@ -132,8 +132,8 @@ data class Contact (
 @Entity(tableName = "tbl_event")
 data class Event (
     // keys
-    @PrimaryKey var ID: Int = 0,
-    @ColumnInfo var ReminderID: Int = 0,
+    @PrimaryKey(autoGenerate = true) var ID: Long = 0,
+    @ColumnInfo var ReminderID: Long = 0,
     //@ColumnInfo var ContactIDs: MutableList<Int> = mutableListOf(),
     //@ColumnInfo var CategoryIDs: MutableList<Int> = mutableListOf(),
 
@@ -147,7 +147,7 @@ data class Event (
 @Entity(tableName = "tbl_category")
 data class Category (
     // keys
-    @PrimaryKey var ID: Int = 0,
+    @PrimaryKey(autoGenerate = true) var ID: Long = 0,
     //@ColumnInfo var ContactIDs: MutableList<Int> = mutableListOf(),
     //@ColumnInfo var EventIDs: MutableList<Int> = mutableListOf(),
 

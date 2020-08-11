@@ -3,7 +3,16 @@ package com.example.hangtimeassistant
 import android.content.Context
 import androidx.room.*
 
-@Database(entities = [Reminder::class, Contact::class, Event::class, Category::class], version = 1, exportSchema = false)
+@Database(entities = [
+    Reminder::class,
+    Contact::class,
+    Event::class,
+    Category::class,
+    Contact2Category::class,
+    Contact2Event::class,
+    Event2Category::class],
+    version = 2,
+    exportSchema = false)
 abstract class HangTimeDB : RoomDatabase() {
 
     abstract fun reminderDao(): ReminderDao
@@ -26,8 +35,10 @@ abstract class HangTimeDB : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     HangTimeDB::class.java,
-                    "hangtime_db"
-                ).build()
+                    "hangtime_db")
+                    .allowMainThreadQueries()
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 return instance
             }
