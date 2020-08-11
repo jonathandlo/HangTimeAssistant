@@ -66,6 +66,30 @@ interface CategoryDao {
     @Delete fun delete(vararg pItem: Category): Int
 }
 
+//
+// Relationship tables
+//
+
+@Entity(tableName = "contact2category")
+data class Contact2Category(
+    @PrimaryKey(autoGenerate = true) var ID: Int = 0,
+    @ColumnInfo val contactID: Int,
+    @ColumnInfo val categoryID: Int
+)
+
+@Entity(tableName = "contact2event")
+data class Contact2Event(
+    @PrimaryKey(autoGenerate = true) var ID: Int,
+    @ColumnInfo val contactID: Int,
+    @ColumnInfo val eventID: Int
+)
+
+@Entity(tableName = "event2category")
+data class Event2Category(
+    @PrimaryKey(autoGenerate = true) var ID: Int,
+    @ColumnInfo val eventID: Int,
+    @ColumnInfo val categoryID: Int
+)
 
 //
 // Entity tables
