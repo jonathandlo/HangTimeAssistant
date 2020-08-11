@@ -38,7 +38,7 @@ class ViewCategories : Fragment() {
         // populate the view with reminders
         layout_cat_items.removeAllViews()
 
-        for (i in Model.categories.values){
+        for (i in HangTimeDB.getDatabase(this.context!!).categoryDao().loadCategories()){
             layout_cat_items.addView(LayoutInflater.from(this.context).inflate(R.layout.item_category, null).apply {
                 this.text_cat_name.text = i.name
                 this.button_cat_color.minimumWidth = this.button_cat_color.minimumHeight

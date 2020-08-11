@@ -2,15 +2,10 @@ package com.example.hangtimeassistant
 
 import android.graphics.Color
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
 import com.example.hangtimeassistant.ui.main.SectionsPagerAdapter
-import kotlin.math.pow
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,37 +25,35 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun loadModel(){
+		val db = HangTimeDB.getDatabase(this@MainActivity)
+
 		// reminders
 		for (i in 1..3){
-			val id = IDGen.nextID()
-			Model.reminders[id] = Reminder(id)
+			db.reminderDao().insert(Reminder())
 		}
 
 		// events
 		for (i in 1..3){
-			val id = IDGen.nextID()
-			Model.events[id] = Event(id)
+			db.eventDao().insert(Event())
 		}
 
 		// categories
 		for (i in 1..9){
-			val id = IDGen.nextID()
-			Model.categories[id] = Category(id).apply {
+			db.categoryDao().insert(Category().apply {
 				val alphabet: List<Char> = ('a'..'z') + (' ') + (' ')
 				this.name = List((Math.random() * 10).toInt() + 3) { alphabet.random() }.joinToString("")
 				this.color = Color.HSVToColor(floatArrayOf(Math.random().toFloat() * 360f, 0.6f, 0.8f))
-			}
+			})
 		}
 
 		// contacts
 		for (i in 1..20){
-			val id = IDGen.nextID()
-			Model.contacts[id] = Contact(id).apply {
-				for (j in Model.categories) {
-					if (Math.random() > 0.7) this.CategoryIDs.add(j.key)
-				}
-
+			val contactId = db.contactDao().insert(Contact().apply {
 				this.name = "John Doe " + i
+			})
+
+			for (j in db.categoryDao().loadCategories()) {
+				if (Math.random() > 0.7)  db.contactDao().linkToCategory(contactId, j.ID)
 			}
 		}
 	}

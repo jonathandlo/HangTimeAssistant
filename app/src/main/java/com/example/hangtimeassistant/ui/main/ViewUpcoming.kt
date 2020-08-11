@@ -6,10 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.hangtimeassistant.IDGen
-import com.example.hangtimeassistant.Model
-import com.example.hangtimeassistant.R
-import com.example.hangtimeassistant.Reminder
+import com.example.hangtimeassistant.*
 import kotlinx.android.synthetic.main.fragment_upcoming.*
 
 /**
@@ -36,7 +33,7 @@ class ViewUpcoming : Fragment() {
         // populate the view with reminders
         layout_remind_items.removeAllViews()
 
-        for (i in Model.reminders.values){
+        for (i in HangTimeDB.getDatabase(this.context!!).reminderDao().loadReminders()){
             layout_remind_items.addView(LayoutInflater.from(this.context).inflate(R.layout.item_reminder, null))
         }
     }

@@ -34,7 +34,7 @@ class ViewEvents : Fragment() {
         // populate the view with reminders
         layout_event_items.removeAllViews()
 
-        for (i in Model.events.values){
+        for (i in HangTimeDB.getDatabase(this.context!!).eventDao().loadEvents()){
             layout_event_items.addView(LayoutInflater.from(this.context).inflate(R.layout.item_event, null))
         }
     }

@@ -14,10 +14,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.example.hangtimeassistant.Contact
-import com.example.hangtimeassistant.IDGen
-import com.example.hangtimeassistant.Model
-import com.example.hangtimeassistant.R
+import com.example.hangtimeassistant.*
 import com.google.android.flexbox.FlexboxLayout
 import kotlinx.android.synthetic.main.fragment_contact.*
 import kotlinx.android.synthetic.main.fragment_contact.view.*
@@ -47,9 +44,10 @@ class ViewContacts : Fragment() {
 
     private fun listContacts(){
         // populate the view with reminders
+        val db = HangTimeDB.getDatabase(this.context!!)
         layout_cont.removeAllViews()
 
-        for (i in Model.contacts.values){
+        for (i in db.contactDao().loadContacts()){
             layout_cont.addView(LayoutInflater.from(this.context).inflate(R.layout.item_contact, null).apply {
                 // show details
                 this.text_phone.text = i.phoneNum
@@ -61,17 +59,17 @@ class ViewContacts : Fragment() {
 
                 // show categories
                 this.flexbox_categories.removeAllViews()
-                for (j in i.CategoryIDs) {
+                for (j in db.categoryDao().loadCategories()) {
                     this.flexbox_categories.addView(Button(context).apply {
                         this.minimumWidth = 0
                         this.minWidth = 0
                         this.minimumHeight = 0
                         this.minHeight = 0
                         this.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
-                        this.text = Model.categories[j]?.name ?: ""
+                        this.text = j.name
 
                         val drawable = DrawableCompat.wrap(this.background);
-                        DrawableCompat.setTint(drawable, Model.categories[j]?.color ?: Color.WHITE)
+                        DrawableCompat.setTint(drawable, j.color)
                     })
                 }
 
