@@ -16,15 +16,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/text_cat_name"
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/textedit_cat_name"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
+        android:layout_height="0dp"
+        android:background="@color/material_on_background_disabled"
+        android:inputType="text"
+        android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:text="John Doeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="@+id/button_cat_color"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button_cat_color"
         app:layout_constraintTop_toTopOf="parent" />

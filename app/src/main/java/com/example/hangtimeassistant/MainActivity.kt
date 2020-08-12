@@ -27,6 +27,9 @@ class MainActivity : AppCompatActivity() {
 	private fun loadModel(){
 		val db = HangTimeDB.getDatabase(this@MainActivity)
 
+		// skip adding data
+		if("2".toInt() == 2) return
+
 		// reminders
 		for (i in 1..3){
 			db.reminderDao().insert(Reminder())
