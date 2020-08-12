@@ -19,6 +19,7 @@ import com.google.android.flexbox.FlexboxLayout
 import kotlinx.android.synthetic.main.fragment_contact.*
 import kotlinx.android.synthetic.main.fragment_contact.view.*
 import kotlinx.android.synthetic.main.item_contact.view.*
+import kotlinx.android.synthetic.main.item_contact_collapsible.view.*
 import kotlin.math.pow
 
 
@@ -43,59 +44,68 @@ class ViewContacts : Fragment() {
     }
 
     private fun listContacts(){
-        // populate the view with reminders
-        val db = HangTimeDB.getDatabase(this.context!!)
+        // populate the view with contacts
+        val db = HangTimeDB.getDatabase(context!!)
         layout_cont.removeAllViews()
 
         for (i in db.contactDao().loadContacts()){
-            layout_cont.addView(LayoutInflater.from(this.context).inflate(R.layout.item_contact, null).apply {
-                // show details
-                this.text_phone.text = i.phoneNum
-                this.text_address.text = i.address
-                this.text_fb.text = i.FBUrl
-                this.text_ig.text = i.IGUrl
+            val contactItem = layoutInflater.inflate(R.layout.item_contact, null)
 
-                // TODO: show reminders
+            // attach on-click animation events
+            contactItem.text_cont_name.setOnClickListener {
+                if (contactItem.findViewById<LinearLayout>(R.id.layout_cont_collapsible) == null){
+                    // one first click, create the collapsible view
+                    val collapsible = layoutInflater.inflate(R.layout.item_contact_collapsible,null)
+                    collapsible.id = R.id.layout_cont_collapsible
+                    collapsible.visibility = View.GONE
+                    collapsible.alpha = 0f
 
-                // show categories
-                this.flexbox_categories.removeAllViews()
-                for (j in db.categoryDao().loadCategories()) {
-                    this.flexbox_categories.addView(Button(context).apply {
-                        this.minimumWidth = 0
-                        this.minWidth = 0
-                        this.minimumHeight = 0
-                        this.minHeight = 0
-                        this.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
-                        this.text = j.name
+                    // update details
+                    collapsible.text_phone.text = i.phoneNum
+                    collapsible.text_address.text = i.address
+                    collapsible.text_fb.text = i.FBUrl
+                    collapsible.text_ig.text = i.IGUrl
 
-                        val drawable = DrawableCompat.wrap(this.background);
-                        DrawableCompat.setTint(drawable, j.color)
-                    })
+                    // TODO: show reminders
+
+                    // show categories
+                    collapsible.flexbox_categories.removeAllViews()
+                    for (j in db.contactDao().loadCategories(i.ID)) {
+                        collapsible.flexbox_categories.addView(Button(context).apply {
+                            id = View.generateViewId()
+
+                            minimumWidth = 0
+                            minWidth = 0
+                            minimumHeight = 0
+                            minHeight = 0
+                            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
+                            text = j.name
+
+                            DrawableCompat.setTint(DrawableCompat.wrap(background), j.color)
+                        })
+                    }
+
+                    contactItem.layout_cont_item_main.addView(collapsible)
                 }
 
-                // attach animation events
-                val collapsible = this.layout_cont_collapsible
-                collapsible.visibility = View.GONE
-                collapsible.alpha = 0f
-
-                this.text_cont_name.setOnClickListener {
-                    if (collapsible.visibility == View.VISIBLE){
-                        // hide the view
-                        collapsible.animate()
-                            .alpha(0f)
-                            .withEndAction {
-                                collapsible.visibility = View.GONE
-                            }
-
-                    }
-                    else{
-                        // show the view
-                        collapsible.visibility = View.VISIBLE
-                        collapsible.animate()
-                            .alpha(1f)
-                    }
+                val collapsible = contactItem.layout_cont_item_main.layout_cont_collapsible
+                if (collapsible.visibility == View.VISIBLE){
+                    // if visible, hide the view
+                    collapsible.animate()
+                        .alpha(0f)
+                        .withEndAction {
+                            collapsible.visibility = View.GONE
+                        }
                 }
-            })
+                else{
+                    // if hidden, show the view
+                    collapsible.visibility = View.VISIBLE
+                    collapsible.animate()
+                        .alpha(1f)
+                }
+            }
+
+            layout_cont.addView(contactItem)
         }
     }
 
