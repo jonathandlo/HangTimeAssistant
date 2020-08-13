@@ -4,6 +4,8 @@ import android.R.attr.button
 import android.R.attr.textSize
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -48,7 +50,7 @@ class ViewContacts : Fragment() {
         val db = HangTimeDB.getDatabase(context!!)
         layout_cont.removeAllViews()
 
-        for (i in db.contactDao().loadContacts()){
+        for (contact in db.contactDao().loadContacts()){
             val contactItem = layoutInflater.inflate(R.layout.item_contact, null)
 
             // attach on-click animation events
@@ -56,21 +58,59 @@ class ViewContacts : Fragment() {
                 if (contactItem.findViewById<LinearLayout>(R.id.layout_cont_collapsible) == null){
                     // one first click, create the collapsible view
                     val collapsible = layoutInflater.inflate(R.layout.item_contact_collapsible,null)
-                    collapsible.id = R.id.layout_cont_collapsible
+                    collapsible.id = View.generateViewId()
                     collapsible.visibility = View.GONE
                     collapsible.alpha = 0f
 
                     // update details
-                    collapsible.text_phone.text = i.phoneNum
-                    collapsible.text_address.text = i.address
-                    collapsible.text_fb.text = i.FBUrl
-                    collapsible.text_ig.text = i.IGUrl
+                    collapsible.text_phone.setText(contact.phoneNum)
+                    collapsible.text_address.setText(contact.address)
+                    collapsible.text_fb.setText(contact.FBUrl)
+                    collapsible.text_ig.setText(contact.IGUrl)
+
+                    // add text changed listeners
+                    collapsible.text_phone.addTextChangedListener(object: TextWatcher {
+                        override fun afterTextChanged(s: Editable?) {
+                            if (collapsible.text_phone.hasFocus()) {
+                                db.contactDao().update(contact.apply { phoneNum = s.toString() })
+                            }
+                        }
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                    })
+                    collapsible.text_address.addTextChangedListener(object: TextWatcher {
+                        override fun afterTextChanged(s: Editable?) {
+                            if (collapsible.text_address.hasFocus()) {
+                                db.contactDao().update(contact.apply { address = s.toString() })
+                            }
+                        }
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                    })
+                    collapsible.text_fb.addTextChangedListener(object: TextWatcher {
+                        override fun afterTextChanged(s: Editable?) {
+                            if (collapsible.text_fb.hasFocus()) {
+                                db.contactDao().update(contact.apply { FBUrl = s.toString() })
+                            }
+                        }
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                    })
+                    collapsible.text_ig.addTextChangedListener(object: TextWatcher {
+                        override fun afterTextChanged(s: Editable?) {
+                            if (collapsible.text_ig.hasFocus()) {
+                                db.contactDao().update(contact.apply { IGUrl = s.toString() })
+                            }
+                        }
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                    })
 
                     // TODO: show reminders
 
                     // show categories
                     collapsible.flexbox_categories.removeAllViews()
-                    for (j in db.contactDao().loadCategories(i.ID)) {
+                    for (j in db.contactDao().loadCategories(contact.ID)) {
                         collapsible.flexbox_categories.addView(Button(context).apply {
                             id = View.generateViewId()
 
@@ -85,6 +125,7 @@ class ViewContacts : Fragment() {
                         })
                     }
 
+                    collapsible.id = R.id.layout_cont_collapsible
                     contactItem.layout_cont_item_main.addView(collapsible)
                 }
 
