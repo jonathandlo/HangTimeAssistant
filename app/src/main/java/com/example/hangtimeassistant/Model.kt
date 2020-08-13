@@ -15,8 +15,9 @@ interface ReminderDao {
     @Delete fun delete(vararg pItem: Reminder): Int
 
     // Get functions
-    @Query("SELECT * FROM tbl_reminder WHERE ID = :rowId")
-    fun getRow(rowId: Long): Reminder
+    @Query("SELECT * FROM tbl_reminder WHERE rowid = :pRowID")
+    fun getRow(pRowID: Long): Reminder
+
     @Query("SELECT * FROM tbl_reminder")
     fun getAll(): List<Reminder>
 }
@@ -27,22 +28,44 @@ interface ContactDao {
     @Insert fun insert(pItem: Contact): Long
     @Update fun update(vararg pItem: Contact): Int
     @Delete fun delete(vararg pItem: Contact): Int
-    @Query("INSERT INTO contact2category (contactID, categoryID)" +
-            "VALUES (:pContactID, :pCategoryID)")
+
+    @Query("""
+        INSERT INTO contact2category (contactID, categoryID)
+        VALUES (:pContactID, :pCategoryID)""")
     fun linkToCategory(pContactID: Long, pCategoryID: Long)
 
+    @Query("""
+        INSERT INTO contact2event (contactID, eventID)
+        VALUES (:pContactID, :pEventID)""")
+    fun linkToEvent(pContactID: Long, pEventID: Long)
+
+    @Query("DELETE FROM contact2category WHERE contactID = :pID")
+    fun _delCon2Cat(pID: Long)
+    @Query("DELETE FROM contact2event WHERE contactID = :pID")
+    fun _delCon2Event(pID: Long)
+    @Transaction
+    fun deleteAssociations(pID: Long){
+        _delCon2Cat(pID)
+        _delCon2Event(pID)
+    }
+
     // Get functions
-    @Query("SELECT * FROM tbl_contact WHERE ID = :rowId")
-    fun getRow(rowId: Long): Contact
+    @Query("SELECT * FROM tbl_contact WHERE rowid = :pRowID")
+    fun getRow(pRowID: Long): Contact
+
     @Query("SELECT * FROM tbl_contact")
     fun getAll(): List<Contact>
-    @Query("SELECT * FROM tbl_category " +
-            "INNER JOIN contact2category ON tbl_category.ID = contact2category.categoryID " +
-            "WHERE contactID = :pContactID")
+
+    @Query("""
+        SELECT * FROM tbl_category
+        INNER JOIN contact2category ON tbl_category.ID = contact2category.categoryID
+        WHERE contactID = :pContactID""")
     fun loadCategories(pContactID: Long): List<Category>
-    @Query("SELECT * FROM tbl_event " +
-            "INNER JOIN contact2event ON tbl_event.ID = contact2event.eventID " +
-            "WHERE contactID = :pContactID")
+
+    @Query("""
+        SELECT * FROM tbl_event
+        INNER JOIN contact2event ON tbl_event.ID = contact2event.eventID
+        WHERE contactID = :pContactID""")
     fun loadEvents(pContactID: Long): List<Event>
 }
 
@@ -53,9 +76,20 @@ interface EventDao {
     @Update fun update(vararg pItem: Event): Int
     @Delete fun delete(vararg pItem: Event): Int
 
+    @Query("DELETE FROM contact2event WHERE eventID = :pID")
+    fun delCon2Eve(pID: Long)
+    @Query("DELETE FROM event2category WHERE eventID = :pID")
+    fun delEve2Cat(pID: Long)
+    @Transaction
+    fun deleteAssociations(pID: Long){
+        delCon2Eve(pID)
+        delEve2Cat(pID)
+    }
+
     // Get functions
-    @Query("SELECT * FROM tbl_event WHERE ID = :rowId")
-    fun getRow(rowId: Long): Event
+    @Query("SELECT * FROM tbl_event WHERE rowid = :pRowID")
+    fun getRow(pRowID: Long): Event
+
     @Query("SELECT * FROM tbl_event")
     fun getAll(): List<Event>
 }
@@ -67,9 +101,20 @@ interface CategoryDao {
     @Update fun update(vararg pItem: Category): Int
     @Delete fun delete(vararg pItem: Category): Int
 
+    @Query("DELETE FROM contact2category WHERE categoryID = :pID")
+    fun delCon2Cat(pID: Long)
+    @Query("DELETE FROM event2category WHERE categoryID = :pID")
+    fun delEve2Cat(pID: Long)
+    @Transaction
+    fun deleteAssociations(pID: Long){
+        delCon2Cat(pID)
+        delEve2Cat(pID)
+    }
+
     // Get functions
-    @Query("SELECT * FROM tbl_category WHERE ID = :rowId")
-    fun getRow(rowId: Long): Category
+    @Query("SELECT * FROM tbl_category WHERE rowid = :pRowID")
+    fun getRow(pRowID: Long): Category
+
     @Query("SELECT * FROM tbl_category")
     fun getAll(): List<Category>
 }
@@ -126,8 +171,6 @@ data class Contact (
     // keys
     @PrimaryKey(autoGenerate = true) var ID: Long = 0,
     @ColumnInfo var ReminderID: Long = 0,
-    //@ColumnInfo var CategoryIDs: MutableList<Int> = mutableListOf(),
-    //@ColumnInfo var EventIDs: MutableList<Int> = mutableListOf(),
 
     // attributes
     @ColumnInfo var name: String = "",
@@ -142,8 +185,6 @@ data class Event (
     // keys
     @PrimaryKey(autoGenerate = true) var ID: Long = 0,
     @ColumnInfo var ReminderID: Long = 0,
-    //@ColumnInfo var ContactIDs: MutableList<Int> = mutableListOf(),
-    //@ColumnInfo var CategoryIDs: MutableList<Int> = mutableListOf(),
 
     // attributes
     @ColumnInfo var date: Long = 0,
@@ -156,10 +197,8 @@ data class Event (
 data class Category (
     // keys
     @PrimaryKey(autoGenerate = true) var ID: Long = 0,
-    //@ColumnInfo var ContactIDs: MutableList<Int> = mutableListOf(),
-    //@ColumnInfo var EventIDs: MutableList<Int> = mutableListOf(),
 
     // attributes
-    @ColumnInfo var color: Int = Color.argb(255, 55, 55, 55),
+    @ColumnInfo var color: Int = Color.argb(255, 200, 200, 200),
     @ColumnInfo var name: String = ""
 )
