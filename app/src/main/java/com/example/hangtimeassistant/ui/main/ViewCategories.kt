@@ -84,6 +84,7 @@ class ViewCategories : Fragment() {
         delButton.setOnClickListener {
             it.isClickable = false
             db.categoryDao().delete(category)
+            db.categoryDao().deleteAssociations(category.ID)
             newCatItem.animate()
                 .alpha(0f)
                 .withEndAction {
