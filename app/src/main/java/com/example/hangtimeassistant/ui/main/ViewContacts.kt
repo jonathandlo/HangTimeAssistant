@@ -1,8 +1,5 @@
 package com.example.hangtimeassistant.ui.main
 
-import android.R.attr.button
-import android.R.attr.textSize
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,16 +10,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.hangtimeassistant.*
-import com.google.android.flexbox.FlexboxLayout
 import kotlinx.android.synthetic.main.fragment_contact.*
-import kotlinx.android.synthetic.main.fragment_contact.view.*
 import kotlinx.android.synthetic.main.item_contact.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible.view.*
-import kotlin.math.pow
 
 
 /**
@@ -121,7 +113,7 @@ class ViewContacts : Fragment() {
                             setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
                             text = j.name
 
-                            DrawableCompat.setTint(DrawableCompat.wrap(background), j.color)
+                            DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), j.color)
                         })
                     }
 
