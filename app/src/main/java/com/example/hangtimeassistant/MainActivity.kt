@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
 				this.name = "John Doe " + i
 			})
 
-			for (j in db.categoryDao().loadCategories()) {
+			for (j in db.categoryDao().getAll()) {
 				if (Math.random() > 0.7)  db.contactDao().linkToCategory(contactId, j.ID)
 			}
 		}

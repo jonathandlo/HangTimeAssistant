@@ -51,7 +51,6 @@ class ViewCategories : Fragment() {
         val db = HangTimeDB.getDatabase(this.context!!)
         layout_cat_items.removeAllViews()
 
-        for (category in db.categoryDao().loadCategories()){
             val newCatItem = layoutInflater.inflate(R.layout.item_category, null)
             newCatItem.id = View.generateViewId()
 
@@ -64,6 +63,7 @@ class ViewCategories : Fragment() {
                     if (nameEdit.hasFocus()) {
                         db.categoryDao().update(category.apply { name = s.toString() })
                     }
+        for (category in db.categoryDao().getAll()){
                 }
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}

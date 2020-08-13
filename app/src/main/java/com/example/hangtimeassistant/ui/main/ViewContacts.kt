@@ -50,7 +50,7 @@ class ViewContacts : Fragment() {
         val db = HangTimeDB.getDatabase(context!!)
         layout_cont.removeAllViews()
 
-        for (contact in db.contactDao().loadContacts()){
+        for (contact in db.contactDao().getAll()){
             val contactItem = layoutInflater.inflate(R.layout.item_contact, null)
 
             // attach on-click animation events

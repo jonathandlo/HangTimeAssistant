@@ -15,8 +15,10 @@ interface ReminderDao {
     @Delete fun delete(vararg pItem: Reminder): Int
 
     // Get functions
+    @Query("SELECT * FROM tbl_reminder WHERE ID = :rowId")
+    fun getRow(rowId: Long): Reminder
     @Query("SELECT * FROM tbl_reminder")
-    fun loadReminders(): List<Reminder>
+    fun getAll(): List<Reminder>
 }
 
 @Dao
@@ -30,8 +32,10 @@ interface ContactDao {
     fun linkToCategory(pContactID: Long, pCategoryID: Long)
 
     // Get functions
+    @Query("SELECT * FROM tbl_contact WHERE ID = :rowId")
+    fun getRow(rowId: Long): Contact
     @Query("SELECT * FROM tbl_contact")
-    fun loadContacts(): List<Contact>
+    fun getAll(): List<Contact>
     @Query("SELECT * FROM tbl_category " +
             "INNER JOIN contact2category ON tbl_category.ID = contact2category.categoryID " +
             "WHERE contactID = :pContactID")
@@ -50,8 +54,10 @@ interface EventDao {
     @Delete fun delete(vararg pItem: Event): Int
 
     // Get functions
+    @Query("SELECT * FROM tbl_event WHERE ID = :rowId")
+    fun getRow(rowId: Long): Event
     @Query("SELECT * FROM tbl_event")
-    fun loadEvents(): List<Event>
+    fun getAll(): List<Event>
 }
 
 @Dao
@@ -62,8 +68,10 @@ interface CategoryDao {
     @Delete fun delete(vararg pItem: Category): Int
 
     // Get functions
+    @Query("SELECT * FROM tbl_category WHERE ID = :rowId")
+    fun getRow(rowId: Long): Category
     @Query("SELECT * FROM tbl_category")
-    fun loadCategories(): List<Category>
+    fun getAll(): List<Category>
 }
 
 //

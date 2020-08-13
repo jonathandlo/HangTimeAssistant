@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.hangtimeassistant.*
 import kotlinx.android.synthetic.main.fragment_events.*
-import kotlinx.android.synthetic.main.fragment_upcoming.*
 
 /**
  * A placeholder fragment containing a simple view.
@@ -34,7 +32,7 @@ class ViewEvents : Fragment() {
         // populate the view with reminders
         layout_event_items.removeAllViews()
 
-        for (i in HangTimeDB.getDatabase(this.context!!).eventDao().loadEvents()){
+        for (i in HangTimeDB.getDatabase(this.context!!).eventDao().getAll()){
             layout_event_items.addView(LayoutInflater.from(this.context).inflate(R.layout.item_event, null))
         }
     }
