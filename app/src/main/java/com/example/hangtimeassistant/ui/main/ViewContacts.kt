@@ -1,5 +1,6 @@
 package com.example.hangtimeassistant.ui.main
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -102,7 +103,8 @@ class ViewContacts : Fragment() {
 
                     // show categories
                     collapsible.flexbox_categories.removeAllViews()
-                    for (j in db.contactDao().loadCategories(contact.ID)) {
+
+                    for (category in db.categoryDao().getAll()) {
                         collapsible.flexbox_categories.addView(Button(context).apply {
                             id = View.generateViewId()
 
@@ -111,9 +113,42 @@ class ViewContacts : Fragment() {
                             minimumHeight = 0
                             minHeight = 0
                             setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
-                            text = j.name
+                            text = category.name
 
-                            DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), j.color)
+                            // darken unassociated categories
+                            var showColor = category.color
+                            if (db.contactDao().countCategories(contact.ID, category.ID) == 0) {
+                                showColor = Color.rgb(
+                                    Color.red(showColor) / 2 + 50,
+                                    Color.green(showColor) / 2 + 50,
+                                    Color.blue(showColor) / 2 + 50)
+                                setTextColor(Color.BLACK)
+                            }
+                            else setTextColor(Color.WHITE)
+
+                            DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), showColor)
+
+                            // add click handlers
+                            setOnClickListener {
+                                if (db.contactDao().countCategories(contact.ID, category.ID) > 0) {
+                                    // remove association
+                                    db.contactDao().unlinkCategory(contact.ID, category.ID)
+
+                                    val backColor = Color.rgb(
+                                        Color.red(category.color) / 2 + 50,
+                                        Color.green(category.color) / 2 + 50,
+                                        Color.blue(category.color) / 2 + 50)
+                                    setTextColor(Color.BLACK)
+                                    DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), backColor)
+                                }
+                                else {
+                                    // add association
+                                    db.contactDao().linkCategory(contact.ID, category.ID)
+                                    DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), category.color)
+                                    setTextColor(Color.WHITE)
+                                }
+
+                            }
                         })
                     }
 
@@ -122,7 +157,7 @@ class ViewContacts : Fragment() {
                 }
 
                 val collapsible = contactItem.layout_cont_item_main.layout_cont_collapsible
-                if (collapsible.visibility == View.VISIBLE){
+                if (collapsible.visibility == View.VISIBLE) {
                     // if visible, hide the view
                     collapsible.animate()
                         .alpha(0f)
@@ -130,7 +165,7 @@ class ViewContacts : Fragment() {
                             collapsible.visibility = View.GONE
                         }
                 }
-                else{
+                else {
                     // if hidden, show the view
                     collapsible.visibility = View.VISIBLE
                     collapsible.animate()

@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 			})
 
 			for (j in db.categoryDao().getAll()) {
-				if (Math.random() > 0.7)  db.contactDao().linkToCategory(contactId, j.ID)
+				if (Math.random() > 0.7)  db.contactDao().linkCategory(contactId, j.ID)
 			}
 		}
 	}

@@ -15,6 +15,9 @@ interface ReminderDao {
     @Delete fun delete(vararg pItem: Reminder): Int
 
     // Get functions
+    @Query("SELECT COUNT(*) FROM tbl_reminder")
+    fun countAll() : Int
+
     @Query("SELECT * FROM tbl_reminder WHERE rowid = :pRowID")
     fun getRow(pRowID: Long): Reminder
 
@@ -32,24 +35,45 @@ interface ContactDao {
     @Query("""
         INSERT INTO contact2category (contactID, categoryID)
         VALUES (:pContactID, :pCategoryID)""")
-    fun linkToCategory(pContactID: Long, pCategoryID: Long)
+    fun linkCategory(pContactID: Long, pCategoryID: Long)
 
     @Query("""
         INSERT INTO contact2event (contactID, eventID)
         VALUES (:pContactID, :pEventID)""")
-    fun linkToEvent(pContactID: Long, pEventID: Long)
+    fun linkEvent(pContactID: Long, pEventID: Long)
+
+    @Query("""
+        DELETE FROM contact2category
+        WHERE contactID = :pContactID
+        AND categoryID = :pCategoryID""")
+    fun unlinkCategory(pContactID: Long, pCategoryID: Long)
+
+    @Query("""
+        DELETE FROM contact2event
+        WHERE contactID = :pContactID
+        AND eventID = :pEventID""")
+    fun unlinkEvent(pContactID: Long, pEventID: Long)
 
     @Query("DELETE FROM contact2category WHERE contactID = :pID")
     fun _delCon2Cat(pID: Long)
     @Query("DELETE FROM contact2event WHERE contactID = :pID")
     fun _delCon2Event(pID: Long)
     @Transaction
-    fun deleteAssociations(pID: Long){
-        _delCon2Cat(pID)
-        _delCon2Event(pID)
+    fun deleteAssociations(pContactID: Long){
+        _delCon2Cat(pContactID)
+        _delCon2Event(pContactID)
     }
 
     // Get functions
+    @Query("SELECT COUNT(*) FROM tbl_contact")
+    fun countAll() : Int
+
+    @Query("""
+        SELECT COUNT(*) FROM contact2category
+        WHERE categoryID = :pCategoryID
+        AND contactID = :pContactID""")
+    fun countCategories(pContactID: Long, pCategoryID: Long) : Int
+
     @Query("SELECT * FROM tbl_contact WHERE rowid = :pRowID")
     fun getRow(pRowID: Long): Contact
 
@@ -57,7 +81,7 @@ interface ContactDao {
     fun getAll(): List<Contact>
 
     @Query("""
-        SELECT * FROM tbl_category
+        SELECT tbl_category.* FROM tbl_category
         INNER JOIN contact2category ON tbl_category.ID = contact2category.categoryID
         WHERE contactID = :pContactID""")
     fun loadCategories(pContactID: Long): List<Category>
@@ -81,12 +105,15 @@ interface EventDao {
     @Query("DELETE FROM event2category WHERE eventID = :pID")
     fun delEve2Cat(pID: Long)
     @Transaction
-    fun deleteAssociations(pID: Long){
-        delCon2Eve(pID)
-        delEve2Cat(pID)
+    fun deleteAssociations(pEventID: Long){
+        delCon2Eve(pEventID)
+        delEve2Cat(pEventID)
     }
 
     // Get functions
+    @Query("SELECT COUNT(*) FROM tbl_event")
+    fun countAll() : Int
+
     @Query("SELECT * FROM tbl_event WHERE rowid = :pRowID")
     fun getRow(pRowID: Long): Event
 
@@ -101,17 +128,42 @@ interface CategoryDao {
     @Update fun update(vararg pItem: Category): Int
     @Delete fun delete(vararg pItem: Category): Int
 
+    @Query("""
+        INSERT INTO contact2category (contactID, categoryID)
+        VALUES (:pContactID, :pCategoryID)""")
+    fun linkContact(pCategoryID: Long, pContactID: Long)
+
+    @Query("""
+        INSERT INTO event2category (eventID, categoryID)
+        VALUES (:pEventID, :pCategoryID)""")
+    fun linkEvent(pCategoryID: Long, pEventID: Long)
+
+    @Query("""
+        DELETE FROM contact2category
+        WHERE contactID = :pContactID
+        AND categoryID = :pCategoryID""")
+    fun unlinkContact(pCategoryID: Long, pContactID: Long)
+
+    @Query("""
+        DELETE FROM event2category
+        WHERE categoryID = :pCategoryID
+        AND eventID = :pEventID""")
+    fun unlinkEvent(pCategoryID: Long, pEventID: Long)
+
     @Query("DELETE FROM contact2category WHERE categoryID = :pID")
     fun delCon2Cat(pID: Long)
     @Query("DELETE FROM event2category WHERE categoryID = :pID")
     fun delEve2Cat(pID: Long)
     @Transaction
-    fun deleteAssociations(pID: Long){
-        delCon2Cat(pID)
-        delEve2Cat(pID)
+    fun deleteAssociations(pCategoryID: Long){
+        delCon2Cat(pCategoryID)
+        delEve2Cat(pCategoryID)
     }
 
     // Get functions
+    @Query("SELECT COUNT(*) FROM tbl_category")
+    fun countAll() : Int
+
     @Query("SELECT * FROM tbl_category WHERE rowid = :pRowID")
     fun getRow(pRowID: Long): Category
 
@@ -125,23 +177,23 @@ interface CategoryDao {
 
 @Entity(tableName = "contact2category")
 data class Contact2Category(
-    @PrimaryKey(autoGenerate = true) var ID: Long= 0,
-    @ColumnInfo val contactID: Int,
-    @ColumnInfo val categoryID: Int
+    @PrimaryKey(autoGenerate = true) var ID: Long,
+    @ColumnInfo val contactID: Long,
+    @ColumnInfo val categoryID: Long
 )
 
 @Entity(tableName = "contact2event")
 data class Contact2Event(
-    @PrimaryKey(autoGenerate = true) var ID: Int,
-    @ColumnInfo val contactID: Int,
-    @ColumnInfo val eventID: Int
+    @PrimaryKey(autoGenerate = true) var ID: Long,
+    @ColumnInfo val contactID: Long,
+    @ColumnInfo val eventID: Long
 )
 
 @Entity(tableName = "event2category")
 data class Event2Category(
-    @PrimaryKey(autoGenerate = true) var ID: Int,
-    @ColumnInfo val eventID: Int,
-    @ColumnInfo val categoryID: Int
+    @PrimaryKey(autoGenerate = true) var ID: Long,
+    @ColumnInfo val eventID: Long,
+    @ColumnInfo val categoryID: Long
 )
 
 //
