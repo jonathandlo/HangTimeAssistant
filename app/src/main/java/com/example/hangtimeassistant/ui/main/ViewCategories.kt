@@ -1,5 +1,6 @@
 package com.example.hangtimeassistant.ui.main
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.example.hangtimeassistant.*
 import kotlinx.android.synthetic.main.fragment_categories.*
 import kotlinx.android.synthetic.main.item_category.view.*
+import top.defaults.colorpicker.ColorPickerPopup
 
 /**
  * A placeholder fragment containing a simple view.
@@ -77,6 +79,24 @@ class ViewCategories : Fragment() {
         colorButton.minimumWidth = colorButton.minimumHeight
         colorButton.minWidth = colorButton.minHeight
         DrawableCompat.setTint(DrawableCompat.wrap(colorButton.background).mutate(), category.color)
+        colorButton.setOnClickListener {
+            ColorPickerPopup.Builder(context)
+                .initialColor(Color.RED)
+                .enableBrightness(false)
+                .enableAlpha(false)
+                .okTitle("Choose")
+                .cancelTitle("Cancel")
+                .showIndicator(true)
+                .showValue(true)
+                .build()
+                .show(object : ColorPickerPopup.ColorPickerObserver() {
+                    override fun onColorPicked(color: Int) {
+                        category.color = color
+                        db.categoryDao().update(category)
+                        DrawableCompat.setTint(DrawableCompat.wrap(colorButton.background).mutate(), category.color)
+                    }
+                })
+        }
 
         // configure delete button
         val delButton = newCatItem.button_cat_delete

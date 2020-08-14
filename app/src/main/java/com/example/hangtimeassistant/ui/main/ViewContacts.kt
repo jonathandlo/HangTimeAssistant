@@ -119,10 +119,10 @@ class ViewContacts : Fragment() {
                             var showColor = category.color
                             if (db.contactDao().countCategories(contact.ID, category.ID) == 0) {
                                 showColor = Color.rgb(
-                                    Color.red(showColor) / 2 + 50,
-                                    Color.green(showColor) / 2 + 50,
-                                    Color.blue(showColor) / 2 + 50)
-                                setTextColor(Color.BLACK)
+                                    Color.red(showColor) / 4 + 50,
+                                    Color.green(showColor) / 4 + 50,
+                                    Color.blue(showColor) / 4 + 50)
+                                setTextColor(Color.GRAY)
                             }
                             else setTextColor(Color.WHITE)
 
@@ -135,10 +135,10 @@ class ViewContacts : Fragment() {
                                     db.contactDao().unlinkCategory(contact.ID, category.ID)
 
                                     val backColor = Color.rgb(
-                                        Color.red(category.color) / 2 + 50,
-                                        Color.green(category.color) / 2 + 50,
-                                        Color.blue(category.color) / 2 + 50)
-                                    setTextColor(Color.BLACK)
+                                        Color.red(category.color) / 4 + 50,
+                                        Color.green(category.color) / 4 + 50,
+                                        Color.blue(category.color) / 4 + 50)
+                                    setTextColor(Color.GRAY)
                                     DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), backColor)
                                 }
                                 else {
