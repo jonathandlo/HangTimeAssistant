@@ -9,11 +9,34 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-    <TextView
-        android:id="@+id/text_cont_name"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="John Doe"
-        android:textSize="24sp" />
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/text_cont_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:background="@color/material_on_background_disabled"
+            android:backgroundTint="@color/material_on_background_disabled"
+            android:singleLine="true"
+            android:text="John Doe"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/img_cont_chevron"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/img_cont_chevron"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_more"
+            tools:srcCompat="@android:drawable/ic_menu_more" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

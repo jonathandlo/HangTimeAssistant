@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <View
-        android:id="@+id/view"
+        android:id="@+id/line_cont_upper"
         style="@style/Divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -29,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp">
 
         <ImageView
@@ -189,7 +190,6 @@
             android:id="@+id/spinner_reminder"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="-8dp"
             android:entries="@array/time_period_array"
             android:spinnerMode="dropdown"
             app:layout_constraintBottom_toBottomOf="@+id/numpick_cont_reminder"
@@ -233,7 +233,6 @@
             android:id="@+id/spinner_randomness"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="-8dp"
             android:entries="@array/time_period_array"
             android:spinnerMode="dropdown"
             app:layout_constraintBottom_toBottomOf="@+id/numpick_cont_randomness"
@@ -277,7 +276,6 @@
             android:id="@+id/spinner_skip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="-8dp"
             android:entries="@array/skip_period_array"
             android:spinnerMode="dropdown"
             app:layout_constraintBottom_toBottomOf="@+id/numpick_cont_skip"
@@ -298,9 +296,7 @@
         android:id="@+id/flexbox_categories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        app:alignContent="stretch"
-        app:alignItems="stretch"
+        android:layout_marginStart="40dp"
         app:flexWrap="wrap">
 
         <TextView

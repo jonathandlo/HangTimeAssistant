@@ -45,11 +45,27 @@ class ViewContacts : Fragment() {
         layout_cont.removeAllViews()
 
         for (contact in db.contactDao().getAll()){
+            // inflate the contact xml
             val contactItem = layoutInflater.inflate(R.layout.item_contact, null)
 
+            // customize the name edittext
+            val nameEdit = contactItem.text_cont_name
+            nameEdit.id = View.generateViewId()
             DrawableCompat.setTint(DrawableCompat.wrap(nameEdit.background).mutate(), Color.TRANSPARENT)
+            nameEdit.setText(contact.name)
+            nameEdit.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    if (nameEdit.hasFocus()) {
+                        db.contactDao().update(contact.apply { name = s.toString() })
+                    }
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
+
             // attach on-click animation events
-            contactItem.text_cont_name.setOnClickListener {
+            contactItem.img_cont_chevron.setOnClickListener {
                 if (contactItem.findViewById<LinearLayout>(R.id.layout_cont_collapsible) == null){
                     // one first click, create the collapsible view
                     val collapsible = layoutInflater.inflate(R.layout.item_contact_collapsible,null)
@@ -124,9 +140,9 @@ class ViewContacts : Fragment() {
                                     Color.red(showColor) / 4 + 50,
                                     Color.green(showColor) / 4 + 50,
                                     Color.blue(showColor) / 4 + 50)
-                                setTextColor(Color.GRAY)
+                                setTextColor(Color.argb(55, 255, 255, 255))
                             }
-                            else setTextColor(Color.WHITE)
+                            else setTextColor(Color.argb(110, 0, 0, 0))
 
                             DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), showColor)
 
@@ -140,14 +156,14 @@ class ViewContacts : Fragment() {
                                         Color.red(category.color) / 4 + 50,
                                         Color.green(category.color) / 4 + 50,
                                         Color.blue(category.color) / 4 + 50)
-                                    setTextColor(Color.GRAY)
+                                    setTextColor(Color.argb(55, 255, 255, 255))
                                     DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), backColor)
                                 }
                                 else {
                                     // add association
                                     db.contactDao().linkCategory(contact.ID, category.ID)
                                     DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), category.color)
-                                    setTextColor(Color.WHITE)
+                                    setTextColor(Color.argb(110, 0, 0, 0))
                                 }
 
                             }
@@ -158,6 +174,7 @@ class ViewContacts : Fragment() {
                     contactItem.layout_cont_item_main.addView(collapsible)
                 }
 
+                // collapsible view is created, animate
                 val collapsible = contactItem.layout_cont_item_main.layout_cont_collapsible
                 if (collapsible.visibility == View.VISIBLE) {
                     // if visible, hide the view
@@ -166,12 +183,18 @@ class ViewContacts : Fragment() {
                         .withEndAction {
                             collapsible.visibility = View.GONE
                         }
+
+                    it.animate()
+                        .rotation(0f)
                 }
                 else {
                     // if hidden, show the view
                     collapsible.visibility = View.VISIBLE
                     collapsible.animate()
                         .alpha(1f)
+
+                    it.animate()
+                        .rotation(180f)
                 }
             }
 
