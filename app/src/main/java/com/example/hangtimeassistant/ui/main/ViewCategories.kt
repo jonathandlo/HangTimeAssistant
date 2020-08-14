@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.example.hangtimeassistant.*
 import kotlinx.android.synthetic.main.fragment_categories.*
 import kotlinx.android.synthetic.main.item_category.view.*
+import kotlinx.android.synthetic.main.item_contact.view.*
 import top.defaults.colorpicker.ColorPickerPopup
 
 /**
@@ -61,6 +62,7 @@ class ViewCategories : Fragment() {
         // configure name textbox events
         val nameEdit = newCatItem.textedit_cat_name
         nameEdit.id = View.generateViewId()
+        DrawableCompat.setTint(DrawableCompat.wrap(nameEdit.background).mutate(), Color.TRANSPARENT)
         nameEdit.setText(category.name)
         nameEdit.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {

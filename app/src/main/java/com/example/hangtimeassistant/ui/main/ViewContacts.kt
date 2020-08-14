@@ -14,6 +14,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import com.example.hangtimeassistant.*
 import kotlinx.android.synthetic.main.fragment_contact.*
+import kotlinx.android.synthetic.main.item_contact.*
 import kotlinx.android.synthetic.main.item_contact.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible.view.*
 
@@ -46,6 +47,7 @@ class ViewContacts : Fragment() {
         for (contact in db.contactDao().getAll()){
             val contactItem = layoutInflater.inflate(R.layout.item_contact, null)
 
+            DrawableCompat.setTint(DrawableCompat.wrap(nameEdit.background).mutate(), Color.TRANSPARENT)
             // attach on-click animation events
             contactItem.text_cont_name.setOnClickListener {
                 if (contactItem.findViewById<LinearLayout>(R.id.layout_cont_collapsible) == null){
