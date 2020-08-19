@@ -1,5 +1,6 @@
 package com.example.hangtimeassistant.ui.main
 
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -9,11 +10,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.example.hangtimeassistant.*
+import com.flask.colorpicker.ColorPickerView
+import com.flask.colorpicker.builder.ColorPickerClickListener
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import kotlinx.android.synthetic.main.fragment_categories.*
 import kotlinx.android.synthetic.main.item_category.view.*
-import kotlinx.android.synthetic.main.item_contact.view.*
-import top.defaults.colorpicker.ColorPickerPopup
 
 /**
  * A placeholder fragment containing a simple view.
@@ -82,22 +85,25 @@ class ViewCategories : Fragment() {
         colorButton.minWidth = colorButton.minHeight
         DrawableCompat.setTint(DrawableCompat.wrap(colorButton.background).mutate(), category.color)
         colorButton.setOnClickListener {
-            ColorPickerPopup.Builder(context)
-                .initialColor(Color.RED)
-                .enableBrightness(false)
-                .enableAlpha(false)
-                .okTitle("Choose")
-                .cancelTitle("Cancel")
-                .showIndicator(true)
-                .showValue(true)
+            ColorPickerDialogBuilder
+                .with(context)
+                .setTitle("Choose a Category color")
+                .initialColor(category.color)
+                .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                .density(8)
+                .setOnColorSelectedListener {
+
+                }
+                .setPositiveButton("ok") { dialog, selectedColor, allColors ->
+                    category.color = selectedColor
+                    db.categoryDao().update(category)
+                    DrawableCompat.setTint(DrawableCompat.wrap(colorButton.background).mutate(), category.color)
+                }
+                .setNegativeButton("cancel") { dialogInterface: DialogInterface, i: Int ->
+
+                }
                 .build()
-                .show(object : ColorPickerPopup.ColorPickerObserver() {
-                    override fun onColorPicked(color: Int) {
-                        category.color = color
-                        db.categoryDao().update(category)
-                        DrawableCompat.setTint(DrawableCompat.wrap(colorButton.background).mutate(), category.color)
-                    }
-                })
+                .show()
         }
 
         // configure delete button
