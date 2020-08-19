@@ -13,8 +13,10 @@ import android.widget.LinearLayout
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import com.example.hangtimeassistant.*
+import kotlinx.android.synthetic.main.fragment_categories.*
 import kotlinx.android.synthetic.main.fragment_contact.*
-import kotlinx.android.synthetic.main.item_contact.*
+import kotlinx.android.synthetic.main.fragment_contact.view.*
+import kotlinx.android.synthetic.main.item_category.view.*
 import kotlinx.android.synthetic.main.item_contact.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible.view.*
 
@@ -37,169 +39,198 @@ class ViewContacts : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         listContacts()
+
+        // configure the add contact button
+        button_cont_add.setOnClickListener {
+            val db = HangTimeDB.getDatabase(this.context!!)
+            val contactItem = addItem(db.contactDao().getRow(db.contactDao().insert(Contact())), db)
+            layout_cont_items.addView(contactItem)
+        }
     }
 
     private fun listContacts(){
-        // populate the view with contacts
         val db = HangTimeDB.getDatabase(context!!)
-        layout_cont.removeAllViews()
+        layout_cont_items.removeAllViews()
 
+        // populate the view with contacts
         for (contact in db.contactDao().getAll()){
-            // inflate the contact xml
-            val contactItem = layoutInflater.inflate(R.layout.item_contact, null)
+            val contactItem = addItem(contact, db)
+            layout_cont_items.addView(contactItem)
+        }
+    }
 
-            // customize the name edittext
-            val nameEdit = contactItem.text_cont_name
-            nameEdit.id = View.generateViewId()
-            DrawableCompat.setTint(DrawableCompat.wrap(nameEdit.background).mutate(), Color.TRANSPARENT)
-            nameEdit.setText(contact.name)
-            nameEdit.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    if (nameEdit.hasFocus()) {
-                        db.contactDao().update(contact.apply { name = s.toString() })
-                    }
-                }
+    private fun addItem(contact: Contact, db: HangTimeDB): View? {
+        // inflate the contact xml
+        val contactItem = layoutInflater.inflate(R.layout.item_contact, null)
 
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            })
-
-            // attach on-click animation events
-            contactItem.img_cont_chevron.setOnClickListener {
-                if (contactItem.findViewById<LinearLayout>(R.id.layout_cont_collapsible) == null){
-                    // one first click, create the collapsible view
-                    val collapsible = layoutInflater.inflate(R.layout.item_contact_collapsible,null)
-                    collapsible.id = View.generateViewId()
-                    collapsible.visibility = View.GONE
-                    collapsible.alpha = 0f
-
-                    // update details
-                    collapsible.text_phone.setText(contact.phoneNum)
-                    collapsible.text_address.setText(contact.address)
-                    collapsible.text_fb.setText(contact.FBUrl)
-                    collapsible.text_ig.setText(contact.IGUrl)
-
-                    // add text changed listeners
-                    collapsible.text_phone.addTextChangedListener(object: TextWatcher {
-                        override fun afterTextChanged(s: Editable?) {
-                            if (collapsible.text_phone.hasFocus()) {
-                                db.contactDao().update(contact.apply { phoneNum = s.toString() })
-                            }
-                        }
-                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                    })
-                    collapsible.text_address.addTextChangedListener(object: TextWatcher {
-                        override fun afterTextChanged(s: Editable?) {
-                            if (collapsible.text_address.hasFocus()) {
-                                db.contactDao().update(contact.apply { address = s.toString() })
-                            }
-                        }
-                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                    })
-                    collapsible.text_fb.addTextChangedListener(object: TextWatcher {
-                        override fun afterTextChanged(s: Editable?) {
-                            if (collapsible.text_fb.hasFocus()) {
-                                db.contactDao().update(contact.apply { FBUrl = s.toString() })
-                            }
-                        }
-                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                    })
-                    collapsible.text_ig.addTextChangedListener(object: TextWatcher {
-                        override fun afterTextChanged(s: Editable?) {
-                            if (collapsible.text_ig.hasFocus()) {
-                                db.contactDao().update(contact.apply { IGUrl = s.toString() })
-                            }
-                        }
-                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                    })
-
-                    // TODO: show reminders
-
-                    // show categories
-                    collapsible.flexbox_categories.removeAllViews()
-
-                    for (category in db.categoryDao().getAll()) {
-                        collapsible.flexbox_categories.addView(Button(context).apply {
-                            id = View.generateViewId()
-
-                            minimumWidth = 0
-                            minWidth = 0
-                            minimumHeight = 0
-                            minHeight = 0
-                            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
-                            text = category.name
-
-                            // darken unassociated categories
-                            var showColor = category.color
-                            if (db.contactDao().countCategories(contact.ID, category.ID) == 0) {
-                                showColor = Color.rgb(
-                                    Color.red(showColor) / 4 + 50,
-                                    Color.green(showColor) / 4 + 50,
-                                    Color.blue(showColor) / 4 + 50)
-                                setTextColor(Color.argb(55, 255, 255, 255))
-                            }
-                            else setTextColor(Color.argb(110, 0, 0, 0))
-
-                            DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), showColor)
-
-                            // add click handlers
-                            setOnClickListener {
-                                if (db.contactDao().countCategories(contact.ID, category.ID) > 0) {
-                                    // remove association
-                                    db.contactDao().unlinkCategory(contact.ID, category.ID)
-
-                                    val backColor = Color.rgb(
-                                        Color.red(category.color) / 4 + 50,
-                                        Color.green(category.color) / 4 + 50,
-                                        Color.blue(category.color) / 4 + 50)
-                                    setTextColor(Color.argb(55, 255, 255, 255))
-                                    DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), backColor)
-                                }
-                                else {
-                                    // add association
-                                    db.contactDao().linkCategory(contact.ID, category.ID)
-                                    DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), category.color)
-                                    setTextColor(Color.argb(110, 0, 0, 0))
-                                }
-
-                            }
-                        })
-                    }
-
-                    collapsible.id = R.id.layout_cont_collapsible
-                    contactItem.layout_cont_item_main.addView(collapsible)
-                }
-
-                // collapsible view is created, animate
-                val collapsible = contactItem.layout_cont_item_main.layout_cont_collapsible
-                if (collapsible.visibility == View.VISIBLE) {
-                    // if visible, hide the view
-                    collapsible.animate()
-                        .alpha(0f)
-                        .withEndAction {
-                            collapsible.visibility = View.GONE
-                        }
-
-                    it.animate()
-                        .rotation(0f)
-                }
-                else {
-                    // if hidden, show the view
-                    collapsible.visibility = View.VISIBLE
-                    collapsible.animate()
-                        .alpha(1f)
-
-                    it.animate()
-                        .rotation(180f)
+        // customize the name edittext
+        val nameEdit = contactItem.text_cont_name
+        nameEdit.id = View.generateViewId()
+        DrawableCompat.setTint(DrawableCompat.wrap(nameEdit.background).mutate(), Color.TRANSPARENT)
+        nameEdit.setText(contact.name)
+        nameEdit.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (nameEdit.hasFocus()) {
+                    db.contactDao().update(contact.apply { name = s.toString() })
                 }
             }
 
-            layout_cont.addView(contactItem)
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        // attach on-click animation events
+        contactItem.img_cont_chevron.setOnClickListener {
+            if (contactItem.findViewById<LinearLayout>(R.id.layout_cont_collapsible) == null) {
+                // one first click, create the collapsible view
+                val collapsible = layoutInflater.inflate(R.layout.item_contact_collapsible, null)
+                collapsible.id = View.generateViewId()
+                collapsible.visibility = View.GONE
+                collapsible.alpha = 0f
+
+                // update details
+                collapsible.text_phone.setText(contact.phoneNum)
+                collapsible.text_address.setText(contact.address)
+                collapsible.text_fb.setText(contact.FBUrl)
+                collapsible.text_ig.setText(contact.IGUrl)
+
+                // add text changed listeners
+                collapsible.text_phone.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+                        if (collapsible.text_phone.hasFocus()) {
+                            db.contactDao().update(contact.apply { phoneNum = s.toString() })
+                        }
+                    }
+
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                })
+                collapsible.text_address.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+                        if (collapsible.text_address.hasFocus()) {
+                            db.contactDao().update(contact.apply { address = s.toString() })
+                        }
+                    }
+
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                })
+                collapsible.text_fb.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+                        if (collapsible.text_fb.hasFocus()) {
+                            db.contactDao().update(contact.apply { FBUrl = s.toString() })
+                        }
+                    }
+
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                })
+                collapsible.text_ig.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+                        if (collapsible.text_ig.hasFocus()) {
+                            db.contactDao().update(contact.apply { IGUrl = s.toString() })
+                        }
+                    }
+
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                })
+
+                // TODO: show reminders
+
+                // show categories
+                collapsible.flexbox_categories.removeAllViews()
+
+                for (category in db.categoryDao().getAll()) {
+                    collapsible.flexbox_categories.addView(Button(context).apply {
+                        id = View.generateViewId()
+
+                        minimumWidth = 0
+                        minWidth = 0
+                        minimumHeight = 0
+                        minHeight = 0
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
+                        text = category.name
+
+                        // darken unassociated categories
+                        var showColor = category.color
+                        if (db.contactDao().countCategories(contact.ID, category.ID) == 0) {
+                            showColor = Color.rgb(
+                                Color.red(showColor) / 4 + 50,
+                                Color.green(showColor) / 4 + 50,
+                                Color.blue(showColor) / 4 + 50
+                            )
+                            setTextColor(Color.argb(55, 255, 255, 255))
+                        } else setTextColor(Color.argb(110, 0, 0, 0))
+
+                        DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), showColor)
+
+                        // add click handlers
+                        setOnClickListener {
+                            if (db.contactDao().countCategories(contact.ID, category.ID) > 0) {
+                                // remove association
+                                db.contactDao().unlinkCategory(contact.ID, category.ID)
+
+                                val backColor = Color.rgb(
+                                    Color.red(category.color) / 4 + 50,
+                                    Color.green(category.color) / 4 + 50,
+                                    Color.blue(category.color) / 4 + 50
+                                )
+                                setTextColor(Color.argb(55, 255, 255, 255))
+                                DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), backColor)
+                            } else {
+                                // add association
+                                db.contactDao().linkCategory(contact.ID, category.ID)
+                                DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), category.color)
+                                setTextColor(Color.argb(110, 0, 0, 0))
+                            }
+
+                        }
+                    })
+                }
+
+                // configure delete button
+                val delButton = collapsible.button_cont_delete
+                delButton.id = View.generateViewId()
+                delButton.setOnClickListener {
+                    it.isClickable = false
+                    db.contactDao().delete(contact)
+                    db.contactDao().deleteAssociations(contact.ID)
+                    contactItem.animate()
+                        .alpha(0f)
+                        .withEndAction {
+                            contactItem.visibility = View.GONE
+                            layout_cont_items.removeView(contactItem)
+                        }
+                }
+
+                collapsible.id = R.id.layout_cont_collapsible
+                contactItem.layout_cont_item_main.addView(collapsible)
+            }
+
+            // collapsible view is created, animate
+            val collapsible = contactItem.layout_cont_item_main.layout_cont_collapsible
+            if (collapsible.visibility == View.VISIBLE) {
+                // if visible, hide the view
+                collapsible.animate()
+                    .alpha(0f)
+                    .withEndAction {
+                        collapsible.visibility = View.GONE
+                    }
+
+                it.animate()
+                    .rotation(0f)
+            } else {
+                // if hidden, show the view
+                collapsible.visibility = View.VISIBLE
+                collapsible.animate()
+                    .alpha(1f)
+
+                it.animate()
+                    .rotation(180f)
+            }
         }
+        return contactItem
     }
 
     companion object {
