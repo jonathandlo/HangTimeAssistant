@@ -90,7 +90,9 @@ class ViewCategories : Fragment() {
                 .setTitle("Choose a Category color")
                 .initialColor(category.color)
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                .density(8)
+                .density(9)
+                .lightnessSliderOnly()
+                .showColorPreview(true)
                 .setOnColorSelectedListener {
 
                 }
