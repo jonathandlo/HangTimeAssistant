@@ -8,17 +8,18 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Button
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import com.example.hangtimeassistant.*
-import kotlinx.android.synthetic.main.fragment_categories.*
 import kotlinx.android.synthetic.main.fragment_contact.*
-import kotlinx.android.synthetic.main.fragment_contact.view.*
-import kotlinx.android.synthetic.main.item_category.view.*
 import kotlinx.android.synthetic.main.item_contact.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible.view.*
+import kotlinx.android.synthetic.main.item_reminder_config.view.*
+import java.util.ArrayList
 
 
 /**
@@ -137,6 +138,7 @@ class ViewContacts : Fragment() {
                 })
 
                 // TODO: show reminders
+                setupReminderItem(collapsible)
 
                 // show categories
                 collapsible.flexbox_categories.removeAllViews()
@@ -231,6 +233,78 @@ class ViewContacts : Fragment() {
             }
         }
         return contactItem
+    }
+
+    private fun setupReminderItem(pParentView: View) {
+        // inflate remaining controls
+        pParentView.daypicker_rem
+
+        // display reminder controls only if reminder checked
+        pParentView.alpha = 0f
+        pParentView.table_rem_details.visibility = View.GONE
+        pParentView.cb_cont_reminder.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked){
+                pParentView.table_rem_details.visibility = View.VISIBLE
+                pParentView.table_rem_details.animate().alpha(1f)
+            }
+            else {
+                pParentView.table_rem_details.animate().alpha(1f)
+                pParentView.table_rem_details.animate()
+                    .alpha(0f)
+                    .withEndAction {
+                        pParentView.table_rem_details.visibility = View.GONE
+                    }
+            }
+        }
+
+        // display options based on recurrence type
+        pParentView.spinner_recurrence_type.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (position) {
+                    0 /* with no recurrence */ -> {
+                        pParentView.row_rem_recurrence.visibility = View.GONE
+                        pParentView.row_rem_datepick.visibility = View.VISIBLE
+                        pParentView.row_rem_weekday.visibility = View.GONE
+                        pParentView.row_rem_randomness.visibility = View.GONE
+                        pParentView.row_rem_skip.visibility = View.GONE
+                    }
+                    1 /* at regular intervals */ -> {
+                        pParentView.row_rem_recurrence.visibility = View.GONE
+                        pParentView.row_rem_datepick.visibility = View.GONE
+                        pParentView.row_rem_weekday.visibility = View.GONE
+                        pParentView.row_rem_randomness.visibility = View.VISIBLE
+                        pParentView.row_rem_skip.visibility = View.VISIBLE
+                    }
+                    2 /* on day(s) of week */ -> {
+                        pParentView.row_rem_recurrence.visibility = View.GONE
+                        pParentView.row_rem_datepick.visibility = View.GONE
+                        pParentView.row_rem_weekday.visibility = View.VISIBLE
+                        pParentView.row_rem_randomness.visibility = View.VISIBLE
+                        pParentView.row_rem_skip.visibility = View.VISIBLE
+                    }
+                    3 /* on day(s) of month */ -> {
+                        pParentView.row_rem_recurrence.visibility = View.GONE
+                        pParentView.row_rem_datepick.visibility = View.GONE
+                        pParentView.row_rem_weekday.visibility = View.VISIBLE
+                        pParentView.row_rem_randomness.visibility = View.VISIBLE
+                        pParentView.row_rem_skip.visibility = View.VISIBLE
+                    }
+                    4 /* on day(s) of year */ -> {
+                        pParentView.row_rem_recurrence.visibility = View.GONE
+                        pParentView.row_rem_datepick.visibility = View.GONE
+                        pParentView.row_rem_weekday.visibility = View.VISIBLE
+                        pParentView.row_rem_randomness.visibility = View.VISIBLE
+                        pParentView.row_rem_skip.visibility = View.VISIBLE
+                    }
+                    else  -> { }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+        }
     }
 
     companion object {

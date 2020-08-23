@@ -27,4 +27,12 @@
         <item>months</item>
         <item>years</item>
     </string-array>
+
+    <string-array name="recurrence_type_array">
+        <item>with no recurrence</item>
+        <item>at regular intervals</item>
+        <item>on day(s) of week</item>
+        <item>on day(s) of month</item>
+        <item>on day(s) of year</item>
+    </string-array>
 </resources>
