@@ -19,7 +19,8 @@
             android:id="@+id/textinput_cont_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="search" />
+            android:hint="search"
+            android:paddingHorizontal="20dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ScrollView
