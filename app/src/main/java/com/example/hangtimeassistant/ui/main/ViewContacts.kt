@@ -2,6 +2,7 @@ package com.example.hangtimeassistant.ui.main
 
 import android.content.DialogInterface
 import android.graphics.Color
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -151,6 +152,12 @@ class ViewContacts : Fragment() {
                 collapsible.visibility = View.VISIBLE
                 collapsible.animate()
                     .alpha(1f)
+                    .setStartDelay(100)
+                    .withStartAction {
+                        val rect = Rect()
+                        scrollview_cont.offsetDescendantRectToMyCoords(contactItem, rect)
+                        scrollview_cont.smoothScrollTo(0,rect.top)
+                    }
 
                 it.animate()
                     .rotation(180f)
