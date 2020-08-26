@@ -48,6 +48,7 @@ class ViewContacts : Fragment() {
             val db = HangTimeDB.getDatabase(this.context!!)
             val contactItem = addItem(db.contactDao().getRow(db.contactDao().insert(Contact())), db)
             layout_cont_items.addView(contactItem)
+            contactItem!!.layout_cont_collapsible_view.button_cont_edit_view.callOnClick()
         }
     }
 
@@ -82,7 +83,6 @@ class ViewContacts : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        // attach on-click animation events
         val collapsible = createContactView(contactItem, contact, db)
         updateContactView(collapsible, contact, db)
         return contactItem
@@ -91,11 +91,9 @@ class ViewContacts : Fragment() {
     private fun createContactView(contactItem: View, contact: Contact, db: HangTimeDB): View {
         // one first click, create the collapsible view
         val collapsible = layoutInflater.inflate(R.layout.item_contact_collapsible_viewonly, null)
-        collapsible.id = View.generateViewId()
+        //collapsible.id = View.generateViewId()
         collapsible.visibility = View.GONE
         collapsible.alpha = 0f
-
-        // TODO: show reminders
 
         // configure delete button
         val delButton = collapsible.button_cont_delete_view
@@ -121,7 +119,7 @@ class ViewContacts : Fragment() {
 
         // configure edit button
         val editButton = collapsible.button_cont_edit_view
-        editButton.id = View.generateViewId()
+        //editButton.id = View.generateViewId()
         editButton.setOnClickListener {
             AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
                 .setView(createContactEdit(contact, db))
@@ -136,7 +134,6 @@ class ViewContacts : Fragment() {
 
         // configure show/hide chevron
         contactItem.img_cont_chevron.setOnClickListener {
-            // collapsible view is created, animate
             if (collapsible.visibility == View.VISIBLE) {
                 // if visible, hide the view
                 collapsible.animate()
@@ -145,8 +142,7 @@ class ViewContacts : Fragment() {
                         collapsible.visibility = View.GONE
                     }
 
-                it.animate()
-                    .rotation(0f)
+                it.animate().rotation(0f)
             } else {
                 // if hidden, show the view
                 collapsible.visibility = View.VISIBLE
@@ -159,8 +155,7 @@ class ViewContacts : Fragment() {
                         scrollview_cont.smoothScrollTo(0,rect.top)
                     }
 
-                it.animate()
-                    .rotation(180f)
+                it.animate().rotation(180f)
             }
         }
 
@@ -300,7 +295,7 @@ class ViewContacts : Fragment() {
 
         // configure delete button
         val delButton = collapsible.button_cont_delete
-        delButton.id = View.generateViewId()
+//        delButton.id = View.generateViewId()
         delButton.setOnClickListener {
             AlertDialog.Builder(context!!)
                 .setTitle("Delete contact?")
@@ -389,12 +384,6 @@ class ViewContacts : Fragment() {
 
         }
     }
-
-    /*
-    main setup
-    control create
-    control value update
-     */
 
     companion object {
         @JvmStatic
