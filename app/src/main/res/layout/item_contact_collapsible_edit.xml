@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/layout_cont_collapsible_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/line_cont_upper"
+            style="@style/Divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="Contact"
+            android:textSize="18sp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/img_ig"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:cropToPadding="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView2"
+                app:srcCompat="@drawable/ic_icons8_instagram" />
+
+            <EditText
+                android:id="@+id/text_ig"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@android:drawable/editbox_background_normal"
+                android:ellipsize="start"
+                android:includeFontPadding="true"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="instagram.com/test"
+                android:textColor="?android:attr/textColorSecondary"
+                app:layout_constraintBottom_toBottomOf="@+id/img_ig"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/img_ig"
+                app:layout_constraintTop_toTopOf="@+id/img_ig" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:cropToPadding="true"
+                android:paddingTop="1dp"
+                android:paddingRight="2dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView"
+                app:srcCompat="@drawable/ic_icons8_facebook" />
+
+            <EditText
+                android:id="@+id/text_fb"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@android:drawable/editbox_background_normal"
+                android:ellipsize="start"
+                android:includeFontPadding="true"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="facebook.com/test"
+                android:textColor="?android:attr/textColorSecondary"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="@+id/imageView2" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:cropToPadding="true"
+                android:paddingTop="1dp"
+                android:paddingRight="3dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@android:drawable/sym_action_call" />
+
+            <EditText
+                android:id="@+id/text_phone"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@android:drawable/editbox_background_normal"
+                android:includeFontPadding="true"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="123 456 7890"
+                android:textColor="?android:attr/textColorSecondary"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView3"
+                app:layout_constraintTop_toTopOf="@+id/imageView3" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:cropToPadding="true"
+                android:paddingLeft="4dp"
+                android:paddingEnd="2dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView3"
+                app:srcCompat="@drawable/ic_google_maps_icon" />
+
+            <EditText
+                android:id="@+id/text_address"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@android:drawable/editbox_background_normal"
+                android:ellipsize="end"
+                android:includeFontPadding="true"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="123 Address St. Town, CA"
+                android:textColor="?android:attr/textColorSecondary"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="Reminders"
+            android:textSize="18sp" />
+
+        <include layout="@layout/item_reminder_config" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="Categories"
+            android:textSize="18sp" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/flexbox_categories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="10dp"
+            app:flexWrap="wrap">
+
+            <TextView
+                android:id="@+id/text_categories_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create a category in the 'Category' tab." />
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="Actions"
+            android:textSize="18sp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="10dp">
+
+            <Button
+                android:id="@+id/button_cont_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/design_default_color_error"
+                android:text="Delete Contact"
+                android:textColor="@color/design_default_color_on_primary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="232dp" />
+
+            <Button
+                android:id="@+id/button_cont_copy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Duplicate"
+                android:textColor="@color/design_default_color_on_primary"
+                app:layout_constraintStart_toEndOf="@+id/button_cont_delete"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/view2"
+            style="@style/Divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp" />
+    </LinearLayout>
+
+</ScrollView>

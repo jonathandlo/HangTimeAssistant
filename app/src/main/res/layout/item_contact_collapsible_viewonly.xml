@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_cont_collapsible"
+    android:id="@+id/layout_cont_collapsible_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -41,12 +41,12 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView2"
             app:srcCompat="@drawable/ic_icons8_instagram" />
 
-        <EditText
-            android:id="@+id/text_ig"
+        <TextView
+            android:id="@+id/text_ig_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@android:drawable/editbox_background_normal"
             android:ellipsize="start"
+            android:gravity="center_vertical"
             android:includeFontPadding="true"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
@@ -68,12 +68,12 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView"
             app:srcCompat="@drawable/ic_icons8_facebook" />
 
-        <EditText
-            android:id="@+id/text_fb"
+        <TextView
+            android:id="@+id/text_fb_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@android:drawable/editbox_background_normal"
             android:ellipsize="start"
+            android:gravity="center_vertical"
             android:includeFontPadding="true"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
@@ -95,11 +95,11 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/sym_action_call" />
 
-        <EditText
-            android:id="@+id/text_phone"
+        <TextView
+            android:id="@+id/text_phone_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@android:drawable/editbox_background_normal"
+            android:gravity="center_vertical"
             android:includeFontPadding="true"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
@@ -121,12 +121,12 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView3"
             app:srcCompat="@drawable/ic_google_maps_icon" />
 
-        <EditText
-            android:id="@+id/text_address"
+        <TextView
+            android:id="@+id/text_address_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@android:drawable/editbox_background_normal"
             android:ellipsize="end"
+            android:gravity="center_vertical"
             android:includeFontPadding="true"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
@@ -146,8 +146,6 @@
         android:layout_marginStart="20dp"
         android:text="Reminders"
         android:textSize="18sp" />
-
-    <include layout="@layout/item_reminder_config" />
 
     <TextView
         android:id="@+id/textView10"
@@ -188,11 +186,21 @@
         android:layout_marginBottom="10dp">
 
         <Button
-            android:id="@+id/button_cont_delete"
+            android:id="@+id/button_cont_delete_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/design_default_color_error"
             android:text="Delete Contact"
+            android:textColor="@color/design_default_color_on_primary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button_cont_edit_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="Edit"
             android:textColor="@color/design_default_color_on_primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
