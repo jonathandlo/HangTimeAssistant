@@ -23,7 +23,7 @@
             android:layout_marginStart="5dp"
             android:background="@android:color/transparent"
             android:backgroundTint="@android:color/transparent"
-            android:hint="Enter contact's name"
+            android:hint="Enter contact name"
             android:singleLine="true"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"

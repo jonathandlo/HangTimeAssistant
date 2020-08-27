@@ -91,7 +91,7 @@ class ViewContacts : Fragment() {
         delButton.setOnClickListener {
             AlertDialog.Builder(context!!)
                 .setTitle("Delete contact?")
-                .setPositiveButton("yes") { dialogInterface: DialogInterface, i: Int ->
+                .setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
                     it.isClickable = false
                     db.contactDao().delete(contact)
                     db.contactDao().deleteAssociations(contact.ID)
@@ -102,16 +102,17 @@ class ViewContacts : Fragment() {
                             layout_cont_items.removeView(contactView)
                         }
                 }
-                .setNegativeButton("no") { dialogInterface: DialogInterface, i: Int -> }
+                .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int -> }
                 .create()
                 .show()
         }
 
-        // create edit button
+        // create edit button/dialog
         val editButton = collapsible.button_cont_edit_view
         editButton.setOnClickListener {
-            AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
-                .setView(createContactEdit(contact, db).apply {
+            val dialogView = createContactEdit(contact, db)
+            val alertDialog = AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
+                .setView(dialogView.apply {
                     // close keyboard on dialog touch
                     setOnTouchListener { v, event ->
                         if (v != null) {
@@ -120,13 +121,42 @@ class ViewContacts : Fragment() {
                         }
                         true
                     }
+                    text_cont_name_edit.requestFocus()
                 })
                 .setPositiveButton("Done") { dialogInterface: DialogInterface, i: Int ->
                     updateContactView(contactView, contact, db)
                 }
+                .setOnDismissListener {
+                    smoothScrollToTop(contactView)
+                }
                 .create()
-                .show()
+
+            alertDialog.show()
+
+            // configure edit dialog's delete button
+            val delButton = dialogView.button_cont_delete
+            delButton.setOnClickListener {
+                AlertDialog.Builder(context!!)
+                    .setTitle("Delete contact?")
+                    .setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
+                        it.isClickable = false
+                        db.contactDao().delete(contact)
+                        db.contactDao().deleteAssociations(contact.ID)
+                        alertDialog.dismiss()
+                        contactView.animate()
+                            .alpha(0f)
+                            .withEndAction {
+                                contactView.visibility = View.GONE
+                                layout_cont_items.removeView(contactView)
+                            }
+                    }
+                    .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int -> }
+                    .create()
+                    .show()
+            }
         }
+
+
         contactView.layout_cont_item_main.addView(collapsible)
 
         // create show/hide chevron
@@ -147,9 +177,7 @@ class ViewContacts : Fragment() {
                     .alpha(1f)
                     .setStartDelay(100)
                     .withStartAction {
-                        val rect = Rect()
-                        scrollview_cont.offsetDescendantRectToMyCoords(contactView, rect)
-                        scrollview_cont.smoothScrollTo(0,rect.top)
+                        smoothScrollToTop(contactView)
                     }
 
                 it.img_cont_chevron.animate().rotation(180f)
@@ -157,6 +185,12 @@ class ViewContacts : Fragment() {
         }
 
         return collapsible
+    }
+
+    private fun smoothScrollToTop(contactView: View) {
+        val rect = Rect()
+        scrollview_cont.offsetDescendantRectToMyCoords(contactView, rect)
+        scrollview_cont.smoothScrollTo(0, rect.top)
     }
 
     private fun updateContactView(contactView: View, contact: Contact, db: HangTimeDB){
@@ -304,23 +338,6 @@ class ViewContacts : Fragment() {
             })
         }
 
-        // configure delete button
-        val delButton = collapsible.button_cont_delete
-//        delButton.id = View.generateViewId()
-        delButton.setOnClickListener {
-            AlertDialog.Builder(context!!)
-                .setTitle("Delete contact?")
-                .setPositiveButton("yes") { dialogInterface: DialogInterface, i: Int ->
-                    it.isClickable = false
-                    db.contactDao().delete(contact)
-                    db.contactDao().deleteAssociations(contact.ID)
-                }
-                .setNegativeButton("no") { dialogInterface: DialogInterface, i: Int -> }
-                .create()
-                .show()
-        }
-
-        //collapsible.id = R.id.layout_cont_collapsible_view
         return collapsible
     }
 
