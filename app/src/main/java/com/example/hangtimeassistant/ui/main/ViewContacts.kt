@@ -1,5 +1,7 @@
 package com.example.hangtimeassistant.ui.main
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Rect
@@ -8,11 +10,14 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import com.example.hangtimeassistant.*
@@ -46,9 +51,9 @@ class ViewContacts : Fragment() {
         // configure the add contact button
         button_cont_add.setOnClickListener {
             val db = HangTimeDB.getDatabase(this.context!!)
-            val contactItem = addItem(db.contactDao().getRow(db.contactDao().insert(Contact())), db)
-            layout_cont_items.addView(contactItem)
-            contactItem!!.layout_cont_collapsible_view.button_cont_edit_view.callOnClick()
+            val contactView = addItem(db.contactDao().getRow(db.contactDao().insert(Contact())), db)
+            layout_cont_items.addView(contactView)
+            contactView!!.layout_cont_collapsible_view.button_cont_edit_view.callOnClick()
         }
     }
 
@@ -58,44 +63,29 @@ class ViewContacts : Fragment() {
 
         // populate the view with contacts
         for (contact in db.contactDao().getAll()){
-            val contactItem = addItem(contact, db)
-            layout_cont_items.addView(contactItem)
+            val contactView = addItem(contact, db)
+            layout_cont_items.addView(contactView)
         }
     }
 
     private fun addItem(contact: Contact, db: HangTimeDB): View? {
         // inflate the contact xml
-        val contactItem = layoutInflater.inflate(R.layout.item_contact, null)
+        val contactView = layoutInflater.inflate(R.layout.item_contact, null)
 
-        // customize the name edittext
-        val nameEdit = contactItem.text_cont_name
-        nameEdit.id = View.generateViewId()
-        DrawableCompat.setTint(DrawableCompat.wrap(nameEdit.background).mutate(), Color.TRANSPARENT)
-        nameEdit.setText(contact.name)
-        nameEdit.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (nameEdit.hasFocus()) {
-                    db.contactDao().update(contact.apply { name = s.toString() })
-                }
-            }
+        createContactView(contactView, contact, db)
+        updateContactView(contactView, contact, db)
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-
-        val collapsible = createContactView(contactItem, contact, db)
-        updateContactView(collapsible, contact, db)
-        return contactItem
+        return contactView
     }
 
-    private fun createContactView(contactItem: View, contact: Contact, db: HangTimeDB): View {
-        // one first click, create the collapsible view
+    @SuppressLint("ClickableViewAccessibility")
+    private fun createContactView(contactView: View, contact: Contact, db: HangTimeDB): View {
+        // create collapsible layout
         val collapsible = layoutInflater.inflate(R.layout.item_contact_collapsible_viewonly, null)
-        //collapsible.id = View.generateViewId()
         collapsible.visibility = View.GONE
         collapsible.alpha = 0f
 
-        // configure delete button
+        // create delete button
         val delButton = collapsible.button_cont_delete_view
         delButton.id = View.generateViewId()
         delButton.setOnClickListener {
@@ -105,11 +95,11 @@ class ViewContacts : Fragment() {
                     it.isClickable = false
                     db.contactDao().delete(contact)
                     db.contactDao().deleteAssociations(contact.ID)
-                    contactItem.animate()
+                    contactView.animate()
                         .alpha(0f)
                         .withEndAction {
-                            contactItem.visibility = View.GONE
-                            layout_cont_items.removeView(contactItem)
+                            contactView.visibility = View.GONE
+                            layout_cont_items.removeView(contactView)
                         }
                 }
                 .setNegativeButton("no") { dialogInterface: DialogInterface, i: Int -> }
@@ -117,23 +107,21 @@ class ViewContacts : Fragment() {
                 .show()
         }
 
-        // configure edit button
+        // create edit button
         val editButton = collapsible.button_cont_edit_view
-        //editButton.id = View.generateViewId()
         editButton.setOnClickListener {
             AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
                 .setView(createContactEdit(contact, db))
-                .setTitle("Edit contact")
                 .setPositiveButton("Done") { dialogInterface: DialogInterface, i: Int ->
-                    updateContactView(collapsible, contact, db)
+                    updateContactView(contactView, contact, db)
                 }
                 .create()
                 .show()
         }
-        contactItem.layout_cont_item_main.addView(collapsible)
+        contactView.layout_cont_item_main.addView(collapsible)
 
-        // configure show/hide chevron
-        contactItem.img_cont_chevron.setOnClickListener {
+        // create show/hide chevron
+        contactView.layout_cont_title_area.setOnClickListener {
             if (collapsible.visibility == View.VISIBLE) {
                 // if visible, hide the view
                 collapsible.animate()
@@ -142,7 +130,7 @@ class ViewContacts : Fragment() {
                         collapsible.visibility = View.GONE
                     }
 
-                it.animate().rotation(0f)
+                it.img_cont_chevron.animate().rotation(0f)
             } else {
                 // if hidden, show the view
                 collapsible.visibility = View.VISIBLE
@@ -151,23 +139,26 @@ class ViewContacts : Fragment() {
                     .setStartDelay(100)
                     .withStartAction {
                         val rect = Rect()
-                        scrollview_cont.offsetDescendantRectToMyCoords(contactItem, rect)
+                        scrollview_cont.offsetDescendantRectToMyCoords(contactView, rect)
                         scrollview_cont.smoothScrollTo(0,rect.top)
                     }
 
-                it.animate().rotation(180f)
+                it.img_cont_chevron.animate().rotation(180f)
             }
         }
 
         return collapsible
     }
 
-    private fun updateContactView(collapsible: View, contact: Contact, db: HangTimeDB){
+    private fun updateContactView(contactView: View, contact: Contact, db: HangTimeDB){
+        val collapsible = contactView.layout_cont_collapsible_view
+
         // update details
-        collapsible.text_phone_view.setText(contact.phoneNum)
-        collapsible.text_address_view.setText(contact.address)
-        collapsible.text_fb_view.setText(contact.FBUrl)
-        collapsible.text_ig_view.setText(contact.IGUrl)
+        contactView.text_cont_name.text = contact.name
+        collapsible.text_phone_view.text = contact.phoneNum
+        collapsible.text_address_view.text = contact.address
+        collapsible.text_fb_view.text = contact.FBUrl
+        collapsible.text_ig_view.text = contact.IGUrl
 
         // show categories
         collapsible.flexbox_categories.removeAllViews()
@@ -196,12 +187,23 @@ class ViewContacts : Fragment() {
         collapsible.id = View.generateViewId()
 
         // update details
+        collapsible.text_cont_name_edit.setText(contact.name)
         collapsible.text_phone.setText(contact.phoneNum)
         collapsible.text_address.setText(contact.address)
         collapsible.text_fb.setText(contact.FBUrl)
         collapsible.text_ig.setText(contact.IGUrl)
 
         // add text changed listeners
+        collapsible.text_cont_name_edit.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (collapsible.text_cont_name_edit.hasFocus()) {
+                    db.contactDao().update(contact.apply { name = s.toString() })
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
         collapsible.text_phone.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (collapsible.text_phone.hasFocus()) {

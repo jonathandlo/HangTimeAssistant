@@ -12,17 +12,17 @@
     android:paddingBottom="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/layout_cont_title_area"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <EditText
+        <TextView
             android:id="@+id/text_cont_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:background="@color/material_on_background_disabled"
-            android:backgroundTint="@color/material_on_background_disabled"
+            android:background="@android:color/transparent"
+            android:backgroundTint="@android:color/transparent"
             android:hint="Enter contact's name"
             android:singleLine="true"
             android:textSize="24sp"
