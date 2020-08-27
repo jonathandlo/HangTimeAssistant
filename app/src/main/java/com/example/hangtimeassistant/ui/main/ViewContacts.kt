@@ -111,7 +111,16 @@ class ViewContacts : Fragment() {
         val editButton = collapsible.button_cont_edit_view
         editButton.setOnClickListener {
             AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
-                .setView(createContactEdit(contact, db))
+                .setView(createContactEdit(contact, db).apply {
+                    // close keyboard on dialog touch
+                    setOnTouchListener { v, event ->
+                        if (v != null) {
+                            val imm = this@ViewContacts.activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(v.windowToken, 0)
+                        }
+                        true
+                    }
+                })
                 .setPositiveButton("Done") { dialogInterface: DialogInterface, i: Int ->
                     updateContactView(contactView, contact, db)
                 }
