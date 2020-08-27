@@ -169,6 +169,18 @@ interface CategoryDao {
 
     @Query("SELECT * FROM tbl_category")
     fun getAll(): List<Category>
+
+    @Query("""
+        SELECT tbl_contact.* FROM tbl_contact
+        INNER JOIN contact2category ON tbl_contact.ID = contact2category.contactID
+        WHERE categoryID = :pCategoryID""")
+    fun loadContacts(pCategoryID: Long): List<Contact>
+
+    @Query("""
+        SELECT * FROM tbl_event
+        INNER JOIN event2category ON tbl_event.ID = event2category.eventID
+        WHERE categoryID = :pCategoryID""")
+    fun loadEvents(pCategoryID: Long): List<Event>
 }
 
 //

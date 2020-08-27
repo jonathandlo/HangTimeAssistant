@@ -10,9 +10,10 @@
 
     <Button
         android:id="@+id/button_cat_color"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="..."
+        android:minWidth="0dp"
+        app:layout_constraintDimensionRatio="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,16 +27,16 @@
         android:singleLine="true"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button_cat_delete"
+        app:layout_constraintEnd_toStartOf="@+id/button_cat_list"
         app:layout_constraintStart_toEndOf="@+id/button_cat_color"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/button_cat_delete"
+        android:id="@+id/button_cat_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:minWidth="0dp"
-        android:src="@android:drawable/ic_menu_edit"
+        android:src="@android:drawable/ic_menu_sort_by_size"
         android:tint="@color/dayDeselectedTextColor"
         android:tintMode="src_in"
         app:layout_constraintBottom_toBottomOf="parent"
