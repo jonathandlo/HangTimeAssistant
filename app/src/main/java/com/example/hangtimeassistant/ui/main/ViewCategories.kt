@@ -21,8 +21,8 @@ import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import kotlinx.android.synthetic.main.fragment_categories.*
 import kotlinx.android.synthetic.main.item_category.view.*
+import kotlinx.android.synthetic.main.item_category_detail.*
 import kotlinx.android.synthetic.main.item_category_detail.view.*
-import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.*
 
 /**
  * A placeholder fragment containing a simple view.
@@ -50,7 +50,8 @@ class ViewCategories : Fragment() {
         // configure the add categories button
         button_cat_add.setOnClickListener {
             val db = HangTimeDB.getDatabase(this.context!!)
-            addItem(db.categoryDao().getRow(db.categoryDao().insert(Category())), db)
+            val categoryView = addItem(db.categoryDao().getRow(db.categoryDao().insert(Category())), db)
+            categoryView.button_cat_list.performClick()
         }
     }
 
@@ -64,7 +65,7 @@ class ViewCategories : Fragment() {
         }
     }
 
-    private fun addItem(category: Category, db: HangTimeDB) {
+    private fun addItem(category: Category, db: HangTimeDB) : View {
         val newCatItem = layoutInflater.inflate(R.layout.item_category, null)
         newCatItem.id = View.generateViewId()
 
@@ -149,12 +150,14 @@ class ViewCategories : Fragment() {
         newCatItem.animate().alpha(1f)
 
         layout_cat_items.addView(newCatItem)
+        return newCatItem
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun createCategoryListDialog(newCatItem: View, category: Category, db: HangTimeDB): View {
         // inflate the dialog view
         val dialogView = layoutInflater.inflate(R.layout.item_category_detail, null)
+        val nameEdit = dialogView.text_cat_name_edit
         dialogView.id = View.generateViewId()
 
         // close keyboard on dialog touch
@@ -165,6 +168,10 @@ class ViewCategories : Fragment() {
             }
             true
         }
+
+        // configure basic controls
+        nameEdit.setText(category.name)
+        nameEdit.requestFocus()
 
         // populate contact lists
         for (contact in db.contactDao().getAll()){
@@ -185,6 +192,15 @@ class ViewCategories : Fragment() {
                 if (linked) dialogView.layout_cat_linkedcontacts.addView(this)
                 else dialogView.layout_cat_unlinkedcontacts.addView(this)
             }
+        }
+
+        // open the soft keyboard for new contacts
+        if (category.name.isBlank()) {
+            nameEdit.postDelayed(
+                {
+                    val imm = this@ViewCategories.activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(nameEdit, 0)
+                },200)
         }
 
         return dialogView

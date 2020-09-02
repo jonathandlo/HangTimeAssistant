@@ -128,7 +128,7 @@ class ViewContacts : Fragment() {
                     // open the soft keyboard for new contacts
                     if (contact.name.isBlank()) {
                         text_cont_name_edit.postDelayed(
-                            { // TODO Auto-generated method stub
+                            {
                                 val imm = this@ViewContacts.activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                                 imm.showSoftInput(text_cont_name_edit, 0)
                             },200)
