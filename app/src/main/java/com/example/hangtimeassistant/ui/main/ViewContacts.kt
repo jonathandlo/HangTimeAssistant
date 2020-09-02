@@ -10,9 +10,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.Button
@@ -20,7 +20,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
-import com.example.hangtimeassistant.*
+import com.example.hangtimeassistant.Contact
+import com.example.hangtimeassistant.HangTimeDB
+import com.example.hangtimeassistant.R
 import kotlinx.android.synthetic.main.fragment_contact.*
 import kotlinx.android.synthetic.main.item_contact.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.*
@@ -53,7 +55,7 @@ class ViewContacts : Fragment() {
             val db = HangTimeDB.getDatabase(this.context!!)
             val contactView = addItem(db.contactDao().getRow(db.contactDao().insert(Contact())), db)
             layout_cont_items.addView(contactView)
-            contactView!!.layout_cont_collapsible_view.button_cont_edit_view.callOnClick()
+            contactView!!.layout_cont_collapsible_view.button_cont_edit_view.performClick()
         }
     }
 
@@ -107,7 +109,7 @@ class ViewContacts : Fragment() {
                 .show()
         }
 
-        // create edit button/dialog
+        // create edit dialog
         val editButton = collapsible.button_cont_edit_view
         editButton.setOnClickListener {
             val dialogView = createContactEdit(contact, db)
@@ -122,6 +124,15 @@ class ViewContacts : Fragment() {
                         true
                     }
                     text_cont_name_edit.requestFocus()
+
+                    // open the soft keyboard for new contacts
+                    if (contact.name.isBlank()) {
+                        text_cont_name_edit.postDelayed(
+                            { // TODO Auto-generated method stub
+                                val imm = this@ViewContacts.activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                imm.showSoftInput(text_cont_name_edit, 0)
+                            },200)
+                    }
                 })
                 .setPositiveButton("Done") { dialogInterface: DialogInterface, i: Int ->
                     updateContactView(contactView, contact, db)
@@ -134,8 +145,7 @@ class ViewContacts : Fragment() {
             alertDialog.show()
 
             // configure edit dialog's delete button
-            val delButton = dialogView.button_cont_delete
-            delButton.setOnClickListener {
+            dialogView.button_cont_delete.setOnClickListener {
                 AlertDialog.Builder(context!!)
                     .setTitle("Delete contact?")
                     .setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
@@ -155,7 +165,6 @@ class ViewContacts : Fragment() {
                     .show()
             }
         }
-
 
         contactView.layout_cont_item_main.addView(collapsible)
 
@@ -253,6 +262,7 @@ class ViewContacts : Fragment() {
                     db.contactDao().update(contact.apply { phoneNum = s.toString() })
                 }
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -262,6 +272,7 @@ class ViewContacts : Fragment() {
                     db.contactDao().update(contact.apply { address = s.toString() })
                 }
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -271,6 +282,7 @@ class ViewContacts : Fragment() {
                     db.contactDao().update(contact.apply { FBUrl = s.toString() })
                 }
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -280,6 +292,7 @@ class ViewContacts : Fragment() {
                     db.contactDao().update(contact.apply { IGUrl = s.toString() })
                 }
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })

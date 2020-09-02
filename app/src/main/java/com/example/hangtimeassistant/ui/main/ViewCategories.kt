@@ -90,7 +90,7 @@ class ViewCategories : Fragment() {
         colorButton.setOnClickListener {
             ColorPickerDialogBuilder
                 .with(context)
-                .setTitle("Choose a Category color")
+                .setTitle("Choose a category color")
                 .initialColor(category.color)
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(9)
