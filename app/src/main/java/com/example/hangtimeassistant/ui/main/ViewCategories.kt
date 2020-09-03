@@ -21,7 +21,6 @@ import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import kotlinx.android.synthetic.main.fragment_categories.*
 import kotlinx.android.synthetic.main.item_category.view.*
-import kotlinx.android.synthetic.main.item_category_detail.*
 import kotlinx.android.synthetic.main.item_category_detail.view.*
 
 /**
@@ -69,21 +68,11 @@ class ViewCategories : Fragment() {
         val newCatItem = layoutInflater.inflate(R.layout.item_category, null)
         newCatItem.id = View.generateViewId()
 
-        // configure name textbox events
-        val nameEdit = newCatItem.textedit_cat_name
-        DrawableCompat.setTint(DrawableCompat.wrap(nameEdit.background).mutate(), Color.TRANSPARENT)
-        nameEdit.id = View.generateViewId()
-        nameEdit.setText(category.name)
-        nameEdit.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (nameEdit.hasFocus()) {
-                    db.categoryDao().update(category.apply { name = s.toString() })
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
+        // configure name textbox
+        val textName = newCatItem.text_cat_name
+        DrawableCompat.setTint(DrawableCompat.wrap(textName.background).mutate(), Color.TRANSPARENT)
+        textName.id = View.generateViewId()
+        textName.text = category.name
 
         // configure color button style
         val colorButton = newCatItem.button_cat_color
@@ -97,17 +86,13 @@ class ViewCategories : Fragment() {
                 .density(9)
                 .lightnessSliderOnly()
                 .showColorPreview(true)
-                .setOnColorSelectedListener {
-
-                }
+                .setOnColorSelectedListener { }
                 .setPositiveButton("OK") { dialog, selectedColor, allColors ->
                     category.color = selectedColor
                     db.categoryDao().update(category)
                     DrawableCompat.setTint(DrawableCompat.wrap(colorButton.background).mutate(), category.color)
                 }
-                .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int ->
-
-                }
+                .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int -> }
                 .build()
                 .show()
         }
@@ -118,7 +103,9 @@ class ViewCategories : Fragment() {
             val dialogView = createCategoryListDialog(newCatItem, category, db)
             val alertDialog = AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
                 .setView(dialogView)
-                .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int -> }
+                .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int ->
+                    textName.text = category.name
+                }
                 .create()
 
             // configure delete button
@@ -146,6 +133,7 @@ class ViewCategories : Fragment() {
         }
 
 
+        updateItem(newCatItem, category, db)
         newCatItem.alpha = 0f
         newCatItem.animate().alpha(1f)
 
@@ -169,8 +157,18 @@ class ViewCategories : Fragment() {
             true
         }
 
-        // configure basic controls
+        // configure title editor
         nameEdit.setText(category.name)
+        nameEdit.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (nameEdit.hasFocus()) {
+                    db.categoryDao().update(category.apply { name = s.toString() })
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
         nameEdit.requestFocus()
 
         // populate contact lists

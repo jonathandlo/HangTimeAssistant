@@ -17,8 +17,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/textedit_cat_name"
+    <TextView
+        android:id="@+id/text_cat_name"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/material_on_background_disabled"
