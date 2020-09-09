@@ -24,6 +24,7 @@ import com.example.hangtimeassistant.Contact
 import com.example.hangtimeassistant.HangTimeDB
 import com.example.hangtimeassistant.R
 import kotlinx.android.synthetic.main.fragment_contact.*
+import kotlinx.android.synthetic.main.item_category_detail.view.*
 import kotlinx.android.synthetic.main.item_contact.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.flexbox_categories
@@ -134,11 +135,10 @@ class ViewContacts : Fragment() {
                             },200)
                     }
                 })
-                .setPositiveButton("Done") { dialogInterface: DialogInterface, i: Int ->
-                    updateContactView(contactView, contact, db)
-                }
+                .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int -> }
                 .setOnDismissListener {
                     smoothScrollToTop(contactView)
+                    updateContactView(contactView, contact, db)
                 }
                 .create()
 
@@ -252,7 +252,6 @@ class ViewContacts : Fragment() {
                     db.contactDao().update(contact.apply { name = s.toString() })
                 }
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -262,7 +261,6 @@ class ViewContacts : Fragment() {
                     db.contactDao().update(contact.apply { phoneNum = s.toString() })
                 }
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -272,7 +270,6 @@ class ViewContacts : Fragment() {
                     db.contactDao().update(contact.apply { address = s.toString() })
                 }
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -282,7 +279,6 @@ class ViewContacts : Fragment() {
                     db.contactDao().update(contact.apply { FBUrl = s.toString() })
                 }
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -292,7 +288,6 @@ class ViewContacts : Fragment() {
                     db.contactDao().update(contact.apply { IGUrl = s.toString() })
                 }
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })

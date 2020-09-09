@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
@@ -103,7 +104,10 @@ class ViewCategories : Fragment() {
             val dialogView = createCategoryListDialog(newCatItem, category, db)
             val alertDialog = AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
                 .setView(dialogView)
-                .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int ->
+                .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int -> }
+                .setOnDismissListener {
+                    category.name = dialogView.text_cat_name_edit.text.toString()
+                    db.categoryDao().update(category)
                     textName.text = category.name
                 }
                 .create()
@@ -132,8 +136,6 @@ class ViewCategories : Fragment() {
             alertDialog.show()
         }
 
-
-        updateItem(newCatItem, category, db)
         newCatItem.alpha = 0f
         newCatItem.animate().alpha(1f)
 
@@ -159,16 +161,6 @@ class ViewCategories : Fragment() {
 
         // configure title editor
         nameEdit.setText(category.name)
-        nameEdit.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (nameEdit.hasFocus()) {
-                    db.categoryDao().update(category.apply { name = s.toString() })
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
         nameEdit.requestFocus()
 
         // populate contact lists

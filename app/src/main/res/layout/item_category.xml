@@ -20,7 +20,7 @@
     <TextView
         android:id="@+id/text_cat_name"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/material_on_background_disabled"
         android:inputType="text"
         android:selectAllOnFocus="true"
