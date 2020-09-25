@@ -138,7 +138,7 @@ class ViewContacts : Fragment() {
                 .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int -> }
                 .setOnDismissListener {
                     smoothScrollToTop(contactView)
-                    updateContactView(contactView, contact, db)
+                            updateContactView(contactView, contact, db)
                 }
                 .create()
 

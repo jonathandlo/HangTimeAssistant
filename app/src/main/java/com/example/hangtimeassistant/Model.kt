@@ -74,6 +74,12 @@ interface ContactDao {
         AND contactID = :pContactID""")
     fun countCategories(pContactID: Long, pCategoryID: Long) : Int
 
+    @Query("""
+        SELECT COUNT(*) FROM contact2event
+        WHERE eventID = :pEventID
+        AND contactID = :pContactID""")
+    fun countEvents(pContactID: Long, pEventID: Long) : Int
+
     @Query("SELECT * FROM tbl_contact WHERE rowid = :pRowID")
     fun getRow(pRowID: Long): Contact
 

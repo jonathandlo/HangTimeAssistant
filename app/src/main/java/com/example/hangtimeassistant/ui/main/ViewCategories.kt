@@ -51,7 +51,7 @@ class ViewCategories : Fragment() {
         button_cat_add.setOnClickListener {
             val db = HangTimeDB.getDatabase(this.context!!)
             val categoryView = addItem(db.categoryDao().getRow(db.categoryDao().insert(Category())), db)
-            categoryView.button_cat_list.performClick()
+            categoryView.button_cat_detail.performClick()
         }
     }
 
@@ -99,9 +99,9 @@ class ViewCategories : Fragment() {
         }
 
         // configure list button/dialog
-        val listButton = newCatItem.button_cat_list
+        val listButton = newCatItem.button_cat_detail
         listButton.setOnClickListener {
-            val dialogView = createCategoryListDialog(newCatItem, category, db)
+            val dialogView = createCategoryListDialog(category, db)
             val alertDialog = AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
                 .setView(dialogView)
                 .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int -> }
@@ -144,7 +144,7 @@ class ViewCategories : Fragment() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun createCategoryListDialog(newCatItem: View, category: Category, db: HangTimeDB): View {
+    private fun createCategoryListDialog(category: Category, db: HangTimeDB): View {
         // inflate the dialog view
         val dialogView = layoutInflater.inflate(R.layout.item_category_detail, null)
         val nameEdit = dialogView.text_cat_name_edit
@@ -186,11 +186,10 @@ class ViewCategories : Fragment() {
 
         // open the soft keyboard for new contacts
         if (category.name.isBlank()) {
-            nameEdit.postDelayed(
-                {
-                    val imm = this@ViewCategories.activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.showSoftInput(nameEdit, 0)
-                },200)
+            nameEdit.postDelayed({
+                val imm = this@ViewCategories.activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(nameEdit, 0)
+            },200)
         }
 
         return dialogView

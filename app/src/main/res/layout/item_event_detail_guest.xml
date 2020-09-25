@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/example_row_event_guest"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:showIn="@layout/item_event_detail">
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:theme="@style/Theme.MaterialComponents"
+        app:checkedButton="@id/button_event_guest_un"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_event_guest_in"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/toggle_state_green"
+            android:textColor="#8BC34A"
+            app:icon="@drawable/ic_thumbsup"
+            app:iconSize="18dp"
+            app:iconTint="#FFFFFF"
+            app:iconTintMode="multiply"
+            app:strokeColor="@color/colorDeselected" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_event_guest_un"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dayDeselected"
+            android:textSize="14sp"
+            app:backgroundTint="@color/toggle_state_yellow"
+            app:icon="@drawable/ic_ellipsis"
+            app:iconSize="18dp"
+            app:iconTint="#FFFFFF"
+            app:iconTintMode="multiply"
+            app:strokeColor="@color/colorDeselected" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_event_guest_out"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#E91E63"
+            android:textSize="14sp"
+            app:backgroundTint="@color/toggle_state_red"
+            app:icon="@drawable/ic_thumbsdown"
+            app:iconSize="18dp"
+            app:iconTint="#FFFFFF"
+            app:iconTintMode="multiply"
+            app:strokeColor="@color/colorDeselected" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <TextView
+        android:id="@+id/text_event_guest_name"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="left|center_vertical"
+        android:layout_marginStart="5dp"
+        android:layout_weight="1"
+        android:gravity="center|start"
+        android:text="John Doe" />
+
+    <Button
+        android:id="@+id/button_event_guest_remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/design_default_color_error"
+        android:backgroundTintMode="src_over"
+        android:includeFontPadding="false"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:text="X"
+        android:textColor="#FFFFFF" />
+
+</TableRow>
