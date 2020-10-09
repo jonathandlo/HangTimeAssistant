@@ -80,7 +80,8 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
 
-// Geocode parsing
+// Geocode parsing, map functionality
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.github.kittinunf.fuel:fuel:2.2.1'
+    implementation 'com.github.BirjuVachhani:locus-android:3.0.1'
 }

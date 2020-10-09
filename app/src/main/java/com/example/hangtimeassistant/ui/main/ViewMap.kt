@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.birjuvachhani.locus.Locus
 import com.example.hangtimeassistant.HangTimeDB
 import com.example.hangtimeassistant.R
 import com.github.kittinunf.fuel.Fuel
@@ -82,11 +83,15 @@ class ViewMap : Fragment() {
         // connect to google maps
         val db = HangTimeDB.getDatabase(context!!)
 
-        mapView!!.getMapAsync {
-            googleMap = it
-            addMapMarkers(db)
+        mapView!!.getMapAsync { map ->
+            googleMap = map
+            Locus.getCurrentLocation(context!!) {
+                it.location?.let {
+                    googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15.0F))
+                }
+            }
 
-            updateLocationUI()
+            addMapMarkers(db)
         }
     }
     
@@ -116,25 +121,6 @@ class ViewMap : Fragment() {
                         }
                     }
                 }
-        }
-    }
-
-    private fun updateLocationUI() {
-        if (mapView == null || googleMap == null) return
-
-        if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true
-        }
-        else ActivityCompat.requestPermissions(this.activity!!, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),1)
-
-        if (mLocationPermissionGranted) {
-            googleMap!!.isMyLocationEnabled = true
-            googleMap!!.uiSettings.isMyLocationButtonEnabled = true
-
-            LocationServices.getFusedLocationProviderClient(this.context!!).lastLocation.addOnSuccessListener {
-                if (it == null) return@addOnSuccessListener
-                googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15.0F))
-            }
         }
     }
 
