@@ -12,19 +12,28 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
+import com.birjuvachhani.locus.Locus
 import com.example.hangtimeassistant.Contact
 import com.example.hangtimeassistant.HangTimeDB
 import com.example.hangtimeassistant.R
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+import com.google.android.libraries.places.api.model.TypeFilter
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import kotlinx.android.synthetic.main.fragment_contact.*
-import kotlinx.android.synthetic.main.item_category_detail.view.*
 import kotlinx.android.synthetic.main.item_contact.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.flexbox_categories
@@ -48,6 +57,10 @@ class ViewContacts : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // init places api for autocomplete
+        if (!Places.isInitialized()) Places.initialize(context!!, getString(R.string.maps_api_key))
+        Places.createClient(context!!)
 
         listContacts()
 
@@ -132,7 +145,8 @@ class ViewContacts : Fragment() {
                             {
                                 val imm = this@ViewContacts.activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                                 imm.showSoftInput(text_cont_name_edit, 0)
-                            },200)
+                            }, 200
+                        )
                     }
                 })
                 .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int -> }
@@ -233,6 +247,8 @@ class ViewContacts : Fragment() {
         }
     }
 
+    var lastLocation : LatLng? = null
+
     private fun createContactEdit(contact: Contact, db: HangTimeDB) : View {
         // one first click, create the collapsible view
         val collapsible = layoutInflater.inflate(R.layout.item_contact_collapsible_edit, null)
@@ -252,6 +268,7 @@ class ViewContacts : Fragment() {
                     db.contactDao().update(contact.apply { name = s.toString() })
                 }
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -261,6 +278,7 @@ class ViewContacts : Fragment() {
                     db.contactDao().update(contact.apply { phoneNum = s.toString() })
                 }
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -268,8 +286,37 @@ class ViewContacts : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 if (collapsible.text_address.hasFocus()) {
                     db.contactDao().update(contact.apply { address = s.toString() })
+
+                    // update last known location async
+                    Locus.getCurrentLocation(context!!) { locusResult ->
+                        locusResult.location?.let {
+                            lastLocation = LatLng(it.latitude, it.longitude)
+                        }
+                    }
+
+                    // request autocomplete places list
+                    val request = FindAutocompletePredictionsRequest.builder()
+                            .setOrigin(lastLocation)
+                            .setSessionToken(AutocompleteSessionToken.newInstance())
+                            .setQuery(s.toString())
+                            .build()
+                    Places.createClient(context!!).findAutocompletePredictions(request)
+                        .addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
+                            // get array of results
+                            val resultArr = response.autocompletePredictions.map { it.getFullText(null).toString() }
+
+                            // apply list of results
+                            val adapter: ArrayAdapter<String> = ArrayAdapter<String>(context!!, android.R.layout.simple_dropdown_item_1line, resultArr)
+                            collapsible.text_address.setAdapter(adapter)
+                        }
+                        .addOnFailureListener { exception: Exception? ->
+                            if (exception is ApiException) {
+                                // no places found
+                            }
+                        }
                 }
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -279,6 +326,7 @@ class ViewContacts : Fragment() {
                     db.contactDao().update(contact.apply { FBUrl = s.toString() })
                 }
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -288,6 +336,7 @@ class ViewContacts : Fragment() {
                     db.contactDao().update(contact.apply { IGUrl = s.toString() })
                 }
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })

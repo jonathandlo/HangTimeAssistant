@@ -85,9 +85,9 @@ class ViewMap : Fragment() {
 
         mapView!!.getMapAsync { map ->
             googleMap = map
-            Locus.getCurrentLocation(context!!) {
-                it.location?.let {
-                    googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15.0F))
+            Locus.getCurrentLocation(context!!) { locusResult ->
+                locusResult.location?.let {
+                    googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 10.0F))
                 }
             }
 
