@@ -116,6 +116,7 @@ class ViewMap : Fragment() {
                                 googleMap!!.addMarker(MarkerOptions().apply {
                                     this.position(LatLng(lat, long))
                                     this.title(contact.name)
+                                    this.snippet(contact.address)
                                 })
                             }
                         }
