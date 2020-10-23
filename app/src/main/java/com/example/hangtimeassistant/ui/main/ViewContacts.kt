@@ -20,10 +20,12 @@ import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.birjuvachhani.locus.Locus
 import com.example.hangtimeassistant.Contact
 import com.example.hangtimeassistant.HangTimeDB
+import com.example.hangtimeassistant.MainActivity
 import com.example.hangtimeassistant.R
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -39,12 +41,19 @@ import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.flexbox_categories
 import kotlinx.android.synthetic.main.item_contact_collapsible_viewonly.view.*
 import kotlinx.android.synthetic.main.item_reminder_config.view.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 /**
  * A placeholder fragment containing a simple view.
  */
 class ViewContacts : Fragment() {
+    var numSearches = 0
+    var displayedQuery = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -63,6 +72,31 @@ class ViewContacts : Fragment() {
         Places.createClient(context!!)
 
         listContacts()
+        
+        // configure the search box
+        textinput_cont_search.doOnTextChanged { text, start, before, count ->
+                numSearches++
+                val searchNumber = numSearches
+                val thisQuery = text.toString().trim()
+
+                // leave if these results are already being displayed
+                if (thisQuery == displayedQuery) return@doOnTextChanged
+                println("new search query: $thisQuery")
+
+                GlobalScope.launch {
+                    delay(1000)
+
+                    // leave if this is not the latest search
+                    if (searchNumber != numSearches) return@launch
+                    println("launching search: $thisQuery")
+
+                    // trigger a new search
+                    activity!!.runOnUiThread {
+                        listContacts(thisQuery)
+                        displayedQuery = thisQuery
+                    }
+                }
+        }
 
         // configure the add contact button
         button_cont_add.setOnClickListener {
@@ -73,12 +107,19 @@ class ViewContacts : Fragment() {
         }
     }
 
-    private fun listContacts(){
+    private fun listContacts(searchTerm: String = ""){
         val db = HangTimeDB.getDatabase(context!!)
         layout_cont_items.removeAllViews()
 
         // populate the view with contacts
         for (contact in db.contactDao().getAll()){
+            if (searchTerm.isNotEmpty()
+                && !contact.name.contains(searchTerm)
+                && !contact.address.contains(searchTerm)
+                && !contact.phoneNum.contains(searchTerm)
+                && !contact.FBUrl.contains(searchTerm)
+                && !contact.IGUrl.contains(searchTerm)) continue
+
             val contactView = addItem(contact, db)
             layout_cont_items.addView(contactView)
         }
