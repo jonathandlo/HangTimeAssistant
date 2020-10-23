@@ -13,19 +13,28 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.example.hangtimeassistant.*
+import kotlinx.android.synthetic.main.fragment_contact.*
 import kotlinx.android.synthetic.main.fragment_events.*
+import kotlinx.android.synthetic.main.fragment_events.textinput_cont_search
 import kotlinx.android.synthetic.main.item_event.view.*
 import kotlinx.android.synthetic.main.item_event_detail.*
 import kotlinx.android.synthetic.main.item_event_detail.view.*
 import kotlinx.android.synthetic.main.item_event_detail_guest.*
 import kotlinx.android.synthetic.main.item_event_detail_guest.view.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * A placeholder fragment containing a simple view.
  */
 class ViewEvents : Fragment() {
+    var numSearches = 0
+    var displayedQuery = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -45,6 +54,31 @@ class ViewEvents : Fragment() {
 
         listEvents()
 
+        // configure the search box
+        textinput_cont_search.doOnTextChanged { text, start, before, count ->
+            numSearches++
+            val searchNumber = numSearches
+            val thisQuery = text.toString().trim()
+
+            // leave if these results are already being displayed
+            if (thisQuery == displayedQuery) return@doOnTextChanged
+            println("new search query: $thisQuery")
+
+            GlobalScope.launch {
+                delay(1000)
+
+                // leave if this is not the latest search
+                if (searchNumber != numSearches) return@launch
+                println("launching search: $thisQuery")
+
+                // trigger a new search
+                activity!!.runOnUiThread {
+                    listEvents(thisQuery)
+                    displayedQuery = thisQuery
+                }
+            }
+        }
+
         // configure the add event button
         button_event_add.setOnClickListener {
             val db = HangTimeDB.getDatabase(this.context!!)
@@ -53,12 +87,17 @@ class ViewEvents : Fragment() {
         }
     }
 
-    private fun listEvents(){
+    private fun listEvents(searchTerm: String = ""){
         // populate the view with events
         val db = HangTimeDB.getDatabase(this.context!!)
         layout_event_items.removeAllViews()
 
         for (event in db.eventDao().getAll()){
+            if (searchTerm.isNotEmpty()
+                && !event.name.contains(searchTerm)
+                && !event.address.contains(searchTerm)
+                && !event.description.contains(searchTerm)) continue
+
             addItem(event, db)
         }
     }
