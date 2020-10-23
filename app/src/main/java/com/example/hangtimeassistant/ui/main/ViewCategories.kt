@@ -16,18 +16,26 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.example.hangtimeassistant.*
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import kotlinx.android.synthetic.main.fragment_categories.*
+import kotlinx.android.synthetic.main.fragment_contact.*
 import kotlinx.android.synthetic.main.item_category.view.*
 import kotlinx.android.synthetic.main.item_category_detail.view.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * A placeholder fragment containing a simple view.
  */
 class ViewCategories : Fragment() {
+    var numSearches = 0
+    var displayedQuery = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -47,6 +55,31 @@ class ViewCategories : Fragment() {
 
         listCategories()
 
+        // configure the search box
+        textinput_cat_search.doOnTextChanged { text, start, before, count ->
+            numSearches++
+            val searchNumber = numSearches
+            val thisQuery = text.toString().trim()
+
+            // leave if these results are already being displayed
+            if (thisQuery == displayedQuery) return@doOnTextChanged
+            println("new search query: $thisQuery")
+
+            GlobalScope.launch {
+                delay(1000)
+
+                // leave if this is not the latest search
+                if (searchNumber != numSearches) return@launch
+                println("launching search: $thisQuery")
+
+                // trigger a new search
+                activity!!.runOnUiThread {
+                    listCategories(thisQuery)
+                    displayedQuery = thisQuery
+                }
+            }
+        }
+
         // configure the add categories button
         button_cat_add.setOnClickListener {
             val db = HangTimeDB.getDatabase(this.context!!)
@@ -55,12 +88,15 @@ class ViewCategories : Fragment() {
         }
     }
 
-    private fun listCategories(){
+    private fun listCategories(searchTerm: String = ""){
         // populate the view with category entries
         val db = HangTimeDB.getDatabase(this.context!!)
         layout_cat_items.removeAllViews()
 
         for (category in db.categoryDao().getAll()){
+            if (searchTerm.isNotEmpty()
+                && !category.name.contains(searchTerm)) continue
+
             addItem(category, db)
         }
     }
