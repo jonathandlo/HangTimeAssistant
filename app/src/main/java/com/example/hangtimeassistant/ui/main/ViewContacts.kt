@@ -114,11 +114,11 @@ class ViewContacts : Fragment() {
         // populate the view with contacts
         for (contact in db.contactDao().getAll()){
             if (searchTerm.isNotEmpty()
-                && !contact.name.contains(searchTerm)
-                && !contact.address.contains(searchTerm)
-                && !contact.phoneNum.contains(searchTerm)
-                && !contact.FBUrl.contains(searchTerm)
-                && !contact.IGUrl.contains(searchTerm)) continue
+                && !contact.name.contains(searchTerm, true)
+                && !contact.address.contains(searchTerm, true)
+                && !contact.phoneNum.contains(searchTerm, true)
+                && !contact.FBUrl.contains(searchTerm, true)
+                && !contact.IGUrl.contains(searchTerm, true)) continue
 
             val contactView = addItem(contact, db)
             layout_cont_items.addView(contactView)

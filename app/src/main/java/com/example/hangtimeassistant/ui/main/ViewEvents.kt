@@ -94,9 +94,9 @@ class ViewEvents : Fragment() {
 
         for (event in db.eventDao().getAll()){
             if (searchTerm.isNotEmpty()
-                && !event.name.contains(searchTerm)
-                && !event.address.contains(searchTerm)
-                && !event.description.contains(searchTerm)) continue
+                && !event.name.contains(searchTerm, true)
+                && !event.address.contains(searchTerm, true)
+                && !event.description.contains(searchTerm, true)) continue
 
             addItem(event, db)
         }
