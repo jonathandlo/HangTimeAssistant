@@ -8,24 +8,6 @@ import androidx.room.*
 //
 
 @Dao
-interface ReminderDao {
-    // Set functions
-    @Insert fun insert(pItem: Reminder): Long
-    @Update fun update(vararg pItem: Reminder): Int
-    @Delete fun delete(vararg pItem: Reminder): Int
-
-    // Get functions
-    @Query("SELECT COUNT(*) FROM tbl_reminder")
-    fun countAll() : Int
-
-    @Query("SELECT * FROM tbl_reminder WHERE rowid = :pRowID")
-    fun getRow(pRowID: Long): Reminder
-
-    @Query("SELECT * FROM tbl_reminder")
-    fun getAll(): List<Reminder>
-}
-
-@Dao
 interface ContactDao {
     // Set functions
     @Insert fun insert(pItem: Contact): Long
@@ -218,43 +200,31 @@ data class Event2Category(
 // Entity tables
 //
 
-@Entity(tableName = "tbl_reminder")
-data class Reminder (
-    // keys
-    @PrimaryKey(autoGenerate = true) var ID: Long = 0,
-    @ColumnInfo var ContactID: Long = 0,
-    @ColumnInfo var EventID: Long = 0,
-
-    // attributes
-    @ColumnInfo var lastDate: Long = 0,
-    @ColumnInfo var nextDate: Long = 0,
-    @ColumnInfo var reminder: Boolean = false,
-    @ColumnInfo var reminderPeriod: Int = 1,
-    @ColumnInfo var reminderUnit: String = "d",
-    @ColumnInfo var random: Boolean = false,
-    @ColumnInfo var randomPeriod: Int = 0,
-    @ColumnInfo var randomUnit: String = "d"
-)
-
 @Entity(tableName = "tbl_contact")
 data class Contact (
     // keys
     @PrimaryKey(autoGenerate = true) var ID: Long = 0,
-    @ColumnInfo var ReminderID: Long = 0,
 
     // attributes
     @ColumnInfo var name: String = "",
     @ColumnInfo var IGUrl: String = "",
     @ColumnInfo var FBUrl: String = "",
     @ColumnInfo var phoneNum: String = "",
-    @ColumnInfo var address: String = ""
+    @ColumnInfo var address: String = "",
+
+    // reminders
+    @ColumnInfo var reminder: Boolean = false,
+    @ColumnInfo var reminderCadence: Long,
+    @ColumnInfo var reminderCadenceUnit: Long,
+    @ColumnInfo var reminderDelay: Boolean = false,
+    @ColumnInfo var reminderDelayAmount: Long,
+    @ColumnInfo var reminderDelayUnit: Long,
 )
 
 @Entity(tableName = "tbl_event")
 data class Event (
     // keys
     @PrimaryKey(autoGenerate = true) var ID: Long = 0,
-    @ColumnInfo var ReminderID: Long = 0,
 
     // attributes
     @ColumnInfo var date: Long = 0,
