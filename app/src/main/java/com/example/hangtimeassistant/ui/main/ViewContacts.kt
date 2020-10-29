@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.format.DateFormat
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -15,24 +16,23 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import com.applandeo.materialcalendarview.DatePicker
+import com.applandeo.materialcalendarview.listeners.OnSelectDateListener
+import com.applandeo.materialcalendarview.utils.CalendarProperties
 import com.birjuvachhani.locus.Locus
 import com.example.hangtimeassistant.Contact
 import com.example.hangtimeassistant.HangTimeDB
-import com.example.hangtimeassistant.MainActivity
 import com.example.hangtimeassistant.R
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
-import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import kotlinx.android.synthetic.main.fragment_contact.*
@@ -40,11 +40,12 @@ import kotlinx.android.synthetic.main.item_contact.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.flexbox_categories
 import kotlinx.android.synthetic.main.item_contact_collapsible_viewonly.view.*
+import kotlinx.android.synthetic.main.item_reminder_config.*
 import kotlinx.android.synthetic.main.item_reminder_config.view.*
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 
 
 /**
@@ -383,7 +384,7 @@ class ViewContacts : Fragment() {
         })
 
         // TODO: show reminders
-        createReminderEdit(collapsible)
+        createReminderEdit(contact, collapsible)
 
         // show categories
         collapsible.flexbox_categories.removeAllViews()
@@ -439,7 +440,7 @@ class ViewContacts : Fragment() {
         return collapsible
     }
 
-    private fun createReminderEdit(pParentView: View) {
+    private fun createReminderEdit(contact: Contact, pParentView: View) {
         // inflate remaining controls
         pParentView.cb_cont_reminder.visibility = View.VISIBLE
 
@@ -461,53 +462,84 @@ class ViewContacts : Fragment() {
             }
         }
 
-        // display options based on recurrence type
-        pParentView.spinner_recurrence_type.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        // update reminder details
+        pParentView.cb_cont_reminder.isChecked = contact.reminder
+        pParentView.numpick_cont_reminder.setText(contact.reminderCadence.toString())
+        pParentView.spinner_reminder.setSelection(
+            when (contact.reminderCadenceUnit) {
+                "days" -> 0
+                "weeks" -> 1
+                "months" -> 2
+                "years" -> 3
+                else -> 0
+            }, true)
+        pParentView.text_cont_startdate.text = String.format("mm/dd/yyyy", Date(contact.reminderStartDate))
+        pParentView.cb_cont_delay.isChecked = contact.reminderDelay
+        pParentView.numpick_cont_delay.setText(contact.reminderDelayAmount.toString())
+        pParentView.spinner_delay.setSelection(
+            when (contact.reminderDelayUnit) {
+                "days" -> 0
+                "weeks" -> 1
+                "months" -> 2
+                "years" -> 3
+                else -> 0
+            }, true)
+
+        // add value changed listeners
+        pParentView.cb_cont_reminder.setOnCheckedChangeListener { buttonView, isChecked ->
+            contact.reminder = isChecked
+        }
+        pParentView.numpick_cont_reminder.addTextChangedListener {
+            contact.reminderCadence = it.toString().toLong()
+        }
+        pParentView.spinner_reminder.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                when (position) {
-                    0 /* with no recurrence */ -> {
-                        pParentView.row_rem_recurrence.visibility = View.GONE
-                        pParentView.row_rem_datepick.visibility = View.VISIBLE
-                        pParentView.row_rem_weekday.visibility = View.GONE
-                        pParentView.row_rem_randomness.visibility = View.GONE
-                        pParentView.row_rem_skip.visibility = View.GONE
-                    }
-                    1 /* at regular intervals */ -> {
-                        pParentView.row_rem_recurrence.visibility = View.GONE
-                        pParentView.row_rem_datepick.visibility = View.GONE
-                        pParentView.row_rem_weekday.visibility = View.GONE
-                        pParentView.row_rem_randomness.visibility = View.VISIBLE
-                        pParentView.row_rem_skip.visibility = View.VISIBLE
-                    }
-                    2 /* on day(s) of week */ -> {
-                        pParentView.row_rem_recurrence.visibility = View.GONE
-                        pParentView.row_rem_datepick.visibility = View.GONE
-                        pParentView.row_rem_weekday.visibility = View.VISIBLE
-                        pParentView.row_rem_randomness.visibility = View.VISIBLE
-                        pParentView.row_rem_skip.visibility = View.VISIBLE
-                    }
-                    3 /* on day(s) of month */ -> {
-                        pParentView.row_rem_recurrence.visibility = View.GONE
-                        pParentView.row_rem_datepick.visibility = View.GONE
-                        pParentView.row_rem_weekday.visibility = View.VISIBLE
-                        pParentView.row_rem_randomness.visibility = View.VISIBLE
-                        pParentView.row_rem_skip.visibility = View.VISIBLE
-                    }
-                    4 /* on day(s) of year */ -> {
-                        pParentView.row_rem_recurrence.visibility = View.GONE
-                        pParentView.row_rem_datepick.visibility = View.GONE
-                        pParentView.row_rem_weekday.visibility = View.VISIBLE
-                        pParentView.row_rem_randomness.visibility = View.VISIBLE
-                        pParentView.row_rem_skip.visibility = View.VISIBLE
-                    }
-                    else  -> { }
+                contact.reminderCadenceUnit = when (position){
+                    0 -> "days"
+                    1 -> "weeks"
+                    2 -> "months"
+                    3 -> "years"
+                    else -> "days"
                 }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
+                contact.reminderCadenceUnit = "days"
+            }
+        }
+        btn_cont_datepick.setOnClickListener {
+            DatePicker(context!!, CalendarProperties(context!!).apply {
+                this.onSelectDateListener = object : OnSelectDateListener {
+                    override fun onSelect(calendar: List<Calendar>) {
+                        contact.reminderStartDate = calendar[0].time.time
+                        pParentView.text_cont_startdate.text = String.format("mm/dd/yyyy", Date(contact.reminderStartDate))
+                    }
+                }
+            })
+        }
+        pParentView.text_cont_startdate.addTextChangedListener {
+            contact.reminderStartDate = it.toString().toLong()
+        }
+        pParentView.cb_cont_delay.setOnCheckedChangeListener { buttonView, isChecked ->
+            contact.reminderDelay = isChecked
+        }
+        pParentView.numpick_cont_delay.addTextChangedListener {
+            contact.reminderDelayAmount = it.toString().toLong()
+        }
+        pParentView.spinner_delay.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                contact.reminderDelayUnit = when (position){
+                    0 -> "days"
+                    1 -> "weeks"
+                    2 -> "months"
+                    3 -> "years"
+                    else -> "days"
+                }
             }
 
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                contact.reminderCadenceUnit = "days"
+            }
         }
     }
 

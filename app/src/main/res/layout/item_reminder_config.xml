@@ -23,55 +23,15 @@
             android:textColor="@android:color/tertiary_text_dark"
             android:textSize="14sp" />
 
-        <Spinner
-            android:id="@+id/spinner_recurrence_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_span="3"
-            android:entries="@array/recurrence_type_array"
-            android:spinnerMode="dropdown" />
-
     </TableRow>
 
     <TableLayout
         android:id="@+id/table_rem_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/row_rem_toprow">
-
-        <TableRow
-            android:id="@+id/row_rem_datepick"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.applandeo.materialcalendarview.CalendarView
-                android:id="@+id/calendarView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_span="4"
-                android:layout_weight="1"
-                app:eventsEnabled="true"
-                app:headerColor="@color/colorPrimary"
-                app:selectionColor="@color/colorAccent"
-                app:todayLabelColor="@color/colorPrimary"
-                app:type="many_days_picker" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/row_rem_weekday"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ca.antonious.materialdaypicker.MaterialDayPicker
-                android:id="@+id/daypicker_rem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_span="4"
-                android:orientation="horizontal" />
-
-        </TableRow>
 
         <TableRow
             android:id="@+id/row_rem_recurrence"
@@ -102,50 +62,43 @@
 
             <Spinner
                 android:id="@+id/spinner_reminder"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:entries="@array/time_period_array"
                 android:spinnerMode="dropdown" />
         </TableRow>
 
         <TableRow
-            android:id="@+id/row_rem_randomness"
+            android:id="@+id/row_rem_starting"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent" >
 
-            <CheckBox
-                android:id="@+id/cb_cont_randomness"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Randomness"
-                android:textColor="@android:color/tertiary_text_dark"
-                android:textSize="14sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
             <TextView
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
-                android:text="+/-"
+                android:text="starting"
                 android:textAlignment="textEnd" />
 
-            <EditText
-                android:id="@+id/numpick_cont_randomness"
+            <TextView
+                android:id="@+id/text_cont_startdate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:minWidth="40dp"
-                android:selectAllOnFocus="true"
-                android:singleLine="true"
-                android:textAlignment="center" />
+                android:layout_marginEnd="5dp"
+                android:text="11/12/2020"
+                android:textAlignment="textEnd" />
 
-            <Spinner
-                android:id="@+id/spinner_randomness"
-                android:layout_width="0dp"
+            <Button
+                android:id="@+id/btn_cont_datepick"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:entries="@array/time_period_array"
-                android:spinnerMode="dropdown" />
-
+                android:minHeight="40dp"
+                android:text="choose..." />
         </TableRow>
 
         <TableRow
@@ -154,10 +107,10 @@
             android:layout_height="match_parent">
 
             <CheckBox
-                android:id="@+id/cb_cont_skip"
+                android:id="@+id/cb_cont_delay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Skip"
+                android:text="Delay"
                 android:textColor="@android:color/tertiary_text_dark"
                 android:textSize="14sp" />
 
@@ -166,11 +119,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
-                android:text="the next"
+                android:text="for"
                 android:textAlignment="textEnd" />
 
             <EditText
-                android:id="@+id/numpick_cont_skip"
+                android:id="@+id/numpick_cont_delay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="number"
@@ -180,10 +133,10 @@
                 android:textAlignment="center" />
 
             <Spinner
-                android:id="@+id/spinner_skip"
+                android:id="@+id/spinner_delay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:entries="@array/skip_period_array"
+                android:entries="@array/time_period_array"
                 android:spinnerMode="dropdown" />
 
         </TableRow>
