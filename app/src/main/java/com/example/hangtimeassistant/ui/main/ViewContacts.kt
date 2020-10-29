@@ -507,7 +507,7 @@ class ViewContacts : Fragment() {
                 contact.reminderCadenceUnit = "days"
             }
         }
-        btn_cont_datepick.setOnClickListener {
+        pParentView.btn_cont_datepick.setOnClickListener {
             DatePicker(context!!, CalendarProperties(context!!).apply {
                 this.onSelectDateListener = object : OnSelectDateListener {
                     override fun onSelect(calendar: List<Calendar>) {
