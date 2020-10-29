@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 
-		loadModel()
+		HangTimeDB.getDatabase(this@MainActivity)
 
 		val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
 
@@ -25,38 +25,6 @@ class MainActivity : AppCompatActivity() {
 
 		val tabs: TabLayout = findViewById(R.id.tabs)
 		tabs.setupWithViewPager(viewPager)
-	}
-
-	private fun loadModel(){
-		val db = HangTimeDB.getDatabase(this@MainActivity)
-
-		// skip adding data
-		if("2".toInt() == 2) return
-
-		// events
-		for (i in 1..3){
-			db.eventDao().insert(Event())
-		}
-
-		// categories
-		for (i in 1..9){
-			db.categoryDao().insert(Category().apply {
-				val alphabet: List<Char> = ('a'..'z') + (' ') + (' ')
-				this.name = List((Math.random() * 10).toInt() + 3) { alphabet.random() }.joinToString("")
-				this.color = Color.HSVToColor(floatArrayOf(Math.random().toFloat() * 360f, 0.6f, 0.8f))
-			})
-		}
-
-		// contacts
-		for (i in 1..20){
-			val contactId = db.contactDao().insert(Contact().apply {
-				this.name = "John Doe " + i
-			})
-
-			for (j in db.categoryDao().getAll()) {
-				if (Math.random() > 0.7)  db.contactDao().linkCategory(contactId, j.ID)
-			}
-		}
 	}
 
 	override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
