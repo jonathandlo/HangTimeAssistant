@@ -95,7 +95,7 @@ class ViewCategories : Fragment() {
 
         for (category in db.categoryDao().getAll()){
             if (searchTerm.isNotEmpty()
-                && !category.name.contains(searchTerm, true)) continue
+                && !category.name.contains(searchTerm)) continue
 
             addItem(category, db)
         }
