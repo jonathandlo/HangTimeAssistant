@@ -45,27 +45,28 @@ abstract class HangTimeDB : RoomDatabase() {
                         database.execSQL("DROP TABLE tbl_reminder")
                         dropColumn(database,
                             "CREATE TABLE tbl_contact(" +
-                                    "ID INTEGER PRIMARY KEY," +
-                                    "name TEXT," +
-                                    "IGUrl TEXT," +
-                                    "FBUrl TEXT," +
-                                    "phoneNum TEXT," +
-                                    "address TEXT," +
-                                    "reminder INTEGER," +
-                                    "reminderCadence INTEGER," +
-                                    "reminderCadenceUnit TEXT," +
-                                    "reminderDelay INTEGER," +
-                                    "reminderDelayAmount INTEGER," +
-                                    "reminderDelayUnit TEXT" +
+                                    "ID INTEGER PRIMARY KEY NOT NULL," +
+                                    "name TEXT NOT NULL," +
+                                    "IGUrl TEXT NOT NULL," +
+                                    "FBUrl TEXT NOT NULL," +
+                                    "phoneNum TEXT NOT NULL," +
+                                    "address TEXT NOT NULL," +
+                                    "reminder INTEGER NOT NULL," +
+                                    "reminderStartDate INTEGER NOT NULL," +
+                                    "reminderCadence INTEGER NOT NULL," +
+                                    "reminderCadenceUnit TEXT NOT NULL," +
+                                    "reminderDelay INTEGER NOT NULL," +
+                                    "reminderDelayAmount INTEGER NOT NULL," +
+                                    "reminderDelayUnit TEXT NOT NULL" +
                                     ")",
                             "tbl_contact", arrayOf("ReminderID"))
                         dropColumn(database,
                             "CREATE TABLE tbl_event(" +
-                                    "ID INTEGER PRIMARY KEY," +
-                                    "date INTEGER," +
-                                    "name TEXT," +
-                                    "description TEXT," +
-                                    "address TEXT" +
+                                    "ID INTEGER PRIMARY KEY NOT NULL," +
+                                    "date INTEGER NOT NULL," +
+                                    "name TEXT NOT NULL," +
+                                    "description TEXT NOT NULL," +
+                                    "address TEXT NOT NULL" +
                                     ")",
                             "tbl_event", arrayOf("ReminderID"))
                     }
@@ -101,10 +102,10 @@ abstract class HangTimeDB : RoomDatabase() {
             )
             db.execSQL("DROP TABLE " + tableName + "_old;")
         }
-        fun getTableColumns(db : SupportSQLiteDatabase, tableName: String): MutableList<String> {
+        private fun getTableColumns(db : SupportSQLiteDatabase, tableName: String): MutableList<String> {
             val columns = ArrayList<String>()
             val cmd = "pragma table_info($tableName);"
-            val cur: Cursor = db.query(cmd, null)
+            val cur = db.query(cmd, null)
             while (cur.moveToNext()) {
                 columns.add(cur.getString(cur.getColumnIndex("name")))
             }
