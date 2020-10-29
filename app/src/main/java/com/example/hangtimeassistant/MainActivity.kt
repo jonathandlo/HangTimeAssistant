@@ -33,11 +33,6 @@ class MainActivity : AppCompatActivity() {
 		// skip adding data
 		if("2".toInt() == 2) return
 
-		// reminders
-		for (i in 1..3){
-			db.reminderDao().insert(Reminder())
-		}
-
 		// events
 		for (i in 1..3){
 			db.eventDao().insert(Event())

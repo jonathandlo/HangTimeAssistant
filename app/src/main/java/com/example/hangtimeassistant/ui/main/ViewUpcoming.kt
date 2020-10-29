@@ -32,9 +32,7 @@ class ViewUpcoming : Fragment() {
         // populate the view with reminders
         layout_remind_items.removeAllViews()
 
-        for (i in HangTimeDB.getDatabase(this.context!!).reminderDao().getAll()){
-            layout_remind_items.addView(LayoutInflater.from(this.context).inflate(R.layout.item_reminder, null))
-        }
+        //TODO: algorithm for showing upcoming
     }
 
     companion object {
