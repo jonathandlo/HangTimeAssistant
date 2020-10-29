@@ -8,7 +8,6 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.text.format.DateFormat
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +17,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment
 import com.applandeo.materialcalendarview.DatePicker
 import com.applandeo.materialcalendarview.listeners.OnSelectDateListener
 import com.applandeo.materialcalendarview.utils.CalendarProperties
+import com.applandeo.materialcalendarview.utils.SelectedDay
 import com.birjuvachhani.locus.Locus
 import com.example.hangtimeassistant.Contact
 import com.example.hangtimeassistant.HangTimeDB
@@ -40,11 +41,12 @@ import kotlinx.android.synthetic.main.item_contact.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.flexbox_categories
 import kotlinx.android.synthetic.main.item_contact_collapsible_viewonly.view.*
-import kotlinx.android.synthetic.main.item_reminder_config.*
-import kotlinx.android.synthetic.main.item_reminder_config.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -383,7 +385,6 @@ class ViewContacts : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        // TODO: show reminders
         createReminderEdit(contact, collapsible)
 
         // show categories
@@ -448,12 +449,13 @@ class ViewContacts : Fragment() {
         pParentView.table_rem_details.alpha = 0f
         pParentView.table_rem_details.visibility = View.GONE
         pParentView.cb_cont_reminder.setOnCheckedChangeListener { buttonView, isChecked ->
+            contact.reminder = isChecked
+
             if (isChecked){
                 pParentView.table_rem_details.visibility = View.VISIBLE
                 pParentView.table_rem_details.animate().alpha(1f)
             }
             else {
-                pParentView.table_rem_details.animate().alpha(1f)
                 pParentView.table_rem_details.animate()
                     .alpha(0f)
                     .withEndAction {
@@ -473,7 +475,7 @@ class ViewContacts : Fragment() {
                 "years" -> 3
                 else -> 0
             }, true)
-        pParentView.text_cont_startdate.text = String.format("mm/dd/yyyy", Date(contact.reminderStartDate))
+        pParentView.text_cont_startdate.text = DateFormat.getDateInstance().format(Date(contact.reminderStartDate))
         pParentView.cb_cont_delay.isChecked = contact.reminderDelay
         pParentView.numpick_cont_delay.setText(contact.reminderDelayAmount.toString())
         pParentView.spinner_delay.setSelection(
@@ -486,9 +488,6 @@ class ViewContacts : Fragment() {
             }, true)
 
         // add value changed listeners
-        pParentView.cb_cont_reminder.setOnCheckedChangeListener { buttonView, isChecked ->
-            contact.reminder = isChecked
-        }
         pParentView.numpick_cont_reminder.addTextChangedListener {
             contact.reminderCadence = it.toString().toLong()
         }
@@ -508,17 +507,17 @@ class ViewContacts : Fragment() {
             }
         }
         pParentView.btn_cont_datepick.setOnClickListener {
-            DatePicker(context!!, CalendarProperties(context!!).apply {
+            DatePicker(pParentView.context!!, CalendarProperties(pParentView.context!!).apply {
+                this.todayColor = ContextCompat.getColor(context!!, R.color.colorPrimary)
+                this.selectionColor = ContextCompat.getColor(context!!, R.color.colorAccent)
+                this.setSelectedDay(Calendar.getInstance().apply { this.timeInMillis = contact.reminderStartDate })
                 this.onSelectDateListener = object : OnSelectDateListener {
                     override fun onSelect(calendar: List<Calendar>) {
                         contact.reminderStartDate = calendar[0].time.time
-                        pParentView.text_cont_startdate.text = String.format("mm/dd/yyyy", Date(contact.reminderStartDate))
+                        pParentView.text_cont_startdate.text = DateFormat.getDateInstance().format(Date(contact.reminderStartDate))
                     }
                 }
-            })
-        }
-        pParentView.text_cont_startdate.addTextChangedListener {
-            contact.reminderStartDate = it.toString().toLong()
+            }).show()
         }
         pParentView.cb_cont_delay.setOnCheckedChangeListener { buttonView, isChecked ->
             contact.reminderDelay = isChecked
