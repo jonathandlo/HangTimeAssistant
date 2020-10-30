@@ -548,7 +548,7 @@ class ViewContacts : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                db.contactDao().update(contact.apply { this.reminderCadenceUnit = "days" })
+                db.contactDao().update(contact.apply { this.reminderDelayUnit = "days" })
             }
         }
     }

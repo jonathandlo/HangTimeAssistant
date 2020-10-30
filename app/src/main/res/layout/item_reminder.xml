@@ -3,48 +3,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_remind_item_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="5dp"
+    android:paddingBottom="10dp">
+
+    <ImageButton
+        android:id="@+id/button_remind_item_checkedit"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:backgroundTint="#9CCC65"
+        android:minWidth="45dp"
+        android:minHeight="45dp"
+        android:paddingVertical="5dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_editcalendar"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintEnd_toStartOf="@+id/button_remind_item_check"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout" />
 
     <LinearLayout
-        android:id="@+id/layout_remind_vert"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:background="#ccc"
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/layout_remind_hor"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#273F51B5"
-            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/text_remind_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="John Doe"
+            android:textSize="24sp" />
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Name" />
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ID"
-                android:textAlignment="textEnd" />
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-        </LinearLayout>
-
+        <TextView
+            android:id="@+id/text_remind_item_caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text=" last checked 10 days ago"
+            android:textSize="12sp" />
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/button_remind_item_check"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:backgroundTint="#9CCC65"
+        android:minWidth="45dp"
+        android:minHeight="45dp"
+        android:paddingVertical="5dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_check"
+        app:layout_constraintBottom_toBottomOf="@+id/button_remind_item_checkedit"
+        app:layout_constraintEnd_toStartOf="@+id/button_remind_item_delay"
+        app:layout_constraintTop_toTopOf="@+id/button_remind_item_checkedit" />
+
+    <ImageButton
+        android:id="@+id/button_remind_item_delay"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:backgroundTint="#FFA726"
+        android:minWidth="45dp"
+        android:minHeight="45dp"
+        android:paddingVertical="5dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_pause"
+        app:layout_constraintBottom_toBottomOf="@+id/button_remind_item_check"
+        app:layout_constraintEnd_toStartOf="@+id/button_remind_item_edit"
+        app:layout_constraintTop_toTopOf="@+id/button_remind_item_check" />
+
+    <ImageButton
+        android:id="@+id/button_remind_item_edit"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:minWidth="45dp"
+        android:minHeight="45dp"
+        android:paddingVertical="5dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_ellipsis"
+        app:layout_constraintBottom_toBottomOf="@+id/button_remind_item_delay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/button_remind_item_delay" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.example.hangtimeassistant
 
 import android.graphics.Color
 import androidx.room.*
+import java.time.Instant
 
 //
 // Daos
@@ -219,7 +220,10 @@ data class Contact (
     @ColumnInfo var reminderCadenceUnit: String = "days",
     @ColumnInfo var reminderDelay: Boolean = false,
     @ColumnInfo var reminderDelayAmount: Long = 0,
-    @ColumnInfo var reminderDelayUnit: String = "days"
+    @ColumnInfo var reminderDelayUnit: String = "days",
+
+    // meta data
+    @Ignore var metaNextReminder: Instant = Instant.EPOCH
 )
 
 @Entity(tableName = "tbl_event")

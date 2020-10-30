@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="5dp"
+    android:paddingVertical="5dp">
+
+    <TextView
+        android:id="@+id/text_remind_header_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Monday, October 26"
+        android:textColor="@android:color/secondary_text_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/line_cont_upper4"
+        style="@style/Divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/text_remind_header_name"
+        app:layout_constraintEnd_toStartOf="@+id/text_remind_header_caption"
+        app:layout_constraintStart_toEndOf="@+id/text_remind_header_name"
+        app:layout_constraintTop_toTopOf="@+id/text_remind_header_name" />
+
+    <TextView
+        android:id="@+id/text_remind_header_caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(3 days)"
+        android:textColor="@android:color/secondary_text_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
