@@ -58,8 +58,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:cropToPadding="true"
-                android:paddingTop="1dp"
-                android:paddingRight="2dp"
+                android:paddingLeft="1dp"
+                android:paddingRight="1dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView"
                 app:srcCompat="@drawable/ic_icons8_facebook" />
@@ -86,7 +86,7 @@
                 android:layout_height="32dp"
                 android:cropToPadding="true"
                 android:paddingTop="1dp"
-                android:paddingRight="3dp"
+                android:paddingRight="1dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@android:drawable/sym_action_call" />
@@ -144,6 +144,19 @@
             android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/text_cont_reminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
+            android:ellipsize="start"
+            android:gravity="center_vertical"
+            android:includeFontPadding="true"
+            android:paddingHorizontal="4dp"
+            android:text="No reminders"
+            android:textColor="?android:attr/textColorSecondary" />
+
+        <TextView
             android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -163,6 +176,7 @@
                 android:id="@+id/text_categories_empty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="4dp"
                 android:text="Create a category in the 'Category' tab." />
 
         </com.google.android.flexbox.FlexboxLayout>

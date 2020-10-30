@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.format.DateUtils
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -46,6 +47,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -270,6 +272,15 @@ class ViewContacts : Fragment() {
         collapsible.text_fb_view.text = contact.FBUrl
         collapsible.text_ig_view.text = contact.IGUrl
 
+        // show reminder details
+        if (!contact.reminder) collapsible.text_cont_reminder.text = "No reminders"
+        else {
+            collapsible.text_cont_reminder.text = """Every ${contact.reminderCadence} ${contact.reminderCadenceUnit}${System.lineSeparator()}""" +
+            """Starting on ${DateFormat.getDateInstance().format(Date(contact.reminderStartDate))}""" +
+            if (contact.reminderDelay) """${System.lineSeparator()}Delayed for ${contact.reminderDelayAmount} ${contact.reminderDelayUnit}"""
+            else ""
+        }
+
         // show categories
         collapsible.flexbox_categories.removeAllViews()
 
@@ -385,7 +396,7 @@ class ViewContacts : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        createReminderEdit(contact, collapsible)
+        createReminderEdit(db, contact, collapsible)
 
         // show categories
         collapsible.flexbox_categories.removeAllViews()
@@ -441,7 +452,7 @@ class ViewContacts : Fragment() {
         return collapsible
     }
 
-    private fun createReminderEdit(contact: Contact, pParentView: View) {
+    private fun createReminderEdit(db: HangTimeDB, contact: Contact, pParentView: View) {
         // inflate remaining controls
         pParentView.cb_cont_reminder.visibility = View.VISIBLE
 
@@ -449,7 +460,7 @@ class ViewContacts : Fragment() {
         pParentView.table_rem_details.alpha = 0f
         pParentView.table_rem_details.visibility = View.GONE
         pParentView.cb_cont_reminder.setOnCheckedChangeListener { buttonView, isChecked ->
-            contact.reminder = isChecked
+            db.contactDao().update(contact.apply { this.reminder = isChecked })
 
             if (isChecked){
                 pParentView.table_rem_details.visibility = View.VISIBLE
@@ -489,21 +500,21 @@ class ViewContacts : Fragment() {
 
         // add value changed listeners
         pParentView.numpick_cont_reminder.addTextChangedListener {
-            contact.reminderCadence = it.toString().toLong()
+            db.contactDao().update(contact.apply { this.reminderCadence = it.toString().toLong() })
         }
         pParentView.spinner_reminder.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                contact.reminderCadenceUnit = when (position){
+                db.contactDao().update(contact.apply { this.reminderCadenceUnit = when (position){
                     0 -> "days"
                     1 -> "weeks"
                     2 -> "months"
                     3 -> "years"
                     else -> "days"
-                }
+                }})
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                contact.reminderCadenceUnit = "days"
+                db.contactDao().update(contact.apply { this.reminderCadenceUnit = "days" })
             }
         }
         pParentView.btn_cont_datepick.setOnClickListener {
@@ -513,31 +524,31 @@ class ViewContacts : Fragment() {
                 this.setSelectedDay(Calendar.getInstance().apply { this.timeInMillis = contact.reminderStartDate })
                 this.onSelectDateListener = object : OnSelectDateListener {
                     override fun onSelect(calendar: List<Calendar>) {
-                        contact.reminderStartDate = calendar[0].time.time
+                        db.contactDao().update(contact.apply { this.reminderStartDate = calendar[0].time.time })
                         pParentView.text_cont_startdate.text = DateFormat.getDateInstance().format(Date(contact.reminderStartDate))
                     }
                 }
             }).show()
         }
         pParentView.cb_cont_delay.setOnCheckedChangeListener { buttonView, isChecked ->
-            contact.reminderDelay = isChecked
+            db.contactDao().update(contact.apply { this.reminderDelay = isChecked })
         }
         pParentView.numpick_cont_delay.addTextChangedListener {
-            contact.reminderDelayAmount = it.toString().toLong()
+            db.contactDao().update(contact.apply { this.reminderDelayAmount = it.toString().toLong() })
         }
         pParentView.spinner_delay.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                contact.reminderDelayUnit = when (position){
+                db.contactDao().update(contact.apply { this.reminderDelayUnit = when (position){
                     0 -> "days"
                     1 -> "weeks"
                     2 -> "months"
                     3 -> "years"
                     else -> "days"
-                }
+                }})
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                contact.reminderCadenceUnit = "days"
+                db.contactDao().update(contact.apply { this.reminderCadenceUnit = "days" })
             }
         }
     }
