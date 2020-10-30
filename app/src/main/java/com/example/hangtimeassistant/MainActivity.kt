@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
 		val viewPager: ViewPager = findViewById(R.id.view_pager)
 		viewPager.adapter = sectionsPagerAdapter
+		viewPager.offscreenPageLimit = 0
 
 		val tabs: TabLayout = findViewById(R.id.tabs)
 		tabs.setupWithViewPager(viewPager)
