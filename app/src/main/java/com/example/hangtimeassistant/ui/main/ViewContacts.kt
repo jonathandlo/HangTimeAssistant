@@ -104,7 +104,7 @@ class ViewContacts : Fragment() {
         // configure the add contact button
         button_cont_add.setOnClickListener {
             val db = HangTimeDB.getDatabase(this.context!!)
-            val contactView = addItem(db.contactDao().getRow(db.contactDao().insert(Contact())), db)
+            val contactView = addItem(db.contactDao().getRow(db.contactDao().insert(Contact().apply { this.reminderStartDate = Calendar.getInstance().timeInMillis })), db)
             layout_cont_items.addView(contactView)
             contactView!!.layout_cont_collapsible_view.button_cont_edit_view.performClick()
         }

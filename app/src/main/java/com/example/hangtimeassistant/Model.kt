@@ -215,11 +215,11 @@ data class Contact (
     // reminders
     @ColumnInfo var reminder: Boolean = false,
     @ColumnInfo var reminderStartDate: Long = 0,
-    @ColumnInfo var reminderCadence: Long = 0,
-    @ColumnInfo var reminderCadenceUnit: String = "",
+    @ColumnInfo var reminderCadence: Long = 7,
+    @ColumnInfo var reminderCadenceUnit: String = "days",
     @ColumnInfo var reminderDelay: Boolean = false,
     @ColumnInfo var reminderDelayAmount: Long = 0,
-    @ColumnInfo var reminderDelayUnit: String = ""
+    @ColumnInfo var reminderDelayUnit: String = "days"
 )
 
 @Entity(tableName = "tbl_event")
