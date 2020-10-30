@@ -3,9 +3,7 @@ package com.example.hangtimeassistant
 import android.content.Context
 import android.database.Cursor
 import android.text.TextUtils
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import java.sql.SQLException
@@ -43,30 +41,31 @@ abstract class HangTimeDB : RoomDatabase() {
                 val migration_2_3 = object : Migration(2, 3) {
                     override fun migrate(database: SupportSQLiteDatabase) {
                         database.execSQL("DROP TABLE tbl_reminder")
+
                         dropColumn(database,
                             "CREATE TABLE tbl_contact(" +
-                                    "ID INTEGER PRIMARY KEY NOT NULL," +
-                                    "name TEXT NOT NULL," +
-                                    "IGUrl TEXT NOT NULL," +
-                                    "FBUrl TEXT NOT NULL," +
-                                    "phoneNum TEXT NOT NULL," +
-                                    "address TEXT NOT NULL," +
-                                    "reminder INTEGER NOT NULL," +
-                                    "reminderStartDate INTEGER NOT NULL," +
-                                    "reminderCadence INTEGER NOT NULL," +
-                                    "reminderCadenceUnit TEXT NOT NULL," +
-                                    "reminderDelay INTEGER NOT NULL," +
-                                    "reminderDelayAmount INTEGER NOT NULL," +
-                                    "reminderDelayUnit TEXT NOT NULL" +
+                                    "ID INTEGER PRIMARY KEY NOT NULL DEFAULT 0," +
+                                    "name TEXT NOT NULL DEFAULT ''," +
+                                    "IGUrl TEXT NOT NULL DEFAULT ''," +
+                                    "FBUrl TEXT NOT NULL DEFAULT ''," +
+                                    "phoneNum TEXT NOT NULL DEFAULT ''," +
+                                    "address TEXT NOT NULL DEFAULT ''," +
+                                    "reminder INTEGER NOT NULL DEFAULT 0," +
+                                    "reminderStartDate INTEGER NOT NULL DEFAULT 0," +
+                                    "reminderCadence INTEGER NOT NULL DEFAULT 7," +
+                                    "reminderCadenceUnit TEXT NOT NULL DEFAULT 'days'," +
+                                    "reminderDelay INTEGER NOT NULL DEFAULT 0," +
+                                    "reminderDelayAmount INTEGER NOT NULL DEFAULT 0," +
+                                    "reminderDelayUnit TEXT NOT NULL DEFAULT 'days'" +
                                     ")",
                             "tbl_contact", arrayOf("ReminderID"))
                         dropColumn(database,
                             "CREATE TABLE tbl_event(" +
-                                    "ID INTEGER PRIMARY KEY NOT NULL," +
-                                    "date INTEGER NOT NULL," +
-                                    "name TEXT NOT NULL," +
-                                    "description TEXT NOT NULL," +
-                                    "address TEXT NOT NULL" +
+                                    "ID INTEGER PRIMARY KEY NOT NULL DEFAULT 0," +
+                                    "date INTEGER NOT NULL DEFAULT 0," +
+                                    "name TEXT NOT NULL DEFAULT ''," +
+                                    "description TEXT NOT NULL DEFAULT ''," +
+                                    "address TEXT NOT NULL DEFAULT ''" +
                                     ")",
                             "tbl_event", arrayOf("ReminderID"))
                     }

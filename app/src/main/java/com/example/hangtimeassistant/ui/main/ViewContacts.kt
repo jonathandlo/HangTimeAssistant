@@ -500,7 +500,7 @@ class ViewContacts : Fragment() {
 
         // add value changed listeners
         pParentView.numpick_cont_reminder.addTextChangedListener {
-            db.contactDao().update(contact.apply { this.reminderCadence = it.toString().toLong() })
+            db.contactDao().update(contact.apply { this.reminderCadence = it.toString().toLongOrNull()?: 7 })
         }
         pParentView.spinner_reminder.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -534,7 +534,7 @@ class ViewContacts : Fragment() {
             db.contactDao().update(contact.apply { this.reminderDelay = isChecked })
         }
         pParentView.numpick_cont_delay.addTextChangedListener {
-            db.contactDao().update(contact.apply { this.reminderDelayAmount = it.toString().toLong() })
+            db.contactDao().update(contact.apply { this.reminderDelayAmount = it.toString().toLongOrNull()?: 0 })
         }
         pParentView.spinner_delay.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
