@@ -17,6 +17,7 @@
         android:paddingVertical="5dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_editcalendar"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
         app:layout_constraintEnd_toStartOf="@+id/button_remind_item_check"
         app:layout_constraintTop_toTopOf="@+id/linearLayout" />
