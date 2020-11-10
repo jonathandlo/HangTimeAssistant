@@ -33,6 +33,8 @@ import kotlinx.coroutines.launch
  * A placeholder fragment containing a simple view.
  */
 class ViewCategories : Fragment() {
+    public var needsUpdating = true
+
     var numSearches = 0
     var displayedQuery = ""
 
@@ -42,7 +44,6 @@ class ViewCategories : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_categories, container, false)
-
         return root
     }
 
@@ -52,8 +53,6 @@ class ViewCategories : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        listCategories()
 
         // configure the search box
         textinput_cat_search.doOnTextChanged { text, start, before, count ->
@@ -85,7 +84,21 @@ class ViewCategories : Fragment() {
             val db = HangTimeDB.getDatabase(this.context!!)
             val categoryView = addItem(db.categoryDao().getRow(db.categoryDao().insert(Category())), db)
             categoryView.button_cat_detail.performClick()
+            ViewContacts.getInstance().needsUpdating = true
+            ViewMap.getInstance().needsUpdating = true
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (needsUpdating) listCategories()
+        needsUpdating = false
     }
 
     private fun listCategories(searchTerm: String = ""){
@@ -127,6 +140,9 @@ class ViewCategories : Fragment() {
                 .setPositiveButton("OK") { dialog, selectedColor, allColors ->
                     category.color = selectedColor
                     db.categoryDao().update(category)
+                    ViewContacts.getInstance().needsUpdating = true
+                    ViewMap.getInstance().needsUpdating = true
+
                     DrawableCompat.setTint(DrawableCompat.wrap(colorButton.background).mutate(), category.color)
                 }
                 .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int -> }
@@ -144,6 +160,9 @@ class ViewCategories : Fragment() {
                 .setOnDismissListener {
                     category.name = dialogView.text_cat_name_edit.text.toString()
                     db.categoryDao().update(category)
+                    ViewContacts.getInstance().needsUpdating = true
+                    ViewMap.getInstance().needsUpdating = true
+
                     textName.text = category.name
                 }
                 .create()
@@ -156,6 +175,9 @@ class ViewCategories : Fragment() {
                             it.isClickable = false
                             db.categoryDao().delete(category)
                             db.categoryDao().deleteAssociations(category.ID)
+                            ViewContacts.getInstance().needsUpdating = true
+                            ViewMap.getInstance().needsUpdating = true
+
                             alertDialog.dismiss()
                             newCatItem.animate()
                                 .alpha(0f)
@@ -242,6 +264,8 @@ class ViewCategories : Fragment() {
                     db.contactDao().unlinkCategory(contact.ID, category.ID)
                     dialogView.layout_cat_linkedcontacts.removeView(this)
                     dialogView.layout_cat_unlinkedcontacts.addView(this)
+                    ViewContacts.getInstance().needsUpdating = true
+                    ViewMap.getInstance().needsUpdating = true
 
                     configureButton(button, dialogView,false, contact, category, db)
                 }
@@ -259,6 +283,8 @@ class ViewCategories : Fragment() {
                     db.contactDao().linkCategory(contact.ID, category.ID)
                     dialogView.layout_cat_unlinkedcontacts.removeView(this)
                     dialogView.layout_cat_linkedcontacts.addView(this)
+                    ViewContacts.getInstance().needsUpdating = true
+                    ViewMap.getInstance().needsUpdating = true
 
                     configureButton(button, dialogView,true, contact, category, db)
                 }
@@ -269,11 +295,18 @@ class ViewCategories : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(): ViewCategories {
-            return ViewCategories().apply {
+            instance = ViewCategories().apply {
                 arguments = Bundle().apply {
 
                 }
             }
+
+            return instance!!
+        }
+
+        private var instance: ViewCategories? = null
+        fun getInstance(): ViewCategories {
+            return instance ?: newInstance()
         }
     }
 }

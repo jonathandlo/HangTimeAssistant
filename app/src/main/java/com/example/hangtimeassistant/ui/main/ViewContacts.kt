@@ -46,9 +46,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DateFormat
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 
@@ -56,6 +58,8 @@ import java.util.*
  * A placeholder fragment containing a simple view.
  */
 class ViewContacts : Fragment() {
+    public var needsUpdating = true
+
     var numSearches = 0
     var displayedQuery = ""
 
@@ -75,8 +79,6 @@ class ViewContacts : Fragment() {
         // init places api for autocomplete
         if (!Places.isInitialized()) Places.initialize(context!!, getString(R.string.maps_api_key))
         Places.createClient(context!!)
-
-        listContacts()
         
         // configure the search box
         textinput_cont_search.doOnTextChanged { text, start, before, count ->
@@ -106,10 +108,25 @@ class ViewContacts : Fragment() {
         // configure the add contact button
         button_cont_add.setOnClickListener {
             val db = HangTimeDB.getDatabase(this.context!!)
-            val contactView = addItem(db.contactDao().getRow(db.contactDao().insert(Contact().apply { this.reminderStartDate = Calendar.getInstance().timeInMillis })), db)
+            val contactView = addItem(db.contactDao().getRow(db.contactDao().insert(Contact().apply {
+                this.reminderStartDate = Instant.now().truncatedTo(ChronoUnit.DAYS).toEpochMilli()
+            })), db)
+
             layout_cont_items.addView(contactView)
             contactView!!.layout_cont_collapsible_view.button_cont_edit_view.performClick()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (needsUpdating) listContacts()
+        needsUpdating = false
     }
 
     private fun listContacts(searchTerm: String = ""){
@@ -321,6 +338,10 @@ class ViewContacts : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 if (collapsible.text_cont_name_edit.hasFocus()) {
                     db.contactDao().update(contact.apply { name = s.toString() })
+                    ViewUpcoming.getInstance().needsUpdating = true
+                    ViewCategories.getInstance().needsUpdating = true
+                    ViewEvents.getInstance().needsUpdating = true
+                    ViewMap.getInstance().needsUpdating = true
                 }
             }
 
@@ -341,6 +362,7 @@ class ViewContacts : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 if (collapsible.text_address.hasFocus()) {
                     db.contactDao().update(contact.apply { address = s.toString() })
+                    ViewMap.getInstance().needsUpdating = true
 
                     // update last known location async
                     Locus.getCurrentLocation(context!!) { locusResult ->
@@ -430,6 +452,7 @@ class ViewContacts : Fragment() {
                     if (db.contactDao().countCategories(contact.ID, category.ID) > 0) {
                         // remove association
                         db.contactDao().unlinkCategory(contact.ID, category.ID)
+                        ViewCategories.getInstance().needsUpdating = true
 
                         val backColor = Color.rgb(
                             Color.red(category.color) / 4 + 50,
@@ -441,6 +464,8 @@ class ViewContacts : Fragment() {
                     } else {
                         // add association
                         db.contactDao().linkCategory(contact.ID, category.ID)
+                        ViewCategories.getInstance().needsUpdating = true
+
                         DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), category.color)
                         setTextColor(Color.argb(110, 0, 0, 0))
                     }
@@ -461,6 +486,7 @@ class ViewContacts : Fragment() {
         pParentView.table_rem_details.visibility = View.GONE
         pParentView.cb_cont_reminder.setOnCheckedChangeListener { buttonView, isChecked ->
             db.contactDao().update(contact.apply { this.reminder = isChecked })
+            ViewUpcoming.getInstance().needsUpdating = true
 
             if (isChecked){
                 pParentView.table_rem_details.visibility = View.VISIBLE
@@ -501,6 +527,7 @@ class ViewContacts : Fragment() {
         // add value changed listeners
         pParentView.numpick_cont_reminder.addTextChangedListener {
             db.contactDao().update(contact.apply { this.reminderCadence = it.toString().toLongOrNull()?: 7 })
+            ViewUpcoming.getInstance().needsUpdating = true
         }
         pParentView.spinner_reminder.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -511,10 +538,12 @@ class ViewContacts : Fragment() {
                     3 -> "years"
                     else -> "days"
                 }})
+                ViewUpcoming.getInstance().needsUpdating = true
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 db.contactDao().update(contact.apply { this.reminderCadenceUnit = "days" })
+                ViewUpcoming.getInstance().needsUpdating = true
             }
         }
         pParentView.btn_cont_datepick.setOnClickListener {
@@ -524,7 +553,10 @@ class ViewContacts : Fragment() {
                 this.setSelectedDay(Calendar.getInstance().apply { this.timeInMillis = contact.reminderStartDate })
                 this.onSelectDateListener = object : OnSelectDateListener {
                     override fun onSelect(calendar: List<Calendar>) {
-                        db.contactDao().update(contact.apply { this.reminderStartDate = calendar[0].time.time })
+                        db.contactDao().update(contact.apply {
+                            this.reminderStartDate = calendar[0].time.toInstant().truncatedTo(ChronoUnit.DAYS).toEpochMilli()
+                            ViewUpcoming.getInstance().needsUpdating = true
+                        })
                         pParentView.text_cont_startdate.text = DateFormat.getDateInstance().format(Date(contact.reminderStartDate))
                     }
                 }
@@ -532,9 +564,11 @@ class ViewContacts : Fragment() {
         }
         pParentView.cb_cont_delay.setOnCheckedChangeListener { buttonView, isChecked ->
             db.contactDao().update(contact.apply { this.reminderDelay = isChecked })
+            ViewUpcoming.getInstance().needsUpdating = true
         }
         pParentView.numpick_cont_delay.addTextChangedListener {
             db.contactDao().update(contact.apply { this.reminderDelayAmount = it.toString().toLongOrNull()?: 0 })
+            ViewUpcoming.getInstance().needsUpdating = true
         }
         pParentView.spinner_delay.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -545,10 +579,12 @@ class ViewContacts : Fragment() {
                     3 -> "years"
                     else -> "days"
                 }})
+                ViewUpcoming.getInstance().needsUpdating = true
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 db.contactDao().update(contact.apply { this.reminderDelayUnit = "days" })
+                ViewUpcoming.getInstance().needsUpdating = true
             }
         }
     }
@@ -556,11 +592,18 @@ class ViewContacts : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(): ViewContacts {
-            return ViewContacts().apply {
+            instance = ViewContacts().apply {
                 arguments = Bundle().apply {
 
                 }
             }
+
+            return instance!!
+        }
+
+        private var instance: ViewContacts? = null
+        fun getInstance(): ViewContacts {
+            return instance ?: newInstance()
         }
     }
 }

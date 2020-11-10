@@ -1,6 +1,7 @@
 package com.example.hangtimeassistant.ui.main
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
@@ -31,6 +32,8 @@ import com.google.gson.reflect.TypeToken
  * A placeholder fragment containing a simple view.
  */
 class ViewMap : Fragment() {
+    public var needsUpdating = true
+
     lateinit var fusedLocationClient: FusedLocationProviderClient
     var mLocationPermissionGranted = false
     var mapView: MapView? = null
@@ -45,6 +48,13 @@ class ViewMap : Fragment() {
     override fun onResume() {
         super.onResume()
         mapView?.onResume()
+
+        if (needsUpdating) mapView?.let {
+            val db = HangTimeDB.getDatabase(context!!)
+            addMapMarkers(db)
+        }
+
+        needsUpdating = false
     }
     override fun onPause() {
         super.onPause()
@@ -81,8 +91,6 @@ class ViewMap : Fragment() {
         mapView?.onCreate(savedInstanceState)
         
         // connect to google maps
-        val db = HangTimeDB.getDatabase(context!!)
-
         mapView!!.getMapAsync { map ->
             googleMap = map
             Locus.getCurrentLocation(context!!) { locusResult ->
@@ -90,12 +98,12 @@ class ViewMap : Fragment() {
                     googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 10.0F))
                 }
             }
-
-            addMapMarkers(db)
         }
     }
     
     private fun addMapMarkers(db: HangTimeDB){
+        googleMap!!.clear()
+
         for (contact in db.contactDao().getAll()){
             Fuel.get("https://maps.googleapis.com/maps/api/geocode/json?address=" + contact.address + "&key=" + apiKey)
                 .responseString { request, response, result ->
@@ -128,11 +136,18 @@ class ViewMap : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(): ViewMap {
-            return ViewMap().apply {
+            instance = ViewMap().apply {
                 arguments = Bundle().apply {
 
                 }
             }
+
+            return instance!!
+        }
+
+        private var instance: ViewMap? = null
+        fun getInstance(): ViewMap {
+            return instance ?: newInstance()
         }
     }
 }

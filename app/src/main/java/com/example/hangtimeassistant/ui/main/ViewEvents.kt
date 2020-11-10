@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
  * A placeholder fragment containing a simple view.
  */
 class ViewEvents : Fragment() {
+    public var needsUpdating = true
     var numSearches = 0
     var displayedQuery = ""
 
@@ -51,8 +52,6 @@ class ViewEvents : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        listEvents()
 
         // configure the search box
         textinput_cont_search.doOnTextChanged { text, start, before, count ->
@@ -85,6 +84,18 @@ class ViewEvents : Fragment() {
             val eventView = addItem(db.eventDao().getRow(db.eventDao().insert(Event())), db)
             eventView.button_event_detail.performClick()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (needsUpdating) listEvents()
+        needsUpdating = false
     }
 
     private fun listEvents(searchTerm: String = ""){
@@ -240,11 +251,18 @@ class ViewEvents : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(): ViewEvents {
-            return ViewEvents().apply {
+            instance = ViewEvents().apply {
                 arguments = Bundle().apply {
 
                 }
             }
+
+            return instance!!
+        }
+
+        private var instance: ViewEvents? = null
+        fun getInstance(): ViewEvents {
+            return instance ?: newInstance()
         }
     }
 }

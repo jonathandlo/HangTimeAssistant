@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.annimon.stream.function.ThrowableIntSupplier
@@ -21,6 +22,8 @@ import java.util.*
  * A placeholder fragment containing a simple view.
  */
 class ViewUpcoming : Fragment() {
+    public var needsUpdating = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -33,24 +36,41 @@ class ViewUpcoming : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        listUpcoming(7)
     }
 
-    private fun listUpcoming(daysToShow: Int){
-        val db = HangTimeDB.getDatabase(context!!)
-        val today = Calendar.getInstance().time
+    override fun onStart() {
+        super.onStart()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (needsUpdating) listUpcoming(HangTimeDB.getDatabase(context!!), 14)
+        needsUpdating = false
+    }
+
+    private fun listUpcoming(db: HangTimeDB, daysToShow: Int){
+        val now = Instant.now().truncatedTo(ChronoUnit.DAYS)
         val sortedReminders = emptyList<Contact>().toMutableList()
 
         // find eligible reminders
         for (contact in db.contactDao().getAll()) {
             if (!contact.reminder) continue
 
-            val dayDiff = Duration.between(Instant.now(), Instant.ofEpochMilli(contact.reminderStartDate)).toDays()
+            val dayDiff = Duration.between(now, Instant.ofEpochMilli(contact.reminderStartDate)).toDays()
             if (dayDiff > daysToShow) continue
 
             contact.metaNextReminder = Calendar.getInstance().apply {
                 timeInMillis = contact.reminderStartDate
+                this.add(when (contact.reminderCadenceUnit) {
+                    "days" -> Calendar.DAY_OF_MONTH
+                    "weeks" -> Calendar.WEEK_OF_YEAR
+                    "months" -> Calendar.MONTH
+                    "years" -> Calendar.YEAR
+                    else -> Calendar.DAY_OF_MONTH
+                }, contact.reminderCadence.toInt())
+
                 if (contact.reminderDelay) this.add(when (contact.reminderDelayUnit) {
                     "days" -> Calendar.DAY_OF_MONTH
                     "weeks" -> Calendar.WEEK_OF_YEAR
@@ -67,10 +87,10 @@ class ViewUpcoming : Fragment() {
         layout_remind_items.removeAllViews()
         sortedReminders.sortBy { it.metaNextReminder }
 
-        var lastDueDateDiff = Duration.between(Instant.now(), Instant.EPOCH).toDays()
+        var lastDueDateDiff = Duration.between(now, Instant.EPOCH).toDays()
         for (contact in sortedReminders) {
-            val lastCheckedInDayDiff = Duration.between(Instant.now(), Instant.ofEpochMilli(contact.reminderStartDate)).toDays()
-            val dueDateDayDiff = Duration.between(Instant.now(), contact.metaNextReminder).toDays()
+            val lastCheckedInDayDiff = Duration.between(now, Instant.ofEpochMilli(contact.reminderStartDate)).toDays()
+            val dueDateDayDiff = Duration.between(now, contact.metaNextReminder).toDays()
             val entry = layoutInflater.inflate(R.layout.item_reminder, null)
 
             // create a section header if this is a new day
@@ -105,6 +125,16 @@ class ViewUpcoming : Fragment() {
                 else -> "first check in $lastCheckedInDayDiff day${if (lastCheckedInDayDiff != -1L) "s" else ""}"
             }
 
+            // bind buttons
+            entry.button_remind_item_check.setOnClickListener {
+                contact.reminderStartDate = now.truncatedTo(ChronoUnit.DAYS).toEpochMilli()
+                contact.reminderDelay = false
+                db.contactDao().update(contact)
+                ViewContacts.getInstance().needsUpdating = true
+
+                listUpcoming(db, daysToShow)
+            }
+
             layout_remind_items.addView(entry)
         }
     }
@@ -112,11 +142,18 @@ class ViewUpcoming : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(): ViewUpcoming {
-            return ViewUpcoming().apply {
+            instance = ViewUpcoming().apply {
                 arguments = Bundle().apply {
 
                 }
             }
+
+            return instance!!
+        }
+
+        private var instance: ViewUpcoming? = null
+        fun getInstance(): ViewUpcoming {
+            return instance ?: newInstance()
         }
     }
 }
