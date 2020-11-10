@@ -64,7 +64,7 @@ class ViewEvents : Fragment() {
             println("new search query: $thisQuery")
 
             GlobalScope.launch {
-                delay(1000)
+                delay(500)
 
                 // leave if this is not the latest search
                 if (searchNumber != numSearches) return@launch
