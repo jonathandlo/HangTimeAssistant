@@ -42,6 +42,7 @@ import kotlinx.android.synthetic.main.item_contact.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.*
 import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.flexbox_categories
 import kotlinx.android.synthetic.main.item_contact_collapsible_viewonly.view.*
+import kotlinx.android.synthetic.main.item_reminder_edit.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -215,7 +216,7 @@ class ViewContacts : Fragment() {
                 .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int -> }
                 .setOnDismissListener {
                     smoothScrollToTop(contactView)
-                            updateContactView(contactView, contact, db)
+                    updateContactView(contactView, contact, db)
                 }
                 .create()
 
