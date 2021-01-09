@@ -27,8 +27,17 @@
             android:singleLine="true"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/img_cont_chevron"
+            app:layout_constraintEnd_toStartOf="@id/img_cont_map_ind"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/img_cont_map_ind"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/img_cont_chevron"
+            app:layout_constraintTop_toTopOf="@+id/img_cont_chevron"
+            app:srcCompat="@drawable/ic_google_maps_icon" />
 
         <ImageView
             android:id="@+id/img_cont_chevron"

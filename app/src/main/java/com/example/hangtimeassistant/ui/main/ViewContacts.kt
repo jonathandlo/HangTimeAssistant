@@ -285,6 +285,7 @@ class ViewContacts : Fragment() {
 
         // update details
         contactView.text_cont_name.text = contact.name
+        contactView.img_cont_map_ind.visibility = if(contact.address.trim().isNotEmpty()) View.VISIBLE else View.GONE
         collapsible.text_phone_view.text = contact.phoneNum
         collapsible.text_address_view.text = contact.address
         collapsible.text_fb_view.text = contact.FBUrl
