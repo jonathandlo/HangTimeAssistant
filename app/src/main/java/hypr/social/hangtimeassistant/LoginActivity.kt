@@ -1,10 +1,10 @@
-package com.example.hangtimeassistant
+package hypr.social.hangtimeassistant
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -12,19 +12,22 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN
-
         // add event handlers
-        login_text_register.setOnClickListener {
-            startActivity(Intent(this, RegisterActivity::class.java))
+        text_login_register.setOnClickListener {
+            val email = text_login_email.text.toString().trim()
+            val password = text_login_password.text.toString().trim()
+
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener {
+
+                }
+                .addOnFailureListener {
+
+                }
         }
         button_login_login.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
     }
-
 }

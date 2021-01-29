@@ -96,4 +96,5 @@ dependencies {
 
 // Firebase Authentication library
     implementation 'com.google.firebase:firebase-auth-ktx'
+    apply plugin: 'com.google.gms.google-services'
 }
