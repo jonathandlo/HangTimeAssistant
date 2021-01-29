@@ -1,4 +1,4 @@
-package com.example.hangtimeassistant.ui.main
+package hypr.social.hangtimeassistant.ui.main
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,14 +15,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import com.example.hangtimeassistant.*
-import kotlinx.android.synthetic.main.fragment_contact.*
+import hypr.social.hangtimeassistant.*
+import hypr.social.hangtimeassistant.Contact
+import hypr.social.hangtimeassistant.Event
+import hypr.social.hangtimeassistant.HangTimeDB
 import kotlinx.android.synthetic.main.fragment_events.*
 import kotlinx.android.synthetic.main.fragment_events.textinput_cont_search
 import kotlinx.android.synthetic.main.item_event.view.*
-import kotlinx.android.synthetic.main.item_event_detail.*
 import kotlinx.android.synthetic.main.item_event_detail.view.*
-import kotlinx.android.synthetic.main.item_event_detail_guest.*
 import kotlinx.android.synthetic.main.item_event_detail_guest.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay

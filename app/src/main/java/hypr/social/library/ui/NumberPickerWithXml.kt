@@ -1,9 +1,9 @@
-package com.example.library.ui
+package hypr.social.library.ui
 
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.NumberPicker
-import com.example.hangtimeassistant.R
+import hypr.social.hangtimeassistant.R
 
 class NumberPickerWithXml : NumberPicker {
 

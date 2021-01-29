@@ -1,7 +1,6 @@
-package com.example.hangtimeassistant
+package hypr.social.hangtimeassistant
 
 import android.content.Context
-import android.database.Cursor
 import android.text.TextUtils
 import androidx.room.*
 import androidx.room.migration.Migration

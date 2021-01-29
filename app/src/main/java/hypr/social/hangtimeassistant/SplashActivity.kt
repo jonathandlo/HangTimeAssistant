@@ -1,4 +1,4 @@
-package com.example.hangtimeassistant
+package hypr.social.hangtimeassistant
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

@@ -1,38 +1,24 @@
-package com.example.hangtimeassistant.ui.main
+package hypr.social.hangtimeassistant.ui.main
 
 import android.content.Context
 import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.applandeo.materialcalendarview.DatePicker
 import com.applandeo.materialcalendarview.listeners.OnSelectDateListener
 import com.applandeo.materialcalendarview.utils.CalendarProperties
-import com.birjuvachhani.locus.Locus
-import com.example.hangtimeassistant.*
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
+import hypr.social.hangtimeassistant.Contact
+import hypr.social.hangtimeassistant.HangTimeDB
+import hypr.social.hangtimeassistant.R
 import kotlinx.android.synthetic.main.fragment_upcoming.*
-import kotlinx.android.synthetic.main.item_contact_collapsible_edit.view.*
-import kotlinx.android.synthetic.main.item_contact_collapsible_viewonly.view.*
 import kotlinx.android.synthetic.main.item_reminder.view.*
 import kotlinx.android.synthetic.main.item_reminder_edit.view.*
 import kotlinx.android.synthetic.main.item_reminder_header.view.*
@@ -205,7 +191,7 @@ class ViewUpcoming : Fragment() {
         reminderView.table_rem_details.visibility = View.GONE
         reminderView.cb_cont_reminder.setOnCheckedChangeListener { buttonView, isChecked ->
             db.contactDao().update(contact.apply { this.reminder = isChecked })
-            ViewUpcoming.getInstance().needsUpdating = true
+            getInstance().needsUpdating = true
             ViewContacts.getInstance().needsUpdating = true
 
             if (isChecked){
@@ -247,7 +233,7 @@ class ViewUpcoming : Fragment() {
         // add value changed listeners
         reminderView.numpick_cont_reminder.addTextChangedListener {
             db.contactDao().update(contact.apply { this.reminderCadence = it.toString().toLongOrNull()?: 7 })
-            ViewUpcoming.getInstance().needsUpdating = true
+            getInstance().needsUpdating = true
             ViewContacts.getInstance().needsUpdating = true
         }
         reminderView.spinner_reminder.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -259,13 +245,13 @@ class ViewUpcoming : Fragment() {
                     3 -> "years"
                     else -> "days"
                 }})
-                ViewUpcoming.getInstance().needsUpdating = true
+                getInstance().needsUpdating = true
                 ViewContacts.getInstance().needsUpdating = true
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 db.contactDao().update(contact.apply { this.reminderCadenceUnit = "days" })
-                ViewUpcoming.getInstance().needsUpdating = true
+                getInstance().needsUpdating = true
                 ViewContacts.getInstance().needsUpdating = true
             }
         }
@@ -278,7 +264,7 @@ class ViewUpcoming : Fragment() {
                     override fun onSelect(calendar: List<Calendar>) {
                         db.contactDao().update(contact.apply {
                             this.reminderStartDate = calendar[0].time.toInstant().truncatedTo(ChronoUnit.DAYS).toEpochMilli()
-                            ViewUpcoming.getInstance().needsUpdating = true
+                            getInstance().needsUpdating = true
                             ViewContacts.getInstance().needsUpdating = true
                         })
                         reminderView.text_cont_startdate.text = DateFormat.getDateInstance().format(Date(contact.reminderStartDate))
@@ -288,12 +274,12 @@ class ViewUpcoming : Fragment() {
         }
         reminderView.cb_cont_delay.setOnCheckedChangeListener { buttonView, isChecked ->
             db.contactDao().update(contact.apply { this.reminderDelay = isChecked })
-            ViewUpcoming.getInstance().needsUpdating = true
+            getInstance().needsUpdating = true
             ViewContacts.getInstance().needsUpdating = true
         }
         reminderView.numpick_cont_delay.addTextChangedListener {
             db.contactDao().update(contact.apply { this.reminderDelayAmount = it.toString().toLongOrNull()?: 0 })
-            ViewUpcoming.getInstance().needsUpdating = true
+            getInstance().needsUpdating = true
             ViewContacts.getInstance().needsUpdating = true
         }
         reminderView.spinner_delay.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -305,13 +291,13 @@ class ViewUpcoming : Fragment() {
                     3 -> "years"
                     else -> "days"
                 }})
-                ViewUpcoming.getInstance().needsUpdating = true
+                getInstance().needsUpdating = true
                 ViewContacts.getInstance().needsUpdating = true
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 db.contactDao().update(contact.apply { this.reminderDelayUnit = "days" })
-                ViewUpcoming.getInstance().needsUpdating = true
+                getInstance().needsUpdating = true
                 ViewContacts.getInstance().needsUpdating = true
             }
         }

@@ -1,4 +1,4 @@
-package com.example.hangtimeassistant.ui.main
+package hypr.social.hangtimeassistant.ui.main
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,7 +8,6 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.text.format.DateUtils
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -26,11 +25,10 @@ import androidx.fragment.app.Fragment
 import com.applandeo.materialcalendarview.DatePicker
 import com.applandeo.materialcalendarview.listeners.OnSelectDateListener
 import com.applandeo.materialcalendarview.utils.CalendarProperties
-import com.applandeo.materialcalendarview.utils.SelectedDay
 import com.birjuvachhani.locus.Locus
-import com.example.hangtimeassistant.Contact
-import com.example.hangtimeassistant.HangTimeDB
-import com.example.hangtimeassistant.R
+import hypr.social.hangtimeassistant.Contact
+import hypr.social.hangtimeassistant.HangTimeDB
+import hypr.social.hangtimeassistant.R
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -48,9 +46,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
 

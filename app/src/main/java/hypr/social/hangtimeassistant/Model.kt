@@ -1,4 +1,4 @@
-package com.example.hangtimeassistant
+package hypr.social.hangtimeassistant
 
 import android.graphics.Color
 import androidx.room.*

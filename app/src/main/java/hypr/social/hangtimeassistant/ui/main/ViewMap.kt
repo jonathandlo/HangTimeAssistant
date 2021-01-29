@@ -1,19 +1,13 @@
-package com.example.hangtimeassistant.ui.main
+package hypr.social.hangtimeassistant.ui.main
 
-import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.birjuvachhani.locus.Locus
-import com.example.hangtimeassistant.HangTimeDB
-import com.example.hangtimeassistant.R
+import hypr.social.hangtimeassistant.HangTimeDB
+import hypr.social.hangtimeassistant.R
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.result.Result
 import com.google.android.gms.location.*

@@ -1,14 +1,13 @@
-package com.example.hangtimeassistant
+package hypr.social.hangtimeassistant
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
-import com.example.hangtimeassistant.ui.main.SectionsPagerAdapter
+import hypr.social.hangtimeassistant.ui.main.SectionsPagerAdapter
 
 class MainActivity : AppCompatActivity() {
 
