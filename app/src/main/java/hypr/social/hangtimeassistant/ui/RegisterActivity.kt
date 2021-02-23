@@ -1,4 +1,4 @@
-package hypr.social.hangtimeassistant
+package hypr.social.hangtimeassistant.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.widget.Toast
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import hypr.social.hangtimeassistant.model.HTAFirestore
+import hypr.social.hangtimeassistant.R
+import hypr.social.hangtimeassistant.model.User
 import kotlinx.android.synthetic.main.activity_register.*
 
 class RegisterActivity : AppCompatActivity() {
@@ -28,11 +31,22 @@ class RegisterActivity : AppCompatActivity() {
 
             // try to register the user
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-                .addOnSuccessListener {
+                .addOnSuccessListener { createResult ->
                     Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show()
 
-                    startActivity(Intent(this, LoginActivity::class.java))
-                    finish()
+                    val newUser = User(
+                        createResult.user!!.uid,
+                        text_register_firstname.text.toString().trim(),
+                        text_register_lastname.text.toString().trim(),
+                        email)
+                    HTAFirestore.registerUser(newUser)
+                        .addOnSuccessListener {
+                            startActivity(Intent(this, LoginActivity::class.java))
+                            finish()
+                        }
+                        .addOnFailureListener{
+                            Toast.makeText(this, "Error adding user: " + it.message.toString(), Toast.LENGTH_LONG).show()
+                        }
                 }
                 .addOnFailureListener{
                     Toast.makeText(this, "Registration not successful: " + it.message.toString(), Toast.LENGTH_LONG).show()

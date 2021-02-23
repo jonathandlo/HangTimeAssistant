@@ -80,6 +80,13 @@ interface ContactDao {
         INNER JOIN contact2event ON tbl_event.ID = contact2event.eventID
         WHERE contactID = :pContactID""")
     fun loadEvents(pContactID: Long): List<Event>
+
+    @Query("SELECT * FROM contact2category")
+    fun getAllContact2Category(): List<Contact2Category>
+    @Query("SELECT * FROM contact2event")
+    fun getAllContact2Event(): List<Contact2Event>
+    @Query("SELECT * FROM event2category")
+    fun getAllEvent2Category(): List<Event2Category>
 }
 
 @Dao

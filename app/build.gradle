@@ -94,7 +94,9 @@ dependencies {
 // BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:26.3.0')
 
-// Firebase Authentication library
+// Firebase, Firestore
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
     apply plugin: 'com.google.gms.google-services'
 }

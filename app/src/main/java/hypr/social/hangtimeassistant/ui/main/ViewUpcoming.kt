@@ -1,5 +1,6 @@
 package hypr.social.hangtimeassistant.ui.main
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -151,6 +152,7 @@ class ViewUpcoming : Fragment() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun createDialog(db: HangTimeDB, entry: View, contact: Contact) {
         // create edit dialog
         val editButton = entry.button_remind_item_edit
