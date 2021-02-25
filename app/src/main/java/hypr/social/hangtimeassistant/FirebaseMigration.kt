@@ -1,15 +1,17 @@
 package hypr.social.hangtimeassistant
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.graphics.ColorSpace
 import android.widget.Toast
 import hypr.social.hangtimeassistant.model.Category
 import hypr.social.hangtimeassistant.model.Contact
 import hypr.social.hangtimeassistant.model.Event
 import hypr.social.hangtimeassistant.model.HTAFirestore
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 
 object FirebaseMigration {
     fun migrationToFirebase(context:Context){
@@ -18,77 +20,115 @@ object FirebaseMigration {
 
         AlertDialog.Builder(context)
             .setTitle("Warning")
-            .setMessage("This will delete your cloud data. Proceed?")
-            .setPositiveButton("Yes") { _: DialogInterface, _: Int ->
-                Toast.makeText(context, "Migration starting", Toast.LENGTH_SHORT).show()
-                // TODO: 2/23/2021 implement deleting data
+            .setMessage("Delete cloud data?")
+            .setPositiveButton("Yes, delete") { _: DialogInterface, _: Int ->
+                Toast.makeText(context, "Deleting cloud data...", Toast.LENGTH_SHORT).show()
 
-                // migrate core data
-                db.contactDao().getAll().forEach {
-                    HTAFirestore.add(
-                        Contact(
-                            it.ID.toString(),
-                            it.name,
-                            it.IGUrl,
-                            it.FBUrl,
-                            it.phoneNum,
-                            it.address,
-                            it.reminder,
-                            it.reminderStartDate,
-                            it.reminderCadence,
-                            it.reminderCadenceUnit,
-                            it.reminderDelay,
-                            it.reminderDelayAmount
-                        )
-                    )
-                }
+                CoroutineScope(IO).launch {
+                    HTAFirestore.getAllContacts().forEach {
+                        HTAFirestore.unlink(it)
+                        HTAFirestore.delete(it)
+                    }
+                    HTAFirestore.getAllCategories().forEach {
+                        HTAFirestore.unlink(it)
+                        HTAFirestore.delete(it)
+                    }
+                    HTAFirestore.getAllEvents().forEach {
+                        HTAFirestore.unlink(it)
+                        HTAFirestore.delete(it)
+                    }
 
-                db.categoryDao().getAll().forEach {
-                    HTAFirestore.add(
-                        Category(
-                            it.ID.toString(),
-                            it.color,
-                            it.name
-                        )
-                    )
+                    migrate(context, db)
                 }
-
-                db.eventDao().getAll().forEach {
-                    HTAFirestore.add(
-                        Event(
-                            it.ID.toString(),
-                            it.ID,
-                            it.name,
-                            it.description,
-                            it.address)
-                    )
+            }
+            .setNeutralButton("Migrate without deleting") { _: DialogInterface, _: Int ->
+                CoroutineScope(IO).launch {
+                    migrate(context, db)
                 }
-
-                // migrate associations
-                db.contactDao().getAllContact2Category().forEach {
-                    HTAFirestore.link(
-                        Contact(it.contactID.toString()),
-                        Category(it.categoryID.toString())
-                    )
-                }
-                db.contactDao().getAllContact2Event().forEach {
-                    HTAFirestore.link(
-                        Contact(it.contactID.toString()),
-                        Event(it.eventID.toString())
-                    )
-                }
-                db.contactDao().getAllEvent2Category().forEach {
-                    HTAFirestore.link(
-                        Event(it.eventID.toString()),
-                        Category(it.categoryID.toString())
-                    )
-                }
-
-                Toast.makeText(context, "Migration complete!", Toast.LENGTH_LONG).show()
             }
             .setNegativeButton("Cancel") { _: DialogInterface, _: Int -> }
             .show()
-
-
+        }
     }
+
+    private suspend fun migrate(context: Context, db: HangTimeDB) {
+        withContext(Main) {
+            Toast.makeText(context, "Migration starting...", Toast.LENGTH_SHORT).show()
+        }
+
+        // track mapping between old and new IDs
+        val contactIdMap =  mutableMapOf<Long, String>()
+        val categoryIdMap =  mutableMapOf<Long, String>()
+        val eventIdMap =  mutableMapOf<Long, String>()
+
+        // migrate core data
+        db.contactDao().getAll().forEach {
+            val newID = HTAFirestore.add(
+                Contact(
+                    it.ID.toString(),
+                    it.name,
+                    it.IGUrl,
+                    it.FBUrl,
+                    it.phoneNum,
+                    it.address,
+                    it.reminder,
+                    it.reminderStartDate,
+                    it.reminderCadence,
+                    it.reminderCadenceUnit,
+                    it.reminderDelay,
+                    it.reminderDelayAmount,
+                    it.reminderDelayUnit
+                )
+            )
+
+            contactIdMap[it.ID] = newID
+        }
+
+        db.categoryDao().getAll().forEach {
+            val newID = HTAFirestore.add(
+                Category(
+                    it.ID.toString(),
+                    it.color,
+                    it.name
+                )
+            )
+
+            categoryIdMap[it.ID] = newID
+        }
+
+        db.eventDao().getAll().forEach {
+            val newID = HTAFirestore.add(
+                Event(
+                    it.ID.toString(),
+                    it.ID,
+                    it.name,
+                    it.description,
+                    it.address
+                )
+            )
+
+            eventIdMap[it.ID] = newID
+        }
+
+        // migrate associations
+        db.contactDao().getAllContact2Category().forEach {
+            HTAFirestore.link(
+                Contact(contactIdMap[it.contactID]!!),
+                Category(categoryIdMap[it.categoryID]!!)
+            )
+        }
+        db.contactDao().getAllContact2Event().forEach {
+            HTAFirestore.link(
+                Contact(contactIdMap[it.contactID]!!),
+                Event(eventIdMap[it.eventID]!!)
+            )
+        }
+        db.contactDao().getAllEvent2Category().forEach {
+            HTAFirestore.link(
+                Event(eventIdMap[it.eventID]!!),
+                Category(categoryIdMap[it.categoryID]!!)
+            )
+        }
+
+        withContext(Main) { Toast.makeText(context, "Migration complete!", Toast.LENGTH_LONG).show() }
 }
