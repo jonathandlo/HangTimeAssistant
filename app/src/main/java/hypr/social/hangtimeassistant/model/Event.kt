@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Event (
     // keys
-    val ID: String = "",
+    var ID: String = "",
 
     // attributes
     var date: Long = 0,

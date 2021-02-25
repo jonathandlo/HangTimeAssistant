@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Category (
     // keys
-    val ID: String = "",
+    var ID: String = "",
 
     // attributes
     @ColumnInfo var color: Int = Color.argb(255, 200, 200, 200),
