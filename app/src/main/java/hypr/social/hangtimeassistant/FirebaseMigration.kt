@@ -4,10 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.widget.Toast
-import hypr.social.hangtimeassistant.model.Category
-import hypr.social.hangtimeassistant.model.Contact
-import hypr.social.hangtimeassistant.model.Event
-import hypr.social.hangtimeassistant.model.HTAFirestore
+import hypr.social.hangtimeassistant.model.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
@@ -79,7 +76,7 @@ object FirebaseMigration {
                     it.reminderDelayAmount,
                     it.reminderDelayUnit
                 )
-            )
+            ).ID
 
             contactIdMap[it.ID] = newID
         }
@@ -91,7 +88,7 @@ object FirebaseMigration {
                     it.color,
                     it.name
                 )
-            )
+            ).ID
 
             categoryIdMap[it.ID] = newID
         }
@@ -105,7 +102,7 @@ object FirebaseMigration {
                     it.description,
                     it.address
                 )
-            )
+            ).ID
 
             eventIdMap[it.ID] = newID
         }

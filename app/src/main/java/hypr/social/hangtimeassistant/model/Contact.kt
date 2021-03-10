@@ -1,8 +1,6 @@
 package hypr.social.hangtimeassistant.model
+import android.os.Parcel
 import android.os.Parcelable
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.firebase.encoders.annotations.Encodable
 import com.google.firebase.firestore.Exclude
@@ -14,7 +12,7 @@ import java.time.Instant
 
 @Parcelize
 @IgnoreExtraProperties
-data class Contact (
+open class Contact (
     // keys
     var ID: String = "",
 
@@ -33,13 +31,4 @@ data class Contact (
     var reminderDelay: Boolean = false,
     var reminderDelayAmount: Long = 0,
     var reminderDelayUnit: String = "days"
-) : Parcelable {
-    // meta data
-    class meta{
-        @Exclude
-        @IgnoredOnParcel
-        @Transient
-        @get:Exclude
-        var metaNextReminder: Instant? = Instant.EPOCH
-    }
-}
+) : Parcelable

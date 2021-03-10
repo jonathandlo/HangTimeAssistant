@@ -1,5 +1,7 @@
 package hypr.social.hangtimeassistant.model
 
+import android.os.Debug
+import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
@@ -36,29 +38,29 @@ object HTAFirestore {
 
     // Set functions
 
-    fun add(pItem: Contact): String {
+    fun add(pItem: Contact): Contact {
         // create a new ID
         val id = userDoc.collection(Constants.CONTACTS).document().id
         pItem.ID = id
 
         userDoc.collection(Constants.CONTACTS).document(id).set(pItem)
-        return id
+        return pItem
     }
-    fun add(pItem: Category): String {
+    fun add(pItem: Category): Category {
         // create a new ID
         val id = userDoc.collection(Constants.CATEGORIES).document().id
         pItem.ID = id
 
         userDoc.collection(Constants.CATEGORIES).document(id).set(pItem)
-        return id
+        return pItem
     }
-    fun add(pItem: Event): String {
+    fun add(pItem: Event): Event {
         // create a new ID
         val id = userDoc.collection(Constants.EVENTS).document().id
         pItem.ID = id
 
         userDoc.collection(Constants.EVENTS).document(id).set(pItem)
-        return id
+        return pItem
     }
 
     fun update(pItem: Contact) {
@@ -83,25 +85,22 @@ object HTAFirestore {
 
 
     fun link(pContact: Contact, pCategory: Category){
-        val id = userDoc.collection(Constants.CONTACTS_2_CATEGORIES).document().id
-        userDoc.collection(Constants.CONTACTS_2_CATEGORIES).document(id)
-            .set(Contact2Category(
+        val id = userDoc.collection(Constants.CONTACTS_2_CATEGORIES)
+            .add(Contact2Category(
                 pContact.ID,
                 pCategory.ID
             ))
     }
     fun link(pContact: Contact, pEvent: Event){
-        val id = userDoc.collection(Constants.CONTACTS_2_CATEGORIES).document().id
-        userDoc.collection(Constants.CONTACTS_2_EVENTS).document(id)
-            .set(Contact2Event(
+        val id = userDoc.collection(Constants.CONTACTS_2_EVENTS)
+            .add(Contact2Event(
                 pContact.ID,
                 pEvent.ID
             ))
     }
     fun link(pEvent: Event, pCategory: Category){
-        val id = userDoc.collection(Constants.CONTACTS_2_CATEGORIES).document().id
-        userDoc.collection(Constants.EVENTS_2_CATEGORIES).document(id)
-            .set(Event2Category(
+        val id = userDoc.collection(Constants.EVENTS_2_CATEGORIES)
+            .add(Event2Category(
                 pEvent.ID,
                 pCategory.ID
             ))
@@ -112,8 +111,7 @@ object HTAFirestore {
         userDoc.collection(Constants.CONTACTS_2_CATEGORIES)
             .whereEqualTo("contactID", pContact.ID)
             .whereEqualTo("categoryID", pCategory.ID)
-            .get().await()
-            .documents.forEach {
+            .get().await().documents.forEach {
                 it.reference.delete()
             }
     }
@@ -121,8 +119,7 @@ object HTAFirestore {
         userDoc.collection(Constants.CONTACTS_2_EVENTS)
             .whereEqualTo("contactID", pContact.ID)
             .whereEqualTo("eventID", pEvent.ID)
-            .get().await()
-            .documents.forEach {
+            .get().await().documents.forEach {
                 it.reference.delete()
             }
     }
@@ -188,22 +185,33 @@ object HTAFirestore {
     }
 
     suspend fun getCategories(pItem: Contact) : List<Category> {
-        return userDoc.collection(Constants.CATEGORIES)
-            .whereIn("ID", userDoc
-                .collection(Constants.CONTACTS_2_CATEGORIES)
-                .whereEqualTo("contactID", pItem.ID)
-                .get().await().toObjects(Contact2Category::class.java).map{ it.categoryID }
-            )
-            .get().await().toObjects(Category::class.java)
+
+        Log.e("DEBUG", "Network get categories. Contact '${pItem.name}', ID '${pItem.ID}'")
+
+        val linkedCategoryIds = userDoc
+            .collection(Constants.CONTACTS_2_CATEGORIES)
+            .whereEqualTo("contactID", pItem.ID)
+            .get().await().toObjects(Contact2Category::class.java).map{ it.categoryID }
+
+        return if(linkedCategoryIds.isEmpty())
+            emptyList()
+        else linkedCategoryIds.mapNotNull {
+            userDoc.collection(Constants.CATEGORIES).document(it)
+                .get().await().toObject(Category::class.java)
+        }
     }
     suspend fun getEvents(pItem: Contact) : List<Event> {
-        return userDoc.collection(Constants.EVENTS)
-            .whereIn("ID", userDoc
-                .collection(Constants.CONTACTS_2_CATEGORIES)
-                .whereEqualTo("contactID", pItem.ID)
-                .get().await().toObjects(Contact2Event::class.java).map{ it.eventID }
-            )
-            .get().await().toObjects(Event::class.java)
+        val linkedEventIds = userDoc
+            .collection(Constants.CONTACTS_2_EVENTS)
+            .whereEqualTo("contactID", pItem.ID)
+            .get().await().toObjects(Contact2Event::class.java).map{ it.eventID }
+
+        return if(linkedEventIds.isEmpty())
+            emptyList()
+        else linkedEventIds.mapNotNull {
+            userDoc.collection(Constants.EVENTS).document(it)
+                .get().await().toObject(Event::class.java)
+        }
     }
 
     suspend fun getAllContacts() : List<Contact> {
@@ -226,19 +234,19 @@ object HTAFirestore {
         return userDoc.collection(Constants.EVENTS).document(pItem.ID).get().await().exists()
     }
 
-    suspend fun exists(pContact: Contact, pCategory: Category) : Boolean {
+    suspend fun linked(pContact: Contact, pCategory: Category) : Boolean {
         return !userDoc.collection(Constants.CONTACTS_2_CATEGORIES)
             .whereEqualTo("contactID", pContact.ID)
             .whereEqualTo("categoryID", pCategory.ID)
             .get().await().isEmpty
     }
-    suspend fun exists(pContact: Contact, pEvent: Event) : Boolean {
+    suspend fun linked(pContact: Contact, pEvent: Event) : Boolean {
         return !userDoc.collection(Constants.CONTACTS_2_EVENTS)
             .whereEqualTo("contactID", pContact.ID)
             .whereEqualTo("eventID", pEvent.ID)
             .get().await().isEmpty
     }
-    suspend fun exists(pEvent: Event, pCategory: Category) : Boolean {
+    suspend fun linked(pEvent: Event, pCategory: Category) : Boolean {
         return !userDoc.collection(Constants.EVENTS_2_CATEGORIES)
             .whereEqualTo("eventID", pEvent.ID)
             .whereEqualTo("categoryID", pCategory.ID)

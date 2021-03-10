@@ -15,18 +15,20 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import hypr.social.hangtimeassistant.*
-import hypr.social.hangtimeassistant.Contact
-import hypr.social.hangtimeassistant.Event
-import hypr.social.hangtimeassistant.HangTimeDB
+import androidx.lifecycle.lifecycleScope
+import hypr.social.hangtimeassistant.R
+import hypr.social.hangtimeassistant.model.*
 import kotlinx.android.synthetic.main.fragment_events.*
 import kotlinx.android.synthetic.main.fragment_events.textinput_cont_search
 import kotlinx.android.synthetic.main.item_event.view.*
 import kotlinx.android.synthetic.main.item_event_detail.view.*
 import kotlinx.android.synthetic.main.item_event_detail_guest.view.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * A placeholder fragment containing a simple view.
@@ -63,7 +65,7 @@ class ViewEvents : Fragment() {
             if (thisQuery == displayedQuery) return@doOnTextChanged
             println("new search query: $thisQuery")
 
-            GlobalScope.launch {
+            lifecycleScope.launch(IO) {
                 delay(500)
 
                 // leave if this is not the latest search
@@ -71,7 +73,7 @@ class ViewEvents : Fragment() {
                 println("launching search: $thisQuery")
 
                 // trigger a new search
-                activity!!.runOnUiThread {
+                withContext(Main) {
                     listEvents(thisQuery)
                     displayedQuery = thisQuery
                 }
@@ -80,9 +82,13 @@ class ViewEvents : Fragment() {
 
         // configure the add event button
         button_event_add.setOnClickListener {
-            val db = HangTimeDB.getDatabase(this.context!!)
-            val eventView = addItem(db.eventDao().getRow(db.eventDao().insert(Event())), db)
-            eventView.button_event_detail.performClick()
+            lifecycleScope.launch(IO) {
+                val eventView = addItem(HTAFirestore.add(Event()))
+
+                withContext(Main) {
+                    eventView.button_event_detail.performClick()
+                }
+            }
         }
     }
 
@@ -100,76 +106,87 @@ class ViewEvents : Fragment() {
 
     private fun listEvents(searchTerm: String = ""){
         // populate the view with events
-        val db = HangTimeDB.getDatabase(this.context!!)
         layout_event_items.removeAllViews()
 
-        for (event in db.eventDao().getAll()){
-            if (searchTerm.isNotEmpty()
-                && !event.name.contains(searchTerm, true)
-                && !event.address.contains(searchTerm, true)
-                && !event.description.contains(searchTerm, true)) continue
+        lifecycleScope.launch(IO) {
+            for (event in HTAFirestore.getAllEvents()) {
+                if (searchTerm.isNotEmpty()
+                    && !event.name.contains(searchTerm, true)
+                    && !event.address.contains(searchTerm, true)
+                    && !event.description.contains(searchTerm, true)
+                ) continue
 
-            addItem(event, db)
+                addItem(event)
+            }
         }
     }
 
-    private fun addItem(event: Event, db: HangTimeDB) : View {
-        val newEventItem = layoutInflater.inflate(R.layout.item_event, null)
-        newEventItem.id = View.generateViewId()
+    private suspend fun addItem(event: Event) : View {
+        return withContext(Main) {
+            val newEventItem = layoutInflater.inflate(R.layout.item_event, null)
+            newEventItem.id = View.generateViewId()
 
-        // configure name textbox
-        val textName = newEventItem.text_event_name
-        DrawableCompat.setTint(DrawableCompat.wrap(textName.background).mutate(), Color.TRANSPARENT)
-        textName.id = View.generateViewId()
-        textName.text = event.name
+            // configure name textbox
+            val textName = newEventItem.text_event_name
+            DrawableCompat.setTint(DrawableCompat.wrap(textName.background).mutate(), Color.TRANSPARENT)
+            textName.id = View.generateViewId()
+            textName.text = event.name
 
-        // configure list button/dialog
-        val listButton = newEventItem.button_event_detail
-        listButton.setOnClickListener {
-            val dialogView = createEventListDialog(event, db)
-            val alertDialog = AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
-                .setView(dialogView)
-                .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int -> }
-                .setOnDismissListener {
-                    event.name = dialogView.text_event_name_edit.text.toString()
-                    db.eventDao().update(event)
-                    textName.text = event.name
-                }
-                .create()
+            // configure list button/dialog
+            val listButton = newEventItem.button_event_detail
+            listButton.setOnClickListener {
+                val dialogView = createEventListDialog(event)
+                val alertDialog = AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
+                    .setView(dialogView)
+                    .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int -> }
+                    .setOnDismissListener {
+                        event.name = dialogView.text_event_name_edit.text.toString()
+                        textName.text = event.name
 
-            // configure delete button
-            dialogView.button_event_delete.setOnClickListener {
-                AlertDialog.Builder(context!!)
-                    .setTitle("Delete event?")
-                    .setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
-                        it.isClickable = false
-                        db.eventDao().delete(event)
-                        db.eventDao().deleteAssociations(event.ID)
-                        alertDialog.dismiss()
-                        newEventItem.animate()
-                            .alpha(0f)
-                            .withEndAction {
-                                newEventItem.visibility = View.GONE
-                                layout_event_items.removeView(newEventItem)
-                            }
+                        lifecycleScope.launch(IO) {
+                            HTAFirestore.update(event)
+                        }
                     }
-                    .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int -> }
                     .create()
-                    .show()
+
+                // configure delete button
+                dialogView.button_event_delete.setOnClickListener {
+                    AlertDialog.Builder(context!!)
+                        .setTitle("Delete event?")
+                        .setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
+                            it.isClickable = false
+
+                            lifecycleScope.launch(IO) {
+                                HTAFirestore.unlink(event)
+                                HTAFirestore.delete(event)
+                            }
+
+                            alertDialog.dismiss()
+                            newEventItem.animate()
+                                .alpha(0f)
+                                .withEndAction {
+                                    newEventItem.visibility = View.GONE
+                                    layout_event_items.removeView(newEventItem)
+                                }
+                        }
+                        .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int -> }
+                        .create()
+                        .show()
+                }
+
+                alertDialog.show()
             }
 
-            alertDialog.show()
+            newEventItem.alpha = 0f
+            newEventItem.animate().alpha(1f)
+
+            layout_event_items.addView(newEventItem)
+            return@withContext newEventItem
         }
-
-        newEventItem.alpha = 0f
-        newEventItem.animate().alpha(1f)
-
-        layout_event_items.addView(newEventItem)
-        return newEventItem
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun createEventListDialog(event: Event, db: HangTimeDB): View {
+    private fun createEventListDialog(event: Event): View {
         // inflate the dialog view
         val dialogView = layoutInflater.inflate(R.layout.item_event_detail, null)
         val nameEdit = dialogView.text_event_name_edit
@@ -191,9 +208,15 @@ class ViewEvents : Fragment() {
         // populate attendee/available list
         dialogView.layout_event_guests.removeAllViews()
         dialogView.layout_event_availables.removeAllViews()
-        for (contact in db.contactDao().getAll()){
-            val linked = db.contactDao().countEvents(contact.ID, event.ID) > 0
-            configureContactItem(dialogView, linked, contact, event, db)
+
+        lifecycleScope.launch(IO) {
+            for (contact in HTAFirestore.getAllContacts()) {
+                val linked = HTAFirestore.linked(contact, event)
+
+                withContext(Main) {
+                    configureContactItem(dialogView, linked, contact, event)
+                }
+            }
         }
 
         // open the soft keyboard for new contacts
@@ -207,16 +230,19 @@ class ViewEvents : Fragment() {
         return dialogView
     }
 
-    private fun configureContactItem(dialogView: View, linked: Boolean, contact: Contact, event: Event, db: HangTimeDB): View{
+    private fun configureContactItem(dialogView: View, linked: Boolean, contact: Contact, event: Event): View{
         if (linked) {
             val guestItem = layoutInflater.inflate(R.layout.item_event_detail_guest, null)
             guestItem.text_event_guest_name.text = contact.name
 
             // configure buttons
             guestItem.button_event_guest_remove.setOnClickListener {
-                db.contactDao().unlinkEvent(contact.ID, event.ID)
+                lifecycleScope.launch(IO) {
+                    HTAFirestore.unlink(contact, event)
+                }
+
                 dialogView.layout_event_guests.removeView(guestItem)
-                configureContactItem(dialogView,false, contact, event, db)
+                configureContactItem(dialogView,false, contact, event)
             }
 
             dialogView.layout_event_guests.addView(guestItem)
@@ -235,10 +261,12 @@ class ViewEvents : Fragment() {
 
                 // convert to guest on click
                 setOnClickListener {
-                    db.contactDao().linkEvent(contact.ID, event.ID)
-                    dialogView.layout_event_availables.removeView(this)
+                    lifecycleScope.launch(IO) {
+                        HTAFirestore.link(contact, event)
+                    }
 
-                    configureContactItem(dialogView,true, contact, event, db)
+                    dialogView.layout_event_availables.removeView(this)
+                    configureContactItem(dialogView,true, contact, event)
                 }
             }
 

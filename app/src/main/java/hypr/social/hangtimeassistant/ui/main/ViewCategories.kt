@@ -15,18 +15,22 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import hypr.social.hangtimeassistant.*
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
-import hypr.social.hangtimeassistant.Category
-import hypr.social.hangtimeassistant.Contact
-import hypr.social.hangtimeassistant.HangTimeDB
+import hypr.social.hangtimeassistant.model.Category
+import hypr.social.hangtimeassistant.model.Contact
+import hypr.social.hangtimeassistant.model.HTAFirestore
 import kotlinx.android.synthetic.main.fragment_categories.*
 import kotlinx.android.synthetic.main.item_category.view.*
 import kotlinx.android.synthetic.main.item_category_detail.view.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * A placeholder fragment containing a simple view.
@@ -63,7 +67,7 @@ class ViewCategories : Fragment() {
             if (thisQuery == displayedQuery) return@doOnTextChanged
             println("new search query: $thisQuery")
 
-            GlobalScope.launch {
+            lifecycleScope.launch(IO) {
                 delay(500)
 
                 // leave if this is not the latest search
@@ -71,7 +75,7 @@ class ViewCategories : Fragment() {
                 println("launching search: $thisQuery")
 
                 // trigger a new search
-                activity!!.runOnUiThread {
+                withContext(Main) {
                     listCategories(thisQuery)
                     displayedQuery = thisQuery
                 }
@@ -80,11 +84,15 @@ class ViewCategories : Fragment() {
 
         // configure the add categories button
         button_cat_add.setOnClickListener {
-            val db = HangTimeDB.getDatabase(this.context!!)
-            val categoryView = addItem(db.categoryDao().getRow(db.categoryDao().insert(Category())), db)
-            categoryView.button_cat_detail.performClick()
-            ViewContacts.getInstance().needsUpdating = true
-            ViewMap.getInstance().needsUpdating = true
+            lifecycleScope.launch(IO) {
+                val categoryView = addItem(HTAFirestore.add(Category()))
+                ViewContacts.getInstance().needsUpdating = true
+                ViewMap.getInstance().needsUpdating = true
+
+                withContext(Main) {
+                    categoryView.button_cat_detail.performClick()
+                }
+            }
         }
     }
 
@@ -102,80 +110,90 @@ class ViewCategories : Fragment() {
 
     private fun listCategories(searchTerm: String = ""){
         // populate the view with category entries
-        val db = HangTimeDB.getDatabase(this.context!!)
         layout_cat_items.removeAllViews()
 
-        for (category in db.categoryDao().getAll()){
-            if (searchTerm.isNotEmpty()
-                && !category.name.contains(searchTerm, true)) continue
+        lifecycleScope.launch(IO) {
+            for (category in HTAFirestore.getAllCategories()) {
+                if (searchTerm.isNotEmpty()
+                    && !category.name.contains(searchTerm, true)
+                ) continue
 
-            addItem(category, db)
+                addItem(category)
+            }
         }
     }
 
-    private fun addItem(category: Category, db: HangTimeDB) : View {
-        val newCatItem = layoutInflater.inflate(R.layout.item_category, null)
-        newCatItem.id = View.generateViewId()
+    private suspend fun addItem(category: Category) : View {
+        return withContext(Main) {
+            val newCatItem = layoutInflater.inflate(R.layout.item_category, null)
+            newCatItem.id = View.generateViewId()
 
-        // configure name textbox
-        val textName = newCatItem.text_cat_name
-        DrawableCompat.setTint(DrawableCompat.wrap(textName.background).mutate(), Color.TRANSPARENT)
-        textName.id = View.generateViewId()
-        textName.text = category.name
+            // configure name textbox
+            val textName = newCatItem.text_cat_name
+            DrawableCompat.setTint(DrawableCompat.wrap(textName.background).mutate(), Color.TRANSPARENT)
+            textName.id = View.generateViewId()
+            textName.text = category.name
 
-        // configure color button style
-        val colorButton = newCatItem.button_cat_color
-        DrawableCompat.setTint(DrawableCompat.wrap(colorButton.background).mutate(), category.color)
-        colorButton.setOnClickListener {
-            ColorPickerDialogBuilder
-                .with(context)
-                .setTitle("Choose a category color")
-                .initialColor(category.color)
-                .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                .density(9)
-                .lightnessSliderOnly()
-                .showColorPreview(true)
-                .setOnColorSelectedListener { }
-                .setPositiveButton("OK") { dialog, selectedColor, allColors ->
-                    category.color = selectedColor
-                    db.categoryDao().update(category)
-                    ViewContacts.getInstance().needsUpdating = true
-                    ViewMap.getInstance().needsUpdating = true
+            // configure color button style
+            val colorButton = newCatItem.button_cat_color
+            DrawableCompat.setTint(DrawableCompat.wrap(colorButton.background).mutate(), category.color)
+            colorButton.setOnClickListener {
+                ColorPickerDialogBuilder
+                    .with(context)
+                    .setTitle("Choose a category color")
+                    .initialColor(category.color)
+                    .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                    .density(9)
+                    .lightnessSliderOnly()
+                    .showColorPreview(true)
+                    .setOnColorSelectedListener { }
+                    .setPositiveButton("OK") { dialog, selectedColor, allColors ->
+                        category.color = selectedColor
+                        DrawableCompat.setTint(DrawableCompat.wrap(colorButton.background).mutate(), category.color)
 
-                    DrawableCompat.setTint(DrawableCompat.wrap(colorButton.background).mutate(), category.color)
-                }
-                .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int -> }
-                .build()
-                .show()
-        }
+                        lifecycleScope.launch(IO) {
+                            HTAFirestore.update(category)
+                            ViewContacts.getInstance().needsUpdating = true
+                            ViewMap.getInstance().needsUpdating = true
+                        }
+                    }
+                    .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int -> }
+                    .build()
+                    .show()
+            }
 
-        // configure list button/dialog
-        val listButton = newCatItem.button_cat_detail
-        listButton.setOnClickListener {
-            val dialogView = createCategoryListDialog(category, db)
-            val alertDialog = AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
-                .setView(dialogView)
-                .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int -> }
-                .setOnDismissListener {
-                    category.name = dialogView.text_cat_name_edit.text.toString()
-                    db.categoryDao().update(category)
-                    ViewContacts.getInstance().needsUpdating = true
-                    ViewMap.getInstance().needsUpdating = true
+            // configure list button/dialog
+            val listButton = newCatItem.button_cat_detail
+            listButton.setOnClickListener {
+                val dialogView = createCategoryListDialog(category)
+                val alertDialog = AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
+                    .setView(dialogView)
+                    .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int -> }
+                    .setOnDismissListener {
+                        category.name = dialogView.text_cat_name_edit.text.toString()
+                        textName.text = category.name
 
-                    textName.text = category.name
-                }
-                .create()
+                        lifecycleScope.launch(IO) {
+                            HTAFirestore.update(category)
+                            ViewContacts.getInstance().needsUpdating = true
+                            ViewMap.getInstance().needsUpdating = true
+                        }
+                    }
+                    .create()
 
-            // configure delete button
-            dialogView.button_cat_delete.setOnClickListener {
+                // configure delete button
+                dialogView.button_cat_delete.setOnClickListener {
                     AlertDialog.Builder(context!!)
                         .setTitle("Delete category?")
                         .setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
                             it.isClickable = false
-                            db.categoryDao().delete(category)
-                            db.categoryDao().deleteAssociations(category.ID)
-                            ViewContacts.getInstance().needsUpdating = true
-                            ViewMap.getInstance().needsUpdating = true
+
+                            lifecycleScope.launch(IO) {
+                                HTAFirestore.unlink(category)
+                                HTAFirestore.delete(category)
+                                ViewContacts.getInstance().needsUpdating = true
+                                ViewMap.getInstance().needsUpdating = true
+                            }
 
                             alertDialog.dismiss()
                             newCatItem.animate()
@@ -188,20 +206,21 @@ class ViewCategories : Fragment() {
                         .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int -> }
                         .create()
                         .show()
+                }
+
+                alertDialog.show()
             }
 
-            alertDialog.show()
+            newCatItem.alpha = 0f
+            newCatItem.animate().alpha(1f)
+
+            layout_cat_items.addView(newCatItem)
+            return@withContext newCatItem
         }
-
-        newCatItem.alpha = 0f
-        newCatItem.animate().alpha(1f)
-
-        layout_cat_items.addView(newCatItem)
-        return newCatItem
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun createCategoryListDialog(category: Category, db: HangTimeDB): View {
+    private fun createCategoryListDialog(category: Category): View {
         // inflate the dialog view
         val dialogView = layoutInflater.inflate(R.layout.item_category_detail, null)
         val nameEdit = dialogView.text_cat_name_edit
@@ -221,23 +240,26 @@ class ViewCategories : Fragment() {
         nameEdit.requestFocus()
 
         // populate contact lists
-        for (contact in db.contactDao().getAll()){
-            val button = Button(context).apply {
-                id = View.generateViewId()
+        lifecycleScope.launch(IO) {
+            for (contact in HTAFirestore.getAllContacts()) {
+                val linked = HTAFirestore.linked(contact, category)
 
-                minimumWidth = 0
-                minWidth = 0
-                minimumHeight = 0
-                minHeight = 0
-                setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
-                text = contact.name
+                withContext(Main) {
+                    val button = Button(context).apply {
+                        id = View.generateViewId()
+                        minimumWidth = 0
+                        minWidth = 0
+                        minimumHeight = 0
+                        minHeight = 0
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
+                        text = contact.name
+                    }
 
-                // configure button based on linked state
-                val linked = db.contactDao().countCategories(contact.ID, category.ID) > 0
-
-                configureButton(this, dialogView, linked, contact, category, db)
-                if (linked) dialogView.layout_cat_linkedcontacts.addView(this)
-                else dialogView.layout_cat_unlinkedcontacts.addView(this)
+                    // configure button based on linked state
+                    configureButton(button, dialogView, linked, contact, category)
+                    if (linked) dialogView.layout_cat_linkedcontacts.addView(button)
+                    else dialogView.layout_cat_unlinkedcontacts.addView(button)
+                }
             }
         }
 
@@ -252,7 +274,7 @@ class ViewCategories : Fragment() {
         return dialogView
     }
 
-    private fun configureButton(button: Button, dialogView: View, linked: Boolean, contact: Contact, category: Category, db: HangTimeDB){
+    private fun configureButton(button: Button, dialogView: View, linked: Boolean, contact: Contact, category: Category){
         button.apply {
             if (linked) {
                 setTextColor(Color.argb(110, 0, 0, 0))
@@ -260,13 +282,16 @@ class ViewCategories : Fragment() {
 
                 // remove association on click
                 setOnClickListener {
-                    db.contactDao().unlinkCategory(contact.ID, category.ID)
                     dialogView.layout_cat_linkedcontacts.removeView(this)
                     dialogView.layout_cat_unlinkedcontacts.addView(this)
-                    ViewContacts.getInstance().needsUpdating = true
-                    ViewMap.getInstance().needsUpdating = true
 
-                    configureButton(button, dialogView,false, contact, category, db)
+                    lifecycleScope.launch(IO) {
+                        HTAFirestore.unlink(contact, category)
+                        ViewContacts.getInstance().needsUpdating = true
+                        ViewMap.getInstance().needsUpdating = true
+                    }
+
+                    configureButton(button, dialogView,false, contact, category)
                 }
             } else {
                 val backColor = Color.rgb(
@@ -279,13 +304,16 @@ class ViewCategories : Fragment() {
 
                 // add association on click
                 setOnClickListener {
-                    db.contactDao().linkCategory(contact.ID, category.ID)
                     dialogView.layout_cat_unlinkedcontacts.removeView(this)
                     dialogView.layout_cat_linkedcontacts.addView(this)
-                    ViewContacts.getInstance().needsUpdating = true
-                    ViewMap.getInstance().needsUpdating = true
 
-                    configureButton(button, dialogView,true, contact, category, db)
+                    lifecycleScope.launch(IO) {
+                        HTAFirestore.link(contact, category)
+                        ViewContacts.getInstance().needsUpdating = true
+                        ViewMap.getInstance().needsUpdating = true
+                    }
+
+                    configureButton(button, dialogView,true, contact, category)
                 }
             }
         }
