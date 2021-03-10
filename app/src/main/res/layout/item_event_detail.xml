@@ -42,16 +42,17 @@
                 android:text="Guest List (0)"
                 android:textSize="18sp" />
 
-            <TableLayout
+            <LinearLayout
                 android:id="@+id/layout_event_guests"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
 
                 <include layout="@layout/item_event_detail_guest" />
-            </TableLayout>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
