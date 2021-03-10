@@ -185,9 +185,6 @@ object HTAFirestore {
     }
 
     suspend fun getCategories(pItem: Contact) : List<Category> {
-
-        Log.e("DEBUG", "Network get categories. Contact '${pItem.name}', ID '${pItem.ID}'")
-
         val linkedCategoryIds = userDoc
             .collection(Constants.CONTACTS_2_CATEGORIES)
             .whereEqualTo("contactID", pItem.ID)

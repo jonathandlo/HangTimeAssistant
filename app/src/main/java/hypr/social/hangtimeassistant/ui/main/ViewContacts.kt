@@ -320,33 +320,24 @@ class ViewContacts : Fragment() {
         // show categories
         collapsible.flexbox_categories.removeAllViews()
 
-        withContext(IO){
-            Log.e("DEBUG", "Try get linked categories for '${contact.name}'")
-            val linkedCategories = HTAFirestore.getCategories(contact)
+        val linkedCategories = withContext(IO){ HTAFirestore.getCategories(contact) }
+        for (category in linkedCategories) {
+            collapsible.flexbox_categories.addView(Button(context).apply {
+                id = View.generateViewId()
 
-            Log.e("DEBUG", "${linkedCategories.size} linked categories found, adding buttons")
+                minimumWidth = 0
+                minWidth = 0
+                minimumHeight = 0
+                minHeight = 0
+                setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
+                text = category.name
 
-            for (category in linkedCategories) {
-                Log.e("DEBUG", "adding cat button '${category.name}'")
-
-                withContext(Main) {
-                    collapsible.flexbox_categories.addView(Button(context).apply {
-                        id = View.generateViewId()
-
-                        minimumWidth = 0
-                        minWidth = 0
-                        minimumHeight = 0
-                        minHeight = 0
-                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
-                        text = category.name
-
-                        // darken unassociated categories
-                        setTextColor(Color.argb(110, 0, 0, 0))
-                        DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), category.color)
-                    })
-                }
-            }
+                // darken unassociated categories
+                setTextColor(Color.argb(110, 0, 0, 0))
+                DrawableCompat.setTint(DrawableCompat.wrap(background).mutate(), category.color)
+            })
         }
+
     }
 
     var lastLocation : LatLng? = null
