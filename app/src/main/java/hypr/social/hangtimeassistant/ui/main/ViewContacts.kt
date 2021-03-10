@@ -484,15 +484,16 @@ class ViewContacts : Fragment() {
                     // darken unassociated categories
                     var showColor = category.color
 
-                    if (linked) {
+                    if (linked)
+                        categoryCard.setTextColor(Color.argb(110, 0, 0, 0))
+                    else{
                         showColor = Color.rgb(
                             Color.red(showColor) / 4 + 50,
                             Color.green(showColor) / 4 + 50,
                             Color.blue(showColor) / 4 + 50
                         )
                         categoryCard.setTextColor(Color.argb(55, 255, 255, 255))
-                    } else
-                        categoryCard.setTextColor(Color.argb(110, 0, 0, 0))
+                    }
 
                     DrawableCompat.setTint(DrawableCompat.wrap(categoryCard.background).mutate(), showColor)
 
