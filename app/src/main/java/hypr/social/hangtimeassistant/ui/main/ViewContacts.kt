@@ -132,7 +132,8 @@ class ViewContacts : Fragment() {
 
         // populate the view with contacts
         lifecycleScope.launch(IO) {
-            for (contact in HTAFirestore.getAllContacts()) {
+            val contacts = HTAFirestore.getAllContacts()
+            for (contact in contacts) {
                 if (searchTerm.isNotEmpty()
                     && !contact.name.contains(searchTerm, true)
                     && !contact.address.contains(searchTerm, true)
@@ -140,10 +141,10 @@ class ViewContacts : Fragment() {
                     && !contact.FBUrl.contains(searchTerm, true)
                     && !contact.IGUrl.contains(searchTerm, true)
                 ) continue
-                
-                withContext(Main) {
+
+                lifecycleScope.launch(IO) {
                     val contactView = addItem(contact)
-                    layout_cont_items.addView(contactView)
+                    withContext(Main){ layout_cont_items.addView(contactView) }
                 }
             }
         }
@@ -465,8 +466,8 @@ class ViewContacts : Fragment() {
         // show categories
         collapsible.flexbox_categories.removeAllViews()
 
-        withContext(IO) {
-            for (category in HTAFirestore.getAllCategories()) {
+        for (category in withContext(IO) { HTAFirestore.getAllCategories() }) {
+            lifecycleScope.launch(IO) {
                 val linked = HTAFirestore.linked(contact, category)
 
                 withContext(Main) {
@@ -486,7 +487,7 @@ class ViewContacts : Fragment() {
 
                     if (linked)
                         categoryCard.setTextColor(Color.argb(110, 0, 0, 0))
-                    else{
+                    else {
                         showColor = Color.rgb(
                             Color.red(showColor) / 4 + 50,
                             Color.green(showColor) / 4 + 50,
