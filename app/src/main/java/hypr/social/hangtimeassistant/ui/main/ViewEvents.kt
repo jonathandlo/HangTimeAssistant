@@ -100,22 +100,22 @@ class ViewEvents : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if (needsUpdating) listEvents()
+        if (needsUpdating) lifecycleScope.launch(IO) { listEvents() }
         needsUpdating = false
     }
 
-    private fun listEvents(searchTerm: String = ""){
+    private suspend fun listEvents(searchTerm: String = ""){
         // populate the view with events
-        layout_event_items.removeAllViews()
+        withContext(Main) { layout_event_items.removeAllViews() }
 
-        lifecycleScope.launch(IO) {
-            for (event in HTAFirestore.getAllEvents()) {
-                if (searchTerm.isNotEmpty()
-                    && !event.name.contains(searchTerm, true)
-                    && !event.address.contains(searchTerm, true)
-                    && !event.description.contains(searchTerm, true)
-                ) continue
+        for (event in HTAFirestore.getAllEvents()) {
+            if (searchTerm.isNotEmpty()
+                && !event.name.contains(searchTerm, true)
+                && !event.address.contains(searchTerm, true)
+                && !event.description.contains(searchTerm, true)
+            ) continue
 
+            lifecycleScope.launch(IO) {
                 addItem(event)
             }
         }
@@ -135,46 +135,48 @@ class ViewEvents : Fragment() {
             // configure list button/dialog
             val listButton = newEventItem.button_event_detail
             listButton.setOnClickListener {
-                val dialogView = createEventListDialog(event)
-                val alertDialog = AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
-                    .setView(dialogView)
-                    .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int -> }
-                    .setOnDismissListener {
-                        event.name = dialogView.text_event_name_edit.text.toString()
-                        textName.text = event.name
-
-                        lifecycleScope.launch(IO) {
-                            HTAFirestore.update(event)
-                        }
-                    }
-                    .create()
-
-                // configure delete button
-                dialogView.button_event_delete.setOnClickListener {
-                    AlertDialog.Builder(context!!)
-                        .setTitle("Delete event?")
-                        .setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
-                            it.isClickable = false
+                lifecycleScope.launch(Main) {
+                    val dialogView = createEventListDialog(event)
+                    val alertDialog = AlertDialog.Builder(context!!, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
+                        .setView(dialogView)
+                        .setPositiveButton("Close") { dialogInterface: DialogInterface, i: Int -> }
+                        .setOnDismissListener {
+                            event.name = dialogView.text_event_name_edit.text.toString()
+                            textName.text = event.name
 
                             lifecycleScope.launch(IO) {
-                                HTAFirestore.unlink(event)
-                                HTAFirestore.delete(event)
+                                HTAFirestore.update(event)
                             }
-
-                            alertDialog.dismiss()
-                            newEventItem.animate()
-                                .alpha(0f)
-                                .withEndAction {
-                                    newEventItem.visibility = View.GONE
-                                    layout_event_items.removeView(newEventItem)
-                                }
                         }
-                        .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int -> }
                         .create()
-                        .show()
-                }
 
-                alertDialog.show()
+                    // configure delete button
+                    dialogView.button_event_delete.setOnClickListener {
+                        AlertDialog.Builder(context!!)
+                            .setTitle("Delete event?")
+                            .setPositiveButton("OK") { dialogInterface: DialogInterface, i: Int ->
+                                it.isClickable = false
+
+                                lifecycleScope.launch(IO) {
+                                    HTAFirestore.unlink(event)
+                                    HTAFirestore.delete(event)
+                                }
+
+                                alertDialog.dismiss()
+                                newEventItem.animate()
+                                    .alpha(0f)
+                                    .withEndAction {
+                                        newEventItem.visibility = View.GONE
+                                        layout_event_items.removeView(newEventItem)
+                                    }
+                            }
+                            .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int -> }
+                            .create()
+                            .show()
+                    }
+
+                    alertDialog.show()
+                }
             }
 
             newEventItem.alpha = 0f
@@ -186,7 +188,7 @@ class ViewEvents : Fragment() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun createEventListDialog(event: Event): View {
+    private suspend fun createEventListDialog(event: Event): View {
         // inflate the dialog view
         val dialogView = layoutInflater.inflate(R.layout.item_event_detail, null)
         val nameEdit = dialogView.text_event_name_edit
@@ -209,8 +211,8 @@ class ViewEvents : Fragment() {
         dialogView.layout_event_guests.removeAllViews()
         dialogView.layout_event_availables.removeAllViews()
 
-        lifecycleScope.launch(IO) {
-            for (contact in HTAFirestore.getAllContacts()) {
+        for (contact in withContext(IO) { HTAFirestore.getAllContacts() }) {
+            lifecycleScope.launch(IO) {
                 val linked = HTAFirestore.linked(contact, event)
 
                 withContext(Main) {
