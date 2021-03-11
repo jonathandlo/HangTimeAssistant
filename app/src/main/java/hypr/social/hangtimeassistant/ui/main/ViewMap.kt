@@ -26,6 +26,7 @@ import com.google.gson.internal.LinkedTreeMap
 import com.google.gson.reflect.TypeToken
 import hypr.social.hangtimeassistant.model.HTAFirestore
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -107,7 +108,7 @@ class ViewMap : Fragment() {
     private fun addMapMarkers(){
         googleMap!!.clear()
 
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch(IO) {
             for (contact in HTAFirestore.getAllContacts()) {
                 Fuel.get("https://maps.googleapis.com/maps/api/geocode/json?address=" + contact.address + "&key=" + apiKey)
                     .responseString { request, response, result ->
@@ -117,7 +118,7 @@ class ViewMap : Fragment() {
                                 println(ex)
                             }
                             is Result.Success -> {
-                                lifecycleScope.launch(Dispatchers.IO) {
+                                lifecycleScope.launch(IO) {
                                     try {
                                         val result1 = Gson().fromJson<Map<String, *>>(result.get(), object : TypeToken<Map<String, *>>() {}.type)
                                         val result2 = result1["results"] as ArrayList<LinkedTreeMap<String, *>>
