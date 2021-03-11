@@ -104,20 +104,20 @@ class ViewCategories : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if (needsUpdating) listCategories()
+        if (needsUpdating) lifecycleScope.launch(IO) { listCategories() }
         needsUpdating = false
     }
 
-    private fun listCategories(searchTerm: String = ""){
+    private suspend fun listCategories(searchTerm: String = ""){
         // populate the view with category entries
-        layout_cat_items.removeAllViews()
+        withContext(Main) { layout_cat_items.removeAllViews() }
 
-        lifecycleScope.launch(IO) {
-            for (category in HTAFirestore.getAllCategories()) {
-                if (searchTerm.isNotEmpty()
-                    && !category.name.contains(searchTerm, true)
-                ) continue
+        for (category in withContext(IO) { HTAFirestore.getAllCategories() }) {
+            if (searchTerm.isNotEmpty()
+                && !category.name.contains(searchTerm, true)
+            ) continue
 
+            lifecycleScope.launch(IO) {
                 addItem(category)
             }
         }
@@ -242,23 +242,25 @@ class ViewCategories : Fragment() {
         // populate contact lists
         lifecycleScope.launch(IO) {
             for (contact in HTAFirestore.getAllContacts()) {
-                val linked = HTAFirestore.linked(contact, category)
+                lifecycleScope.launch(IO) {
+                    val linked = HTAFirestore.linked(contact, category)
 
-                withContext(Main) {
-                    val button = Button(context).apply {
-                        id = View.generateViewId()
-                        minimumWidth = 0
-                        minWidth = 0
-                        minimumHeight = 0
-                        minHeight = 0
-                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
-                        text = contact.name
+                    withContext(Main) {
+                        val button = Button(context).apply {
+                            id = View.generateViewId()
+                            minimumWidth = 0
+                            minWidth = 0
+                            minimumHeight = 0
+                            minHeight = 0
+                            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
+                            text = contact.name
+                        }
+
+                        // configure button based on linked state
+                        configureButton(button, dialogView, linked, contact, category)
+                        if (linked) dialogView.layout_cat_linkedcontacts.addView(button)
+                        else dialogView.layout_cat_unlinkedcontacts.addView(button)
                     }
-
-                    // configure button based on linked state
-                    configureButton(button, dialogView, linked, contact, category)
-                    if (linked) dialogView.layout_cat_linkedcontacts.addView(button)
-                    else dialogView.layout_cat_unlinkedcontacts.addView(button)
                 }
             }
         }
